@@ -3,11 +3,11 @@
   "sources": {
     "litellm": {
       "ref": "W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"",
-      "fetched_at": "2026-09-27T03:26:22.311Z"
+      "fetched_at": "2026-09-27T03:31:50.150Z"
     },
     "models_dev": {
       "etag": "W/\"d01edbc7b83be1d60b6192f02ae700f7\"",
-      "fetched_at": "2026-09-27T03:26:22.708Z"
+      "fetched_at": "2026-09-27T03:31:50.287Z"
     }
   },
   "providers": [
@@ -9687,6 +9687,7 @@
           "x_source": "litellm",
           "x_extra_prices": {
             "per_image": {
+              "default": 0.06,
               "1024x1024/low": 0.04
             }
           },
@@ -9954,6 +9955,6 @@
     }
   ],
   "skipped": [],
-  "generated_at": "2026-09-27T03:26:22.885Z",
-  "version": "2026-09-27T03:26:22.885Z-f0bfc1f1f66f"
+  "generated_at": "2026-09-27T03:31:50.456Z",
+  "version": "2026-09-27T03:31:50.456Z-c1593713cc6f"
 }
