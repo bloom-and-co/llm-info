@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-09-27T04:23:20.813Z","ref":"W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"","latest_new_model_at":"2026-09-27T04:11:58.325Z"},
-    "models_dev": {"fetched_at":"2026-09-27T04:23:20.947Z","etag":"W/\"82af40c41d26cb7002c1a083545c4e55\"","latest_new_model_at":"2026-09-27T04:12:35.938Z"}
+    "litellm": {"fetched_at":"2026-09-27T04:28:54.056Z","ref":"W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"","latest_new_model_at":"2026-09-27T04:11:58.325Z"},
+    "models_dev": {"fetched_at":"2026-09-27T04:28:54.236Z","etag":"W/\"82af40c41d26cb7002c1a083545c4e55\"","latest_new_model_at":"2026-09-27T04:12:35.938Z"}
   },
   "models": [
     {
@@ -8880,6 +8880,7 @@
         "output": 50,
         "cache_read": 1,
         "cache_write": 12.5,
+        "cache_write_1h": 20,
         "per_web_search": 0.01
       },
       "modes": {
@@ -8942,6 +8943,7 @@
         "output": 50,
         "cache_read": 0.25,
         "cache_write": 12.5,
+        "cache_write_1h": 20,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9003,7 +9005,8 @@
         "input": 1,
         "output": 5,
         "cache_read": 0.1,
-        "cache_write": 1.25
+        "cache_write": 1.25,
+        "cache_write_1h": 2
       },
       "modes": {
         "batch": {
@@ -9058,7 +9061,8 @@
         "input": 1,
         "output": 5,
         "cache_read": 0.1,
-        "cache_write": 1.25
+        "cache_write": 1.25,
+        "cache_write_1h": 2
       },
       "modes": {
         "batch": {
@@ -9114,6 +9118,7 @@
         "output": 50,
         "cache_read": 1,
         "cache_write": 12.5,
+        "cache_write_1h": 20,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9167,6 +9172,7 @@
         "output": 50,
         "cache_read": 0.25,
         "cache_write": 12.5,
+        "cache_write_1h": 20,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9220,6 +9226,7 @@
         "output": 50,
         "cache_read": 1,
         "cache_write": 12.5,
+        "cache_write_1h": 20,
         "per_web_search": 0.01
       },
       "modes": {},
@@ -9264,6 +9271,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9324,6 +9332,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9384,6 +9393,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9445,6 +9455,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9497,6 +9508,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9559,6 +9571,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9612,6 +9625,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9628,7 +9642,8 @@
             "input": 10,
             "output": 50,
             "cache_read": 1,
-            "cache_write": 12.5
+            "cache_write": 12.5,
+            "cache_write_1h": 20
           },
           "request": {
             "body": {
@@ -9690,6 +9705,7 @@
         "output": 25,
         "cache_read": 0.5,
         "cache_write": 6.25,
+        "cache_write_1h": 10,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9706,7 +9722,8 @@
             "input": 10,
             "output": 50,
             "cache_read": 1,
-            "cache_write": 12.5
+            "cache_write": 12.5,
+            "cache_write_1h": 20
           },
           "request": {
             "body": {
@@ -9768,6 +9785,7 @@
         "output": 20,
         "cache_read": 0.2,
         "cache_write": 5,
+        "cache_write_1h": 8,
         "per_web_search": 0.01
       },
       "modes": {
@@ -9784,7 +9802,8 @@
             "input": 8,
             "output": 40,
             "cache_read": 0.4,
-            "cache_write": 10
+            "cache_write": 10,
+            "cache_write_1h": 16
           },
           "request": {
             "body": {
@@ -9846,6 +9865,7 @@
         "output": 15,
         "cache_read": 0.3,
         "cache_write": 3.75,
+        "cache_write_1h": 6,
         "tiers": [
           {
             "above_input_tokens": 200000,
@@ -9853,7 +9873,8 @@
               "input": 6,
               "output": 22.5,
               "cache_read": 0.6,
-              "cache_write": 7.5
+              "cache_write": 7.5,
+              "cache_write_1h": 12
             }
           }
         ],
@@ -9924,6 +9945,7 @@
         "output": 15,
         "cache_read": 0.3,
         "cache_write": 3.75,
+        "cache_write_1h": 6,
         "tiers": [
           {
             "above_input_tokens": 200000,
@@ -9931,7 +9953,8 @@
               "input": 6,
               "output": 22.5,
               "cache_read": 0.6,
-              "cache_write": 7.5
+              "cache_write": 7.5,
+              "cache_write_1h": 12
             }
           }
         ],
@@ -10002,6 +10025,7 @@
         "output": 15,
         "cache_read": 0.3,
         "cache_write": 3.75,
+        "cache_write_1h": 6,
         "per_web_search": 0.01
       },
       "modes": {
@@ -10063,6 +10087,7 @@
         "output": 10,
         "cache_read": 0.2,
         "cache_write": 2.5,
+        "cache_write_1h": 4,
         "per_web_search": 0.01
       },
       "modes": {
@@ -18335,6 +18360,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-09-27T04:23:20.987Z",
-  "version": "2026-09-27T04:23:20.987Z-85f6bb15136e"
+  "generated_at": "2026-09-27T04:28:54.276Z",
+  "version": "2026-09-27T04:28:54.276Z-c9cc4a3488a4"
 }
