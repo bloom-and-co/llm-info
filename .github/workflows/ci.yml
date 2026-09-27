@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
+      - run: npm ci
+      - run: npm test
+      - run: uv run --with pytest --with genai-prices==0.1.9 pytest -q python/tests
+      - run: npm run build:data
+      - run: npm run build
+      - name: Worker-safe entry
+        run: |
+          npx esbuild src/index.ts --bundle --splitting --format=esm --platform=neutral --external:node:* --external:@pydantic/genai-prices --outdir=/tmp/llm-prices-worker
+          if grep -q 'from "node:' /tmp/llm-prices-worker/index.js; then exit 1; fi
