@@ -364,3 +364,13 @@ def test_unpriced_web_search_warning():
     p.load()
     cost = p.calc("openai", "chat-latest", {"input_tokens": 1, "web_searches": 1})
     assert "missing_price:web_search" in cost["warnings"]
+
+
+def test_xai_image_default_without_size():
+    p = make()
+    p.load()
+    cost = p.from_response(
+        "x-ai", {"data": [{}]}, {"model": "grok-imagine-image-2.0"}, "images"
+    )
+    assert cost["extra_usd"] == Decimal(".06")
+    assert "missing_param:size" not in cost["warnings"]

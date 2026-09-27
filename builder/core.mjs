@@ -317,8 +317,13 @@ export function mergeSources(lite, models, gp) {
       image.p === 'x-ai' ? num(image.v.input_cost_per_image) : num(image.v.output_cost_per_image);
     if (pixel !== undefined || fixed !== undefined) {
       const size = `${image.width}x${image.height}/${image.quality}`;
+      const existing = model.x_extra_prices?.per_image;
       const table =
-        typeof model.x_extra_prices?.per_image === 'object' ? model.x_extra_prices.per_image : {};
+        typeof existing === 'object'
+          ? existing
+          : typeof existing === 'number'
+            ? { default: existing }
+            : {};
       model.x_extra_prices = {
         ...model.x_extra_prices,
         per_image: { ...table, [size]: fixed ?? pixel * image.width * image.height },

@@ -374,21 +374,32 @@ class LlmPrices:
                 continue
             rate = x.get(tag)
             if isinstance(rate, dict):
-                if tag == "per_image" and not options.get("size"):
+                if (
+                    tag == "per_image"
+                    and "default" not in rate
+                    and not options.get("size")
+                ):
                     warnings.append("missing_param:size")
                     continue
-                if tag == "per_image" and not options.get("quality"):
+                if (
+                    tag == "per_image"
+                    and "default" not in rate
+                    and not options.get("quality")
+                ):
                     warnings.append("missing_param:quality")
                     continue
-                key = (
-                    (str(options["size"]) + "/" + str(options["quality"]))
-                    if tag == "per_image"
-                    else options.get("resolution")
-                )
+                if tag == "per_image":
+                    key = (
+                        f"{options['size']}/{options['quality']}"
+                        if options.get("size") and options.get("quality")
+                        else None
+                    )
+                else:
+                    key = options.get("resolution")
                 if not key and "default" not in rate:
                     warnings.append("missing_param:resolution")
                     continue
-                rate = rate.get(key or "default")
+                rate = rate.get(key, rate.get("default"))
             if rate is None:
                 warnings.append("missing_price:" + tag)
                 continue

@@ -111,7 +111,7 @@ function pick(table: any, opt: any, warnings: string[], tag: string) {
     warnings.push('missing_price:' + tag);
     return 0;
   }
-  if (tag === 'per_image') {
+  if (tag === 'per_image' && !('default' in table)) {
     if (!opt.size) {
       warnings.push('missing_param:size');
       return 0;
@@ -126,7 +126,7 @@ function pick(table: any, opt: any, warnings: string[], tag: string) {
     warnings.push('missing_param:resolution');
     return 0;
   }
-  const n = number(table[key || 'default']);
+  const n = number(table[key] ?? table.default);
   if (n === undefined) {
     warnings.push('missing_price:' + tag);
     return 0;

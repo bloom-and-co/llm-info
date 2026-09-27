@@ -379,3 +379,16 @@ it('warns on unpriced web searches', async () => {
   });
   expect(cost.warnings).toContain('missing_price:web_search');
 });
+
+it('uses the conservative default for xAI generated images without size metadata', async () => {
+  const p = client();
+  await p.load();
+  const cost = p.fromResponse({
+    provider: 'x-ai',
+    apiFlavor: 'images',
+    response: { data: [{}] },
+    request: { model: 'grok-imagine-image-2.0' },
+  });
+  expect(cost.extraUsd).toBe(0.06);
+  expect(cost.warnings).not.toContain('missing_param:size');
+});

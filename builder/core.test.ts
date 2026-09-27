@@ -354,3 +354,26 @@ it('records duplicate LiteLLM tier conflicts with source IDs', () => {
     }),
   );
 });
+
+it('preserves a default xAI image charge when a size variant exists', () => {
+  const d = mergeSources(
+    {
+      'xai/grok-imagine-image-2.0': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        input_cost_per_image: 0.06,
+      },
+      'low/1024-x-1024/grok-imagine-image-2.0': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        input_cost_per_image: 0.04,
+      },
+    },
+    {},
+    gp,
+  );
+  const table = d.providers
+    .find((p) => p.id === 'x-ai')!
+    .models.find((m) => m.id === 'grok-imagine-image-2.0')!.x_extra_prices.per_image;
+  expect(table).toMatchObject({ default: 0.06, '1024x1024/low': 0.04 });
+});
