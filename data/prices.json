@@ -3,11 +3,11 @@
   "sources": {
     "litellm": {
       "ref": "W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"",
-      "fetched_at": "2026-09-27T03:09:00.607Z"
+      "fetched_at": "2026-09-27T03:26:22.311Z"
     },
     "models_dev": {
       "etag": "W/\"d01edbc7b83be1d60b6192f02ae700f7\"",
-      "fetched_at": "2026-09-27T03:09:00.762Z"
+      "fetched_at": "2026-09-27T03:26:22.708Z"
     }
   },
   "providers": [
@@ -322,7 +322,7 @@
                 "equals": "chat-latest"
               },
               {
-                "regex": "^chat-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^chat-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -345,7 +345,7 @@
                 "equals": "chatgpt-image-latest"
               },
               {
-                "regex": "^chatgpt-image-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^chatgpt-image-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -363,7 +363,7 @@
                 "equals": "computer-use-preview"
               },
               {
-                "regex": "^computer-use-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^computer-use-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -415,7 +415,7 @@
                 "equals": "daybreak-blue-latest"
               },
               {
-                "regex": "^daybreak-blue-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^daybreak-blue-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -467,7 +467,7 @@
                 "equals": "daybreak-red-latest"
               },
               {
-                "regex": "^daybreak-red-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^daybreak-red-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -485,7 +485,7 @@
                 "equals": "ft:gpt-3.5-turbo"
               },
               {
-                "regex": "^ft:gpt-3\\.5-turbo-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-3\\.5-turbo-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -503,7 +503,7 @@
                 "equals": "ft:gpt-3.5-turbo-0125"
               },
               {
-                "regex": "^ft:gpt-3\\.5-turbo-0125-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-3\\.5-turbo-0125-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -521,7 +521,7 @@
                 "equals": "ft:gpt-3.5-turbo-0613"
               },
               {
-                "regex": "^ft:gpt-3\\.5-turbo-0613-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-3\\.5-turbo-0613-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -539,7 +539,7 @@
                 "equals": "ft:gpt-3.5-turbo-1106"
               },
               {
-                "regex": "^ft:gpt-3\\.5-turbo-1106-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-3\\.5-turbo-1106-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -557,7 +557,7 @@
                 "equals": "ft:gpt-4-0613"
               },
               {
-                "regex": "^ft:gpt-4-0613-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-4-0613-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -576,7 +576,7 @@
                 "equals": "ft:gpt-4.1-2025-04-14"
               },
               {
-                "regex": "^ft:gpt-4\\.1-2025-04-14-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-4\\.1-2025-04-14-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -595,7 +595,7 @@
                 "equals": "ft:gpt-4.1-mini-2025-04-14"
               },
               {
-                "regex": "^ft:gpt-4\\.1-mini-2025-04-14-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-4\\.1-mini-2025-04-14-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -614,7 +614,7 @@
                 "equals": "ft:gpt-4.1-nano-2025-04-14"
               },
               {
-                "regex": "^ft:gpt-4\\.1-nano-2025-04-14-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-4\\.1-nano-2025-04-14-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -633,7 +633,7 @@
                 "equals": "ft:gpt-4o-2024-08-06"
               },
               {
-                "regex": "^ft:gpt-4o-2024-08-06-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-4o-2024-08-06-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -652,7 +652,7 @@
                 "equals": "ft:gpt-4o-2024-11-20"
               },
               {
-                "regex": "^ft:gpt-4o-2024-11-20-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-4o-2024-11-20-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -671,7 +671,7 @@
                 "equals": "ft:gpt-4o-mini-2024-07-18"
               },
               {
-                "regex": "^ft:gpt-4o-mini-2024-07-18-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:gpt-4o-mini-2024-07-18-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -690,7 +690,7 @@
                 "equals": "ft:o4-mini-2025-04-16"
               },
               {
-                "regex": "^ft:o4-mini-2025-04-16-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^ft:o4-mini-2025-04-16-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -711,7 +711,7 @@
                 "equals": "gpt-3.5-turbo"
               },
               {
-                "regex": "^gpt-3\\.5-turbo-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-3\\.5-turbo-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -729,7 +729,7 @@
                 "equals": "gpt-3.5-turbo-0125"
               },
               {
-                "regex": "^gpt-3\\.5-turbo-0125-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-3\\.5-turbo-0125-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -747,7 +747,7 @@
                 "equals": "gpt-3.5-turbo-1106"
               },
               {
-                "regex": "^gpt-3\\.5-turbo-1106-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-3\\.5-turbo-1106-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -765,7 +765,7 @@
                 "equals": "gpt-3.5-turbo-16k"
               },
               {
-                "regex": "^gpt-3\\.5-turbo-16k-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-3\\.5-turbo-16k-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -785,7 +785,7 @@
                 "equals": "gpt-4"
               },
               {
-                "regex": "^gpt-4-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -803,7 +803,7 @@
                 "equals": "gpt-4-0613"
               },
               {
-                "regex": "^gpt-4-0613-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4-0613-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -821,7 +821,7 @@
                 "equals": "gpt-4-1106-preview"
               },
               {
-                "regex": "^gpt-4-1106-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4-1106-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -841,7 +841,7 @@
                 "equals": "gpt-4-turbo"
               },
               {
-                "regex": "^gpt-4-turbo-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4-turbo-(?!2024-04-09$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -859,7 +859,7 @@
                 "equals": "gpt-4-turbo-2024-04-09"
               },
               {
-                "regex": "^gpt-4-turbo-2024-04-09-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4-turbo-2024-04-09-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -872,6 +872,9 @@
             "cache_read_mtok": 0.5
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "name": "GPT-4.1",
           "context_window": 1047576,
           "match": {
@@ -880,7 +883,7 @@
                 "equals": "gpt-4.1"
               },
               {
-                "regex": "^gpt-4\\.1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4\\.1-(?!2025-04-14$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -893,13 +896,16 @@
             "cache_read_mtok": 0.5
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-4.1-2025-04-14"
               },
               {
-                "regex": "^gpt-4\\.1-2025-04-14-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4\\.1-2025-04-14-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -912,6 +918,9 @@
             "cache_read_mtok": 0.1
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "name": "GPT-4.1 mini",
           "context_window": 1047576,
           "match": {
@@ -920,7 +929,7 @@
                 "equals": "gpt-4.1-mini"
               },
               {
-                "regex": "^gpt-4\\.1-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4\\.1-mini-(?!2025-04-14$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -933,13 +942,16 @@
             "cache_read_mtok": 0.09999999999999999
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-4.1-mini-2025-04-14"
               },
               {
-                "regex": "^gpt-4\\.1-mini-2025-04-14-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4\\.1-mini-2025-04-14-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -960,7 +972,7 @@
                 "equals": "gpt-4.1-nano"
               },
               {
-                "regex": "^gpt-4\\.1-nano-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4\\.1-nano-(?!2025-04-14$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -979,7 +991,7 @@
                 "equals": "gpt-4.1-nano-2025-04-14"
               },
               {
-                "regex": "^gpt-4\\.1-nano-2025-04-14-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4\\.1-nano-2025-04-14-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1000,7 +1012,7 @@
                 "equals": "gpt-4o"
               },
               {
-                "regex": "^gpt-4o-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-(?!2024-05-13|2024-08-06|2024-11-20$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1020,7 +1032,7 @@
                 "equals": "gpt-4o-2024-05-13"
               },
               {
-                "regex": "^gpt-4o-2024-05-13-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-2024-05-13-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1041,7 +1053,7 @@
                 "equals": "gpt-4o-2024-08-06"
               },
               {
-                "regex": "^gpt-4o-2024-08-06-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-2024-08-06-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1062,7 +1074,7 @@
                 "equals": "gpt-4o-2024-11-20"
               },
               {
-                "regex": "^gpt-4o-2024-11-20-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-2024-11-20-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1082,7 +1094,7 @@
                 "equals": "gpt-4o-audio-preview-2024-12-17"
               },
               {
-                "regex": "^gpt-4o-audio-preview-2024-12-17-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-audio-preview-2024-12-17-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1102,7 +1114,7 @@
                 "equals": "gpt-4o-audio-preview-2025-06-03"
               },
               {
-                "regex": "^gpt-4o-audio-preview-2025-06-03-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-audio-preview-2025-06-03-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1115,6 +1127,9 @@
             "cache_read_mtok": 0.075
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "name": "GPT-4o mini",
           "context_window": 128000,
           "match": {
@@ -1123,7 +1138,7 @@
                 "equals": "gpt-4o-mini"
               },
               {
-                "regex": "^gpt-4o-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-(?!2024-07-18$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1136,13 +1151,16 @@
             "cache_read_mtok": 0.075
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-4o-mini-2024-07-18"
               },
               {
-                "regex": "^gpt-4o-mini-2024-07-18-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-2024-07-18-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1162,7 +1180,7 @@
                 "equals": "gpt-4o-mini-audio-preview-2024-12-17"
               },
               {
-                "regex": "^gpt-4o-mini-audio-preview-2024-12-17-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-audio-preview-2024-12-17-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1177,7 +1195,7 @@
             "output_audio_mtok": 20,
             "cache_audio_write_mtok": 0.3,
             "cache_write_mtok": 0.3,
-            "cache_audio_read_mtok": 0.3
+            "cache_audio_read_mtok": 10
           },
           "x_source": "litellm",
           "match": {
@@ -1186,7 +1204,7 @@
                 "equals": "gpt-4o-mini-realtime-preview-2024-12-17"
               },
               {
-                "regex": "^gpt-4o-mini-realtime-preview-2024-12-17-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-realtime-preview-2024-12-17-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1199,13 +1217,16 @@
             "cache_read_mtok": 0.075
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-4o-mini-search-preview"
               },
               {
-                "regex": "^gpt-4o-mini-search-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-search-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1224,7 +1245,7 @@
                 "equals": "gpt-4o-mini-transcribe"
               },
               {
-                "regex": "^gpt-4o-mini-transcribe-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-transcribe-(?!2025-03-20|2025-12-15$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1243,7 +1264,7 @@
                 "equals": "gpt-4o-mini-transcribe-2025-03-20"
               },
               {
-                "regex": "^gpt-4o-mini-transcribe-2025-03-20-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-transcribe-2025-03-20-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1262,7 +1283,7 @@
                 "equals": "gpt-4o-mini-transcribe-2025-12-15"
               },
               {
-                "regex": "^gpt-4o-mini-transcribe-2025-12-15-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-transcribe-2025-12-15-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1281,7 +1302,7 @@
                 "equals": "gpt-4o-mini-tts"
               },
               {
-                "regex": "^gpt-4o-mini-tts-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-tts-(?!2025-12-15$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1300,7 +1321,7 @@
                 "equals": "gpt-4o-mini-tts-2025-12-15"
               },
               {
-                "regex": "^gpt-4o-mini-tts-2025-12-15-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-mini-tts-2025-12-15-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1313,13 +1334,16 @@
             "cache_read_mtok": 1.25
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.025
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-4o-search-preview"
               },
               {
-                "regex": "^gpt-4o-search-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-search-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1338,7 +1362,7 @@
                 "equals": "gpt-4o-transcribe"
               },
               {
-                "regex": "^gpt-4o-transcribe-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-transcribe-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1357,7 +1381,7 @@
                 "equals": "gpt-4o-transcribe-diarize"
               },
               {
-                "regex": "^gpt-4o-transcribe-diarize-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-4o-transcribe-diarize-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1370,6 +1394,9 @@
             "cache_read_mtok": 0.125
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5",
           "context_window": 400000,
           "match": {
@@ -1378,7 +1405,7 @@
                 "equals": "gpt-5"
               },
               {
-                "regex": "^gpt-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-(?!2025-08-07$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1391,13 +1418,16 @@
             "cache_read_mtok": 0.125
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5-2025-08-07"
               },
               {
-                "regex": "^gpt-5-2025-08-07-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-2025-08-07-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1416,7 +1446,7 @@
                 "equals": "gpt-5-chat"
               },
               {
-                "regex": "^gpt-5-chat-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-chat-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1435,7 +1465,7 @@
                 "equals": "gpt-5-chat-latest"
               },
               {
-                "regex": "^gpt-5-chat-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-chat-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1454,7 +1484,7 @@
                 "equals": "gpt-5-codex"
               },
               {
-                "regex": "^gpt-5-codex-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-codex-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1467,6 +1497,9 @@
             "cache_read_mtok": 0.025
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5 Mini",
           "context_window": 400000,
           "match": {
@@ -1475,7 +1508,7 @@
                 "equals": "gpt-5-mini"
               },
               {
-                "regex": "^gpt-5-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-mini-(?!2025-08-07$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1488,13 +1521,16 @@
             "cache_read_mtok": 0.024999999999999998
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5-mini-2025-08-07"
               },
               {
-                "regex": "^gpt-5-mini-2025-08-07-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-mini-2025-08-07-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1507,6 +1543,9 @@
             "cache_read_mtok": 0.005
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5 Nano",
           "context_window": 400000,
           "match": {
@@ -1515,7 +1554,7 @@
                 "equals": "gpt-5-nano"
               },
               {
-                "regex": "^gpt-5-nano-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-nano-(?!2025-08-07$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1528,13 +1567,16 @@
             "cache_read_mtok": 0.005
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5-nano-2025-08-07"
               },
               {
-                "regex": "^gpt-5-nano-2025-08-07-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-nano-2025-08-07-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1546,6 +1588,9 @@
             "output_mtok": 120
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5 Pro",
           "context_window": 400000,
           "match": {
@@ -1554,7 +1599,7 @@
                 "equals": "gpt-5-pro"
               },
               {
-                "regex": "^gpt-5-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-pro-(?!2025-10-06$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1566,13 +1611,16 @@
             "output_mtok": 120
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5-pro-2025-10-06"
               },
               {
-                "regex": "^gpt-5-pro-2025-10-06-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-pro-2025-10-06-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1585,13 +1633,16 @@
             "cache_read_mtok": 0.125
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5-search-api"
               },
               {
-                "regex": "^gpt-5-search-api-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-search-api-(?!2025-10-14$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1604,13 +1655,16 @@
             "cache_read_mtok": 0.125
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5-search-api-2025-10-14"
               },
               {
-                "regex": "^gpt-5-search-api-2025-10-14-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5-search-api-2025-10-14-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1623,6 +1677,9 @@
             "cache_read_mtok": 0.125
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.1",
           "context_window": 400000,
           "match": {
@@ -1631,7 +1688,7 @@
                 "equals": "gpt-5.1"
               },
               {
-                "regex": "^gpt-5\\.1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.1-(?!2025-11-13$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1644,13 +1701,16 @@
             "cache_read_mtok": 0.125
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.1-2025-11-13"
               },
               {
-                "regex": "^gpt-5\\.1-2025-11-13-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.1-2025-11-13-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1669,7 +1729,7 @@
                 "equals": "gpt-5.1-chat-latest"
               },
               {
-                "regex": "^gpt-5\\.1-chat-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.1-chat-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1688,7 +1748,7 @@
                 "equals": "gpt-5.1-codex"
               },
               {
-                "regex": "^gpt-5\\.1-codex-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.1-codex-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1707,7 +1767,7 @@
                 "equals": "gpt-5.1-codex-max"
               },
               {
-                "regex": "^gpt-5\\.1-codex-max-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.1-codex-max-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1726,7 +1786,7 @@
                 "equals": "gpt-5.1-codex-mini"
               },
               {
-                "regex": "^gpt-5\\.1-codex-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.1-codex-mini-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1739,6 +1799,9 @@
             "cache_read_mtok": 0.175
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.2",
           "context_window": 400000,
           "match": {
@@ -1747,7 +1810,7 @@
                 "equals": "gpt-5.2"
               },
               {
-                "regex": "^gpt-5\\.2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.2-(?!2025-12-11$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1760,13 +1823,16 @@
             "cache_read_mtok": 0.175
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.2-2025-12-11"
               },
               {
-                "regex": "^gpt-5\\.2-2025-12-11-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.2-2025-12-11-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1787,7 +1853,7 @@
                 "equals": "gpt-5.2-chat-latest"
               },
               {
-                "regex": "^gpt-5\\.2-chat-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.2-chat-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1806,7 +1872,7 @@
                 "equals": "gpt-5.2-codex"
               },
               {
-                "regex": "^gpt-5\\.2-codex-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.2-codex-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1818,6 +1884,9 @@
             "output_mtok": 168
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.2 Pro",
           "context_window": 400000,
           "match": {
@@ -1826,7 +1895,7 @@
                 "equals": "gpt-5.2-pro"
               },
               {
-                "regex": "^gpt-5\\.2-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.2-pro-(?!2025-12-11$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1838,13 +1907,16 @@
             "output_mtok": 168
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.2-pro-2025-12-11"
               },
               {
-                "regex": "^gpt-5\\.2-pro-2025-12-11-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.2-pro-2025-12-11-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1865,7 +1937,7 @@
                 "equals": "gpt-5.3-chat-latest"
               },
               {
-                "regex": "^gpt-5\\.3-chat-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.3-chat-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1878,6 +1950,9 @@
             "cache_read_mtok": 0.175
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.3 Codex",
           "context_window": 400000,
           "match": {
@@ -1886,7 +1961,7 @@
                 "equals": "gpt-5.3-codex"
               },
               {
-                "regex": "^gpt-5\\.3-codex-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.3-codex-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1907,7 +1982,7 @@
                 "equals": "gpt-5.3-codex-spark"
               },
               {
-                "regex": "^gpt-5\\.3-codex-spark-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.3-codex-spark-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1952,7 +2027,7 @@
                 "equals": "gpt-5.4"
               },
               {
-                "regex": "^gpt-5\\.4-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-(?!2026-03-05$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -1995,7 +2070,7 @@
                 "equals": "gpt-5.4-2026-03-05"
               },
               {
-                "regex": "^gpt-5\\.4-2026-03-05-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-2026-03-05-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2008,6 +2083,9 @@
             "cache_read_mtok": 0.075
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.4 mini",
           "context_window": 400000,
           "match": {
@@ -2016,7 +2094,7 @@
                 "equals": "gpt-5.4-mini"
               },
               {
-                "regex": "^gpt-5\\.4-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-mini-(?!2026-03-17$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2029,13 +2107,16 @@
             "cache_read_mtok": 0.075
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.4-mini-2026-03-17"
               },
               {
-                "regex": "^gpt-5\\.4-mini-2026-03-17-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-mini-2026-03-17-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2048,6 +2129,9 @@
             "cache_read_mtok": 0.02
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.4 nano",
           "context_window": 400000,
           "match": {
@@ -2056,7 +2140,7 @@
                 "equals": "gpt-5.4-nano"
               },
               {
-                "regex": "^gpt-5\\.4-nano-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-nano-(?!2026-03-17$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2069,13 +2153,16 @@
             "cache_read_mtok": 0.02
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.4-nano-2026-03-17"
               },
               {
-                "regex": "^gpt-5\\.4-nano-2026-03-17-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-nano-2026-03-17-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2103,6 +2190,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.4 Pro",
           "context_window": 1050000,
           "match": {
@@ -2111,7 +2201,7 @@
                 "equals": "gpt-5.4-pro"
               },
               {
-                "regex": "^gpt-5\\.4-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-pro-(?!2026-03-05$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2139,13 +2229,16 @@
             }
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.4-pro-2026-03-05"
               },
               {
-                "regex": "^gpt-5\\.4-pro-2026-03-05-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.4-pro-2026-03-05-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2182,6 +2275,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.5",
           "context_window": 1050000,
           "match": {
@@ -2190,7 +2286,7 @@
                 "equals": "gpt-5.5"
               },
               {
-                "regex": "^gpt-5\\.5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.5-(?!2026-04-23$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2227,13 +2323,16 @@
             }
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.5-2026-04-23"
               },
               {
-                "regex": "^gpt-5\\.5-2026-04-23-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.5-2026-04-23-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2252,7 +2351,7 @@
                 "equals": "gpt-5.5-cyber"
               },
               {
-                "regex": "^gpt-5\\.5-cyber-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.5-cyber-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2280,6 +2379,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.5 Pro",
           "context_window": 1050000,
           "match": {
@@ -2288,7 +2390,7 @@
                 "equals": "gpt-5.5-pro"
               },
               {
-                "regex": "^gpt-5\\.5-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.5-pro-(?!2026-04-23$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2316,13 +2418,16 @@
             }
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "gpt-5.5-pro-2026-04-23"
               },
               {
-                "regex": "^gpt-5\\.5-pro-2026-04-23-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.5-pro-2026-04-23-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2368,6 +2473,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.6",
           "context_window": 1050000,
           "match": {
@@ -2376,7 +2484,7 @@
                 "equals": "gpt-5.6"
               },
               {
-                "regex": "^gpt-5\\.6-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.6-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2428,7 +2536,7 @@
                 "equals": "gpt-5.6-cyber"
               },
               {
-                "regex": "^gpt-5\\.6-cyber-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.6-cyber-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2474,6 +2582,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.6 Luna",
           "context_window": 1050000,
           "match": {
@@ -2482,7 +2593,7 @@
                 "equals": "gpt-5.6-luna"
               },
               {
-                "regex": "^gpt-5\\.6-luna-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.6-luna-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2528,6 +2639,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.6 Sol",
           "context_window": 1050000,
           "match": {
@@ -2536,7 +2650,7 @@
                 "equals": "gpt-5.6-sol"
               },
               {
-                "regex": "^gpt-5\\.6-sol-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.6-sol-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2582,6 +2696,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-5.6 Terra",
           "context_window": 1050000,
           "match": {
@@ -2590,7 +2707,7 @@
                 "equals": "gpt-5.6-terra"
               },
               {
-                "regex": "^gpt-5\\.6-terra-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-5\\.6-terra-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2636,6 +2753,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-6 Astra",
           "context_window": 1050000,
           "match": {
@@ -2644,7 +2764,7 @@
                 "equals": "gpt-6-astra"
               },
               {
-                "regex": "^gpt-6-astra-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-6-astra-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2690,6 +2810,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-6 Luna",
           "context_window": 1050000,
           "match": {
@@ -2698,7 +2821,7 @@
                 "equals": "gpt-6-luna"
               },
               {
-                "regex": "^gpt-6-luna-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-6-luna-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2744,6 +2867,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "GPT-6 Sol",
           "context_window": 1050000,
           "match": {
@@ -2752,7 +2878,7 @@
                 "equals": "gpt-6-sol"
               },
               {
-                "regex": "^gpt-6-sol-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-6-sol-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2772,7 +2898,7 @@
                 "equals": "gpt-audio"
               },
               {
-                "regex": "^gpt-audio-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-audio-(?!2025-08-28$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2792,7 +2918,7 @@
                 "equals": "gpt-audio-1.5"
               },
               {
-                "regex": "^gpt-audio-1\\.5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-audio-1\\.5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2812,7 +2938,7 @@
                 "equals": "gpt-audio-2025-08-28"
               },
               {
-                "regex": "^gpt-audio-2025-08-28-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-audio-2025-08-28-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2832,7 +2958,7 @@
                 "equals": "gpt-audio-mini"
               },
               {
-                "regex": "^gpt-audio-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-audio-mini-(?!2025-12-15$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2852,7 +2978,7 @@
                 "equals": "gpt-audio-mini-2025-12-15"
               },
               {
-                "regex": "^gpt-audio-mini-2025-12-15-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-audio-mini-2025-12-15-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2904,7 +3030,7 @@
                 "equals": "gpt-daybreak-blue-latest"
               },
               {
-                "regex": "^gpt-daybreak-blue-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-daybreak-blue-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2956,7 +3082,7 @@
                 "equals": "gpt-daybreak-red-latest"
               },
               {
-                "regex": "^gpt-daybreak-red-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-daybreak-red-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -2969,7 +3095,7 @@
             "input_image_mtok": 10,
             "output_image_mtok": 40,
             "cache_image_read_mtok": 2.5,
-            "output_mtok": 0
+            "output_mtok": 40
           },
           "x_source": "both",
           "x_extra_prices": {
@@ -2992,7 +3118,7 @@
                 "equals": "gpt-image-1"
               },
               {
-                "regex": "^gpt-image-1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-1-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3005,7 +3131,7 @@
             "input_image_mtok": 2.5,
             "output_image_mtok": 8,
             "cache_image_read_mtok": 0.25,
-            "output_mtok": 0
+            "output_mtok": 8
           },
           "x_source": "both",
           "name": "gpt-image-1-mini",
@@ -3015,7 +3141,7 @@
                 "equals": "gpt-image-1-mini"
               },
               {
-                "regex": "^gpt-image-1-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-1-mini-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3038,7 +3164,7 @@
                 "equals": "gpt-image-1.5"
               },
               {
-                "regex": "^gpt-image-1\\.5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-1\\.5-(?!2025-12-16$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3060,7 +3186,7 @@
                 "equals": "gpt-image-1.5-2025-12-16"
               },
               {
-                "regex": "^gpt-image-1\\.5-2025-12-16-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-1\\.5-2025-12-16-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3073,7 +3199,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 0
+            "output_mtok": 30
           },
           "x_source": "both",
           "name": "gpt-image-2",
@@ -3083,7 +3209,7 @@
                 "equals": "gpt-image-2"
               },
               {
-                "regex": "^gpt-image-2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-2-(?!2026-04-21$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3096,7 +3222,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 0
+            "output_mtok": 30
           },
           "x_source": "litellm",
           "match": {
@@ -3105,7 +3231,7 @@
                 "equals": "gpt-image-2-2026-04-21"
               },
               {
-                "regex": "^gpt-image-2-2026-04-21-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-2-2026-04-21-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3118,7 +3244,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 0
+            "output_mtok": 30
           },
           "x_source": "litellm",
           "match": {
@@ -3127,7 +3253,7 @@
                 "equals": "gpt-image-2.5-flare"
               },
               {
-                "regex": "^gpt-image-2\\.5-flare-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-2\\.5-flare-(?!2026-09-08$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3140,7 +3266,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 0
+            "output_mtok": 30
           },
           "x_source": "litellm",
           "match": {
@@ -3149,7 +3275,7 @@
                 "equals": "gpt-image-2.5-flare-2026-09-08"
               },
               {
-                "regex": "^gpt-image-2\\.5-flare-2026-09-08-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-2\\.5-flare-2026-09-08-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3162,7 +3288,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 0
+            "output_mtok": 30
           },
           "x_source": "litellm",
           "match": {
@@ -3171,7 +3297,7 @@
                 "equals": "gpt-image-2.5-sunburst"
               },
               {
-                "regex": "^gpt-image-2\\.5-sunburst-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-2\\.5-sunburst-(?!2026-09-08$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3184,7 +3310,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 0
+            "output_mtok": 30
           },
           "x_source": "litellm",
           "match": {
@@ -3193,7 +3319,7 @@
                 "equals": "gpt-image-2.5-sunburst-2026-09-08"
               },
               {
-                "regex": "^gpt-image-2\\.5-sunburst-2026-09-08-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-image-2\\.5-sunburst-2026-09-08-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3220,7 +3346,7 @@
                 "equals": "gpt-realtime"
               },
               {
-                "regex": "^gpt-realtime-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-(?!2025-08-28$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3247,7 +3373,7 @@
                 "equals": "gpt-realtime-1.5"
               },
               {
-                "regex": "^gpt-realtime-1\\.5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-1\\.5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3274,7 +3400,7 @@
                 "equals": "gpt-realtime-2"
               },
               {
-                "regex": "^gpt-realtime-2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-2-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3303,7 +3429,7 @@
                 "equals": "gpt-realtime-2.1"
               },
               {
-                "regex": "^gpt-realtime-2\\.1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-2\\.1-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3330,7 +3456,7 @@
                 "equals": "gpt-realtime-2.1-mini"
               },
               {
-                "regex": "^gpt-realtime-2\\.1-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-2\\.1-mini-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3357,7 +3483,7 @@
                 "equals": "gpt-realtime-2025-08-28"
               },
               {
-                "regex": "^gpt-realtime-2025-08-28-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-2025-08-28-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3384,7 +3510,7 @@
                 "equals": "gpt-realtime-mini"
               },
               {
-                "regex": "^gpt-realtime-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-mini-(?!2025-12-15$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3411,7 +3537,7 @@
                 "equals": "gpt-realtime-mini-2025-12-15"
               },
               {
-                "regex": "^gpt-realtime-mini-2025-12-15-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-realtime-mini-2025-12-15-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3430,7 +3556,7 @@
                 "equals": "gpt-rosalind-research"
               },
               {
-                "regex": "^gpt-rosalind-research-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gpt-rosalind-research-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3451,7 +3577,7 @@
                 "equals": "o1"
               },
               {
-                "regex": "^o1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o1-(?!2024-12-17$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3470,7 +3596,7 @@
                 "equals": "o1-2024-12-17"
               },
               {
-                "regex": "^o1-2024-12-17-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o1-2024-12-17-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3490,7 +3616,7 @@
                 "equals": "o1-pro"
               },
               {
-                "regex": "^o1-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o1-pro-(?!2025-03-19$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3508,7 +3634,7 @@
                 "equals": "o1-pro-2025-03-19"
               },
               {
-                "regex": "^o1-pro-2025-03-19-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o1-pro-2025-03-19-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3521,6 +3647,9 @@
             "cache_read_mtok": 0.5
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "o3",
           "context_window": 200000,
           "match": {
@@ -3529,7 +3658,7 @@
                 "equals": "o3"
               },
               {
-                "regex": "^o3-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o3-(?!2025-04-16$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3542,13 +3671,16 @@
             "cache_read_mtok": 0.5
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "o3-2025-04-16"
               },
               {
-                "regex": "^o3-2025-04-16-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o3-2025-04-16-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3567,7 +3699,7 @@
                 "equals": "o3-deep-research"
               },
               {
-                "regex": "^o3-deep-research-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o3-deep-research-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3588,7 +3720,7 @@
                 "equals": "o3-mini"
               },
               {
-                "regex": "^o3-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o3-mini-(?!2025-01-31$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3607,7 +3739,7 @@
                 "equals": "o3-mini-2025-01-31"
               },
               {
-                "regex": "^o3-mini-2025-01-31-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o3-mini-2025-01-31-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3619,6 +3751,9 @@
             "output_mtok": 80
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "o3-pro",
           "context_window": 200000,
           "match": {
@@ -3627,7 +3762,7 @@
                 "equals": "o3-pro"
               },
               {
-                "regex": "^o3-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o3-pro-(?!2025-06-10$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3639,13 +3774,16 @@
             "output_mtok": 80
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "o3-pro-2025-06-10"
               },
               {
-                "regex": "^o3-pro-2025-06-10-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o3-pro-2025-06-10-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3658,6 +3796,9 @@
             "cache_read_mtok": 0.275
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "o4-mini",
           "context_window": 200000,
           "match": {
@@ -3666,7 +3807,7 @@
                 "equals": "o4-mini"
               },
               {
-                "regex": "^o4-mini-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o4-mini-(?!2025-04-16$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3679,13 +3820,16 @@
             "cache_read_mtok": 0.275
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "o4-mini-2025-04-16"
               },
               {
-                "regex": "^o4-mini-2025-04-16-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o4-mini-2025-04-16-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3704,7 +3848,7 @@
                 "equals": "o4-mini-deep-research"
               },
               {
-                "regex": "^o4-mini-deep-research-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^o4-mini-deep-research-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3722,7 +3866,7 @@
                 "equals": "omni-moderation-2024-09-26"
               },
               {
-                "regex": "^omni-moderation-2024-09-26-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^omni-moderation-2024-09-26-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3740,7 +3884,7 @@
                 "equals": "omni-moderation-latest"
               },
               {
-                "regex": "^omni-moderation-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^omni-moderation-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3758,7 +3902,7 @@
                 "equals": "sora-2"
               },
               {
-                "regex": "^sora-2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^sora-2-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3776,7 +3920,7 @@
                 "equals": "sora-2-pro"
               },
               {
-                "regex": "^sora-2-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^sora-2-pro-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3794,7 +3938,7 @@
                 "equals": "sora-2-pro-high-res"
               },
               {
-                "regex": "^sora-2-pro-high-res-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^sora-2-pro-high-res-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3814,7 +3958,7 @@
                 "equals": "text-embedding-3-large"
               },
               {
-                "regex": "^text-embedding-3-large-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^text-embedding-3-large-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3834,7 +3978,7 @@
                 "equals": "text-embedding-3-small"
               },
               {
-                "regex": "^text-embedding-3-small-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^text-embedding-3-small-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3854,7 +3998,7 @@
                 "equals": "text-embedding-ada-002"
               },
               {
-                "regex": "^text-embedding-ada-002-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^text-embedding-ada-002-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3872,7 +4016,7 @@
                 "equals": "text-embedding-ada-002-v2"
               },
               {
-                "regex": "^text-embedding-ada-002-v2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^text-embedding-ada-002-v2-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -3995,6 +4139,9 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Fable 5",
           "context_window": 1000000,
           "match": {
@@ -4003,7 +4150,7 @@
                 "equals": "claude-fable-5"
               },
               {
-                "regex": "^claude-fable-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-fable-5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4017,6 +4164,9 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Fable 5.1",
           "context_window": 1000000,
           "match": {
@@ -4025,7 +4175,7 @@
                 "equals": "claude-fable-5-1"
               },
               {
-                "regex": "^claude-fable-5-1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-fable-5-1-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4047,7 +4197,7 @@
                 "equals": "claude-haiku-4-5"
               },
               {
-                "regex": "^claude-haiku-4-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-haiku-4-5-(?!20251001$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4069,7 +4219,7 @@
                 "equals": "claude-haiku-4-5-20251001"
               },
               {
-                "regex": "^claude-haiku-4-5-20251001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-haiku-4-5-20251001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4083,13 +4233,16 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "claude-mythos-5"
               },
               {
-                "regex": "^claude-mythos-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-mythos-5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4103,13 +4256,16 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "claude-mythos-5-1"
               },
               {
-                "regex": "^claude-mythos-5-1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-mythos-5-1-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4123,13 +4279,16 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "claude-mythos-preview"
               },
               {
-                "regex": "^claude-mythos-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-mythos-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4143,6 +4302,9 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Opus 4.5 (latest)",
           "context_window": 200000,
           "match": {
@@ -4151,7 +4313,7 @@
                 "equals": "claude-opus-4-5"
               },
               {
-                "regex": "^claude-opus-4-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-4-5-(?!20251101$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4165,6 +4327,9 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Opus 4.5",
           "context_window": 200000,
           "match": {
@@ -4173,7 +4338,7 @@
                 "equals": "claude-opus-4-5-20251101"
               },
               {
-                "regex": "^claude-opus-4-5-20251101-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-4-5-20251101-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4187,6 +4352,9 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Opus 4.6",
           "context_window": 1000000,
           "match": {
@@ -4195,7 +4363,7 @@
                 "equals": "claude-opus-4-6"
               },
               {
-                "regex": "^claude-opus-4-6-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-4-6-(?!20260205$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4209,13 +4377,16 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "claude-opus-4-6-20260205"
               },
               {
-                "regex": "^claude-opus-4-6-20260205-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-4-6-20260205-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4229,6 +4400,9 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Opus 4.7",
           "context_window": 1000000,
           "match": {
@@ -4237,7 +4411,7 @@
                 "equals": "claude-opus-4-7"
               },
               {
-                "regex": "^claude-opus-4-7-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-4-7-(?!20260416$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4251,13 +4425,16 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "match": {
             "or": [
               {
                 "equals": "claude-opus-4-7-20260416"
               },
               {
-                "regex": "^claude-opus-4-7-20260416-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-4-7-20260416-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4271,6 +4448,9 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Opus 4.8",
           "context_window": 1000000,
           "match": {
@@ -4279,7 +4459,7 @@
                 "equals": "claude-opus-4-8"
               },
               {
-                "regex": "^claude-opus-4-8-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-4-8-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4293,6 +4473,9 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Opus 5",
           "context_window": 1000000,
           "match": {
@@ -4301,7 +4484,7 @@
                 "equals": "claude-opus-5"
               },
               {
-                "regex": "^claude-opus-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4315,6 +4498,9 @@
             "cache_write_mtok": 5
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Opus 5.5",
           "context_window": 1000000,
           "match": {
@@ -4323,7 +4509,7 @@
                 "equals": "claude-opus-5-5"
               },
               {
-                "regex": "^claude-opus-5-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-opus-5-5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4369,6 +4555,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Sonnet 4.5 (latest)",
           "context_window": 1000000,
           "match": {
@@ -4377,7 +4566,7 @@
                 "equals": "claude-sonnet-4-5"
               },
               {
-                "regex": "^claude-sonnet-4-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-sonnet-4-5-(?!20250929$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4423,6 +4612,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Sonnet 4.5",
           "context_window": 1000000,
           "match": {
@@ -4431,7 +4623,7 @@
                 "equals": "claude-sonnet-4-5-20250929"
               },
               {
-                "regex": "^claude-sonnet-4-5-20250929-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-sonnet-4-5-20250929-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4445,6 +4637,9 @@
             "cache_write_mtok": 3.75
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Sonnet 4.6",
           "context_window": 1000000,
           "match": {
@@ -4453,7 +4648,7 @@
                 "equals": "claude-sonnet-4-6"
               },
               {
-                "regex": "^claude-sonnet-4-6-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-sonnet-4-6-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -4467,6 +4662,9 @@
             "cache_write_mtok": 2.5
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.01
+          },
           "name": "Claude Sonnet 5",
           "context_window": 1000000,
           "match": {
@@ -4475,7 +4673,7 @@
                 "equals": "claude-sonnet-5"
               },
               {
-                "regex": "^claude-sonnet-5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^claude-sonnet-5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5056,6 +5254,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "name": "Deep Research Max Preview (Apr-21-2026)",
           "context_window": 131072,
           "match": {
@@ -5064,7 +5265,7 @@
                 "equals": "deep-research-max-preview-04-2026"
               },
               {
-                "regex": "^deep-research-max-preview-04-2026-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^deep-research-max-preview-04-2026-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5102,6 +5303,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "name": "Deep Research Preview (Apr-21-2026)",
           "context_window": 131072,
           "match": {
@@ -5110,7 +5314,7 @@
                 "equals": "deep-research-preview-04-2026"
               },
               {
-                "regex": "^deep-research-preview-04-2026-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^deep-research-preview-04-2026-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5124,7 +5328,9 @@
           },
           "x_source": "litellm",
           "x_extra_prices": {
-            "per_image": 0.134
+            "per_image": 0.134,
+            "input_per_image": 0.0011,
+            "web_search": 0.035
           },
           "match": {
             "or": [
@@ -5132,7 +5338,7 @@
                 "equals": "deep-research-pro-preview-12-2025"
               },
               {
-                "regex": "^deep-research-pro-preview-12-2025-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^deep-research-pro-preview-12-2025-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5151,7 +5357,7 @@
                 "equals": "gemini-2.0-flash"
               },
               {
-                "regex": "^gemini-2\\.0-flash-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.0-flash-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5172,7 +5378,7 @@
                 "equals": "gemini-2.0-flash-exp-image-generation"
               },
               {
-                "regex": "^gemini-2\\.0-flash-exp-image-generation-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.0-flash-exp-image-generation-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5191,7 +5397,7 @@
                 "equals": "gemini-2.0-flash-lite"
               },
               {
-                "regex": "^gemini-2\\.0-flash-lite-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.0-flash-lite-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5227,7 +5433,7 @@
                 "equals": "gemini-2.5-computer-use-preview-10-2025"
               },
               {
-                "regex": "^gemini-2\\.5-computer-use-preview-10-2025-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-computer-use-preview-10-2025-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5243,6 +5449,9 @@
             "cache_audio_read_mtok": 0.09999999999999999
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "name": "Gemini 2.5 Flash",
           "context_window": 1048576,
           "match": {
@@ -5251,7 +5460,7 @@
                 "equals": "gemini-2.5-flash"
               },
               {
-                "regex": "^gemini-2\\.5-flash-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5265,12 +5474,13 @@
             "input_audio_mtok": 1,
             "output_image_mtok": 30,
             "cache_read_mtok": 0.075,
-            "output_image_reasoning_mtok": 0.3,
-            "cache_audio_read_mtok": 0.075
+            "output_image_reasoning_mtok": 30,
+            "cache_audio_read_mtok": 1
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.039
+            "per_image": 0.039,
+            "web_search": 0.035
           },
           "name": "Nano Banana",
           "context_window": 32768,
@@ -5280,7 +5490,7 @@
                 "equals": "gemini-2.5-flash-image"
               },
               {
-                "regex": "^gemini-2\\.5-flash-image-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-image-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5296,6 +5506,9 @@
             "cache_audio_read_mtok": 0.03
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "name": "Gemini 2.5 Flash-Lite",
           "context_window": 1048576,
           "match": {
@@ -5304,7 +5517,7 @@
                 "equals": "gemini-2.5-flash-lite"
               },
               {
-                "regex": "^gemini-2\\.5-flash-lite-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-lite-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5317,16 +5530,19 @@
             "output_reasoning_mtok": 0.39999999999999997,
             "cache_read_mtok": 0.01,
             "input_audio_mtok": 0.3,
-            "cache_audio_read_mtok": 0.01
+            "cache_audio_read_mtok": 0.3
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-2.5-flash-lite-preview-09-2025"
               },
               {
-                "regex": "^gemini-2\\.5-flash-lite-preview-09-2025-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-lite-preview-09-2025-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5346,7 +5562,7 @@
                 "equals": "gemini-2.5-flash-native-audio"
               },
               {
-                "regex": "^gemini-2\\.5-flash-native-audio-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-native-audio-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5366,7 +5582,7 @@
                 "equals": "gemini-2.5-flash-native-audio-latest"
               },
               {
-                "regex": "^gemini-2\\.5-flash-native-audio-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-native-audio-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5386,7 +5602,7 @@
                 "equals": "gemini-2.5-flash-native-audio-preview-09-2025"
               },
               {
-                "regex": "^gemini-2\\.5-flash-native-audio-preview-09-2025-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-native-audio-preview-09-2025-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5406,7 +5622,7 @@
                 "equals": "gemini-2.5-flash-native-audio-preview-12-2025"
               },
               {
-                "regex": "^gemini-2\\.5-flash-native-audio-preview-12-2025-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-native-audio-preview-12-2025-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5419,16 +5635,19 @@
             "output_reasoning_mtok": 2.5,
             "cache_read_mtok": 0.03,
             "input_audio_mtok": 1,
-            "cache_audio_read_mtok": 0.03
+            "cache_audio_read_mtok": 1
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-2.5-flash-preview-09-2025"
               },
               {
-                "regex": "^gemini-2\\.5-flash-preview-09-2025-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-preview-09-2025-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5449,7 +5668,7 @@
                 "equals": "gemini-2.5-flash-preview-tts"
               },
               {
-                "regex": "^gemini-2\\.5-flash-preview-tts-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-preview-tts-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5468,7 +5687,7 @@
                 "equals": "gemini-2.5-flash-tts"
               },
               {
-                "regex": "^gemini-2\\.5-flash-tts-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-flash-tts-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5505,6 +5724,9 @@
             }
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "name": "Gemini 2.5 Pro",
           "context_window": 1048576,
           "match": {
@@ -5513,7 +5735,7 @@
                 "equals": "gemini-2.5-pro"
               },
               {
-                "regex": "^gemini-2\\.5-pro-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-pro-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5526,9 +5748,12 @@
             "cache_read_mtok": 0.125,
             "input_audio_mtok": 0.7,
             "output_audio_mtok": 20,
-            "cache_audio_read_mtok": 0.125
+            "cache_audio_read_mtok": 0.7
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "name": "Gemini 2.5 Pro Preview TTS",
           "context_window": 8192,
           "match": {
@@ -5537,7 +5762,7 @@
                 "equals": "gemini-2.5-pro-preview-tts"
               },
               {
-                "regex": "^gemini-2\\.5-pro-preview-tts-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-pro-preview-tts-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5556,7 +5781,7 @@
                 "equals": "gemini-2.5-pro-tts"
               },
               {
-                "regex": "^gemini-2\\.5-pro-tts-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-2\\.5-pro-tts-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5566,12 +5791,15 @@
           "prices": {
             "input_mtok": 0.5,
             "output_mtok": 3,
+            "output_reasoning_mtok": 3,
             "cache_read_mtok": 0.05,
             "input_audio_mtok": 1,
-            "cache_audio_read_mtok": 0.09999999999999999,
-            "output_reasoning_mtok": 3
+            "cache_audio_read_mtok": 0.09999999999999999
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3 Flash Preview",
           "context_window": 1048576,
           "match": {
@@ -5580,7 +5808,7 @@
                 "equals": "gemini-3-flash-preview"
               },
               {
-                "regex": "^gemini-3-flash-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3-flash-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5619,7 +5847,9 @@
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.134
+            "per_image": 0.134,
+            "input_per_image": 0.0011,
+            "web_search": 0.014
           },
           "name": "Nano Banana Pro",
           "context_window": 65536,
@@ -5629,7 +5859,7 @@
                 "equals": "gemini-3-pro-image"
               },
               {
-                "regex": "^gemini-3-pro-image-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3-pro-image-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5668,7 +5898,9 @@
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.134
+            "per_image": 0.134,
+            "input_per_image": 0.0011,
+            "web_search": 0.014
           },
           "name": "Nano Banana Pro",
           "context_window": 131072,
@@ -5678,7 +5910,7 @@
                 "equals": "gemini-3-pro-image-preview"
               },
               {
-                "regex": "^gemini-3-pro-image-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3-pro-image-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5715,13 +5947,16 @@
             }
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-3-pro-preview"
               },
               {
-                "regex": "^gemini-3-pro-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3-pro-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5736,7 +5971,9 @@
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.0672
+            "per_image": 0.0672,
+            "input_per_image": 0.00056,
+            "web_search": 0.014
           },
           "name": "Nano Banana 2",
           "context_window": 131072,
@@ -5746,7 +5983,7 @@
                 "equals": "gemini-3.1-flash-image"
               },
               {
-                "regex": "^gemini-3\\.1-flash-image-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-flash-image-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5761,7 +5998,9 @@
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.0672
+            "per_image": 0.0672,
+            "input_per_image": 0.00056,
+            "web_search": 0.014
           },
           "name": "Nano Banana 2",
           "context_window": 65536,
@@ -5771,7 +6010,7 @@
                 "equals": "gemini-3.1-flash-image-preview"
               },
               {
-                "regex": "^gemini-3\\.1-flash-image-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-flash-image-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5787,6 +6026,9 @@
             "cache_audio_read_mtok": 0.049999999999999996
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3.1 Flash Lite",
           "context_window": 1048576,
           "match": {
@@ -5795,7 +6037,7 @@
                 "equals": "gemini-3.1-flash-lite"
               },
               {
-                "regex": "^gemini-3\\.1-flash-lite-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-flash-lite-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5810,7 +6052,8 @@
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.0336
+            "per_image": 0.0336,
+            "input_per_image": 0.00028
           },
           "name": "Nano Banana 2 Lite",
           "context_window": 65536,
@@ -5820,7 +6063,7 @@
                 "equals": "gemini-3.1-flash-lite-image"
               },
               {
-                "regex": "^gemini-3\\.1-flash-lite-image-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-flash-lite-image-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5836,6 +6079,9 @@
             "cache_audio_read_mtok": 0.049999999999999996
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3.1 Flash Lite Preview",
           "context_window": 1048576,
           "match": {
@@ -5844,7 +6090,7 @@
                 "equals": "gemini-3.1-flash-lite-preview"
               },
               {
-                "regex": "^gemini-3\\.1-flash-lite-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-flash-lite-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5867,7 +6113,7 @@
                 "equals": "gemini-3.1-flash-live-preview"
               },
               {
-                "regex": "^gemini-3\\.1-flash-live-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-flash-live-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5888,7 +6134,7 @@
                 "equals": "gemini-3.1-flash-tts-preview"
               },
               {
-                "regex": "^gemini-3\\.1-flash-tts-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-flash-tts-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5935,7 +6181,8 @@
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.00012
+            "per_image": 0.00012,
+            "web_search": 0.014
           },
           "name": "Gemini 3.1 Pro Preview",
           "context_window": 1048576,
@@ -5945,7 +6192,7 @@
                 "equals": "gemini-3.1-pro-preview"
               },
               {
-                "regex": "^gemini-3\\.1-pro-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-pro-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -5992,7 +6239,8 @@
           },
           "x_source": "both",
           "x_extra_prices": {
-            "per_image": 0.00012
+            "per_image": 0.00012,
+            "web_search": 0.014
           },
           "name": "Gemini 3.1 Pro Preview Custom Tools",
           "context_window": 1048576,
@@ -6002,7 +6250,7 @@
                 "equals": "gemini-3.1-pro-preview-customtools"
               },
               {
-                "regex": "^gemini-3\\.1-pro-preview-customtools-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.1-pro-preview-customtools-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6015,9 +6263,12 @@
             "output_reasoning_mtok": 9,
             "cache_read_mtok": 0.15,
             "input_audio_mtok": 1.5,
-            "cache_audio_read_mtok": 0.15
+            "cache_audio_read_mtok": 1.5
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3.5 Flash",
           "context_window": 1048576,
           "match": {
@@ -6026,7 +6277,7 @@
                 "equals": "gemini-3.5-flash"
               },
               {
-                "regex": "^gemini-3\\.5-flash-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.5-flash-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6040,6 +6291,9 @@
             "cache_read_mtok": 0.03
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3.5 Flash Lite",
           "context_window": 1048576,
           "match": {
@@ -6048,7 +6302,7 @@
                 "equals": "gemini-3.5-flash-lite"
               },
               {
-                "regex": "^gemini-3\\.5-flash-lite-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.5-flash-lite-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6070,7 +6324,7 @@
                 "equals": "gemini-3.5-live-translate-preview"
               },
               {
-                "regex": "^gemini-3\\.5-live-translate-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.5-live-translate-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6089,7 +6343,7 @@
                 "equals": "gemini-3.5-transcribe"
               },
               {
-                "regex": "^gemini-3\\.5-transcribe-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.5-transcribe-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6108,7 +6362,7 @@
                 "equals": "gemini-3.5-transcribe-live"
               },
               {
-                "regex": "^gemini-3\\.5-transcribe-live-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.5-transcribe-live-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6127,7 +6381,7 @@
                 "equals": "gemini-3.5-transcribe-live-preview"
               },
               {
-                "regex": "^gemini-3\\.5-transcribe-live-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.5-transcribe-live-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6146,7 +6400,7 @@
                 "equals": "gemini-3.5-transcribe-preview"
               },
               {
-                "regex": "^gemini-3\\.5-transcribe-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.5-transcribe-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6159,9 +6413,12 @@
             "output_reasoning_mtok": 3.75,
             "cache_read_mtok": 0.075,
             "input_audio_mtok": 0.75,
-            "cache_audio_read_mtok": 0.075
+            "cache_audio_read_mtok": 0.75
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3.6 Flash",
           "context_window": 1048576,
           "match": {
@@ -6170,7 +6427,7 @@
                 "equals": "gemini-3.6-flash"
               },
               {
-                "regex": "^gemini-3\\.6-flash-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.6-flash-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6183,9 +6440,12 @@
             "output_reasoning_mtok": 3.75,
             "cache_read_mtok": 0.075,
             "input_audio_mtok": 0.75,
-            "cache_audio_read_mtok": 0.075
+            "cache_audio_read_mtok": 0.75
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3.7 Flash",
           "context_window": 1048576,
           "match": {
@@ -6194,7 +6454,7 @@
                 "equals": "gemini-3.7-flash"
               },
               {
-                "regex": "^gemini-3\\.7-flash-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.7-flash-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6207,9 +6467,12 @@
             "output_reasoning_mtok": 3.75,
             "cache_read_mtok": 0.075,
             "input_audio_mtok": 0.75,
-            "cache_audio_read_mtok": 0.075
+            "cache_audio_read_mtok": 0.75
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini 3.8 Flash",
           "context_window": 1048576,
           "match": {
@@ -6218,7 +6481,7 @@
                 "equals": "gemini-3.8-flash"
               },
               {
-                "regex": "^gemini-3\\.8-flash-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.8-flash-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6238,7 +6501,7 @@
                 "equals": "gemini-3.8-flash-cyber"
               },
               {
-                "regex": "^gemini-3\\.8-flash-cyber-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.8-flash-cyber-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6258,7 +6521,7 @@
                 "equals": "gemini-3.8-flash-lite-tts"
               },
               {
-                "regex": "^gemini-3\\.8-flash-lite-tts-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.8-flash-lite-tts-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6278,7 +6541,7 @@
                 "equals": "gemini-3.8-flash-tts"
               },
               {
-                "regex": "^gemini-3\\.8-flash-tts-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.8-flash-tts-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6299,7 +6562,7 @@
                 "equals": "gemini-3.8-live"
               },
               {
-                "regex": "^gemini-3\\.8-live-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.8-live-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6320,7 +6583,7 @@
                 "equals": "gemini-3.8-live-extended-thinking"
               },
               {
-                "regex": "^gemini-3\\.8-live-extended-thinking-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-3\\.8-live-extended-thinking-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6340,7 +6603,7 @@
                 "equals": "gemini-embedding-001"
               },
               {
-                "regex": "^gemini-embedding-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-embedding-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6362,7 +6625,7 @@
                 "equals": "gemini-embedding-2"
               },
               {
-                "regex": "^gemini-embedding-2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-embedding-2-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6382,7 +6645,7 @@
                 "equals": "gemini-embedding-2-preview"
               },
               {
-                "regex": "^gemini-embedding-2-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-embedding-2-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6416,7 +6679,7 @@
                 "equals": "gemini-exp-1114"
               },
               {
-                "regex": "^gemini-exp-1114-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-exp-1114-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6424,21 +6687,40 @@
         {
           "id": "gemini-exp-1206",
           "prices": {
-            "input_mtok": 0.3,
-            "output_mtok": 2.5,
+            "input_mtok": {
+              "base": 0.3,
+              "tiers": [
+                {
+                  "start": 127999,
+                  "price": 0
+                }
+              ]
+            },
+            "output_mtok": {
+              "base": 2.5,
+              "tiers": [
+                {
+                  "start": 127999,
+                  "price": 0
+                }
+              ]
+            },
             "output_reasoning_mtok": 2.5,
             "cache_read_mtok": 0.03,
             "input_audio_mtok": 1,
-            "cache_audio_read_mtok": 0.03
+            "cache_audio_read_mtok": 1
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-exp-1206"
               },
               {
-                "regex": "^gemini-exp-1206-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-exp-1206-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6456,7 +6738,7 @@
                 "equals": "gemini-flash-experimental"
               },
               {
-                "regex": "^gemini-flash-experimental-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-flash-experimental-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6469,9 +6751,12 @@
             "output_reasoning_mtok": 3.75,
             "cache_read_mtok": 0.075,
             "input_audio_mtok": 0.75,
-            "cache_audio_read_mtok": 0.075
+            "cache_audio_read_mtok": 0.75
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini Flash Latest",
           "context_window": 1048576,
           "match": {
@@ -6480,7 +6765,7 @@
                 "equals": "gemini-flash-latest"
               },
               {
-                "regex": "^gemini-flash-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-flash-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6494,6 +6779,9 @@
             "cache_read_mtok": 0.03
           },
           "x_source": "both",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "name": "Gemini Flash-Lite Latest",
           "context_window": 1048576,
           "match": {
@@ -6502,7 +6790,7 @@
                 "equals": "gemini-flash-lite-latest"
               },
               {
-                "regex": "^gemini-flash-lite-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-flash-lite-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6520,7 +6808,7 @@
                 "equals": "gemini-gemma-2-27b-it"
               },
               {
-                "regex": "^gemini-gemma-2-27b-it-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-gemma-2-27b-it-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6538,7 +6826,7 @@
                 "equals": "gemini-gemma-2-9b-it"
               },
               {
-                "regex": "^gemini-gemma-2-9b-it-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-gemma-2-9b-it-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6553,13 +6841,16 @@
             "input_image_mtok": 3
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-live-2.5-flash-native-audio"
               },
               {
-                "regex": "^gemini-live-2\\.5-flash-native-audio-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-live-2\\.5-flash-native-audio-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6574,13 +6865,16 @@
             "input_image_mtok": 3
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.035
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-live-2.5-flash-preview-native-audio-09-2025"
               },
               {
-                "regex": "^gemini-live-2\\.5-flash-preview-native-audio-09-2025-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-live-2\\.5-flash-preview-native-audio-09-2025-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6600,7 +6894,7 @@
                 "equals": "gemini-omni-1.1-flash"
               },
               {
-                "regex": "^gemini-omni-1\\.1-flash-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-omni-1\\.1-flash-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6619,7 +6913,7 @@
                 "equals": "gemini-omni-1.1-flash-preview"
               },
               {
-                "regex": "^gemini-omni-1\\.1-flash-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-omni-1\\.1-flash-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6641,7 +6935,7 @@
                 "equals": "gemini-omni-flash-preview"
               },
               {
-                "regex": "^gemini-omni-flash-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-omni-flash-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6678,13 +6972,16 @@
             }
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-pro-latest"
               },
               {
-                "regex": "^gemini-pro-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-pro-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6697,7 +6994,7 @@
             "output_reasoning_mtok": 2.5,
             "cache_read_mtok": 0,
             "input_audio_mtok": 1,
-            "cache_audio_read_mtok": 0
+            "cache_audio_read_mtok": 1
           },
           "x_source": "litellm",
           "match": {
@@ -6706,7 +7003,7 @@
                 "equals": "gemini-robotics-er-1.5-preview"
               },
               {
-                "regex": "^gemini-robotics-er-1\\.5-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-robotics-er-1\\.5-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6719,16 +7016,19 @@
             "output_reasoning_mtok": 10,
             "cache_read_mtok": 0.09999999999999999,
             "input_audio_mtok": 1,
-            "cache_audio_read_mtok": 0.09999999999999999
+            "cache_audio_read_mtok": 1
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-robotics-er-2-preview"
               },
               {
-                "regex": "^gemini-robotics-er-2-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-robotics-er-2-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6741,13 +7041,16 @@
             "input_audio_mtok": 1
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "web_search": 0.014
+          },
           "match": {
             "or": [
               {
                 "equals": "gemini-robotics-er-2-streaming-preview"
               },
               {
-                "regex": "^gemini-robotics-er-2-streaming-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemini-robotics-er-2-streaming-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6775,13 +7078,16 @@
             }
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "input_per_image": 0
+          },
           "match": {
             "or": [
               {
                 "equals": "gemma-3-27b-it"
               },
               {
-                "regex": "^gemma-3-27b-it-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemma-3-27b-it-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6801,7 +7107,7 @@
                 "equals": "gemma-4-26b-a4b-it"
               },
               {
-                "regex": "^gemma-4-26b-a4b-it-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemma-4-26b-a4b-it-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6821,7 +7127,7 @@
                 "equals": "gemma-4-31b-it"
               },
               {
-                "regex": "^gemma-4-31b-it-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^gemma-4-31b-it-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6839,7 +7145,7 @@
                 "equals": "imagen-3.0-fast-generate-001"
               },
               {
-                "regex": "^imagen-3\\.0-fast-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^imagen-3\\.0-fast-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6857,7 +7163,7 @@
                 "equals": "imagen-3.0-generate-001"
               },
               {
-                "regex": "^imagen-3\\.0-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^imagen-3\\.0-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6885,13 +7191,16 @@
             }
           },
           "x_source": "litellm",
+          "x_extra_prices": {
+            "input_per_image": 0
+          },
           "match": {
             "or": [
               {
                 "equals": "learnlm-1.5-pro-experimental"
               },
               {
-                "regex": "^learnlm-1\\.5-pro-experimental-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^learnlm-1\\.5-pro-experimental-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6915,7 +7224,7 @@
                 "equals": "lyria-3-clip-preview"
               },
               {
-                "regex": "^lyria-3-clip-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^lyria-3-clip-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6939,7 +7248,7 @@
                 "equals": "lyria-3-pro-preview"
               },
               {
-                "regex": "^lyria-3-pro-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^lyria-3-pro-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6960,7 +7269,7 @@
                 "equals": "lyria-3.5"
               },
               {
-                "regex": "^lyria-3\\.5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^lyria-3\\.5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -6981,7 +7290,7 @@
                 "equals": "lyria-3.5-clip-preview"
               },
               {
-                "regex": "^lyria-3\\.5-clip-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^lyria-3\\.5-clip-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7002,7 +7311,7 @@
                 "equals": "lyria-3.5-pro-preview"
               },
               {
-                "regex": "^lyria-3\\.5-pro-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^lyria-3\\.5-pro-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7023,7 +7332,7 @@
                 "equals": "lyria-realtime-exp"
               },
               {
-                "regex": "^lyria-realtime-exp-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^lyria-realtime-exp-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7037,7 +7346,9 @@
           },
           "x_source": "litellm",
           "x_extra_prices": {
-            "per_image": 0.134
+            "per_image": 0.134,
+            "input_per_image": 0.0011,
+            "web_search": 0.014
           },
           "match": {
             "or": [
@@ -7045,7 +7356,7 @@
                 "equals": "nano-banana-pro-preview"
               },
               {
-                "regex": "^nano-banana-pro-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^nano-banana-pro-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7063,7 +7374,7 @@
                 "equals": "veo-2.0-generate-001"
               },
               {
-                "regex": "^veo-2\\.0-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-2\\.0-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7084,7 +7395,7 @@
                 "equals": "veo-3.0-fast-generate-001"
               },
               {
-                "regex": "^veo-3\\.0-fast-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.0-fast-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7102,7 +7413,7 @@
                 "equals": "veo-3.0-generate-001"
               },
               {
-                "regex": "^veo-3\\.0-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.0-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7124,7 +7435,7 @@
                 "equals": "veo-3.1-fast-generate-001"
               },
               {
-                "regex": "^veo-3\\.1-fast-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.1-fast-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7148,7 +7459,7 @@
                 "equals": "veo-3.1-fast-generate-preview"
               },
               {
-                "regex": "^veo-3\\.1-fast-generate-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.1-fast-generate-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7169,7 +7480,7 @@
                 "equals": "veo-3.1-generate-001"
               },
               {
-                "regex": "^veo-3\\.1-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.1-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7192,7 +7503,7 @@
                 "equals": "veo-3.1-generate-preview"
               },
               {
-                "regex": "^veo-3\\.1-generate-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.1-generate-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7213,7 +7524,7 @@
                 "equals": "veo-3.1-lite-generate-001"
               },
               {
-                "regex": "^veo-3\\.1-lite-generate-001-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.1-lite-generate-001-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7236,7 +7547,7 @@
                 "equals": "veo-3.1-lite-generate-preview"
               },
               {
-                "regex": "^veo-3\\.1-lite-generate-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^veo-3\\.1-lite-generate-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7430,15 +7741,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7447,7 +7750,7 @@
                 "equals": "grok-4.20"
               },
               {
-                "regex": "^grok-4\\.20-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7483,15 +7786,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7500,7 +7795,7 @@
                 "equals": "grok-4.20-0309"
               },
               {
-                "regex": "^grok-4\\.20-0309-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-0309-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7536,15 +7831,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.2,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.4
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "both",
           "name": "Grok 4.20 (Non-Reasoning)",
@@ -7555,7 +7842,7 @@
                 "equals": "grok-4.20-0309-non-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-0309-non-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-0309-non-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7591,15 +7878,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.2,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.4
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "both",
           "name": "Grok 4.20 (Reasoning)",
@@ -7610,7 +7889,7 @@
                 "equals": "grok-4.20-0309-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-0309-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-0309-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7646,15 +7925,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7663,7 +7934,7 @@
                 "equals": "grok-4.20-beta"
               },
               {
-                "regex": "^grok-4\\.20-beta-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7699,15 +7970,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7716,7 +7979,7 @@
                 "equals": "grok-4.20-beta-0309"
               },
               {
-                "regex": "^grok-4\\.20-beta-0309-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-0309-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7752,15 +8015,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7769,7 +8024,7 @@
                 "equals": "grok-4.20-beta-0309-non-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-beta-0309-non-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-0309-non-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7805,15 +8060,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7822,7 +8069,7 @@
                 "equals": "grok-4.20-beta-0309-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-beta-0309-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-0309-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7858,15 +8105,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7875,7 +8114,7 @@
                 "equals": "grok-4.20-beta-latest"
               },
               {
-                "regex": "^grok-4\\.20-beta-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7911,15 +8150,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7928,7 +8159,7 @@
                 "equals": "grok-4.20-beta-latest-non-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-beta-latest-non-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-latest-non-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -7964,15 +8195,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -7981,7 +8204,7 @@
                 "equals": "grok-4.20-beta-latest-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-beta-latest-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-latest-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8017,15 +8240,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8034,7 +8249,7 @@
                 "equals": "grok-4.20-beta-non-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-beta-non-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-non-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8070,15 +8285,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8087,7 +8294,7 @@
                 "equals": "grok-4.20-beta-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-beta-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-beta-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8123,15 +8330,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8140,7 +8339,7 @@
                 "equals": "grok-4.20-experimental-beta-0304"
               },
               {
-                "regex": "^grok-4\\.20-experimental-beta-0304-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-experimental-beta-0304-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8176,15 +8375,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8193,7 +8384,7 @@
                 "equals": "grok-4.20-experimental-beta-0304-non-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-experimental-beta-0304-non-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-experimental-beta-0304-non-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8229,15 +8420,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8246,7 +8429,7 @@
                 "equals": "grok-4.20-experimental-beta-0304-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-experimental-beta-0304-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-experimental-beta-0304-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8282,15 +8465,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8299,7 +8474,7 @@
                 "equals": "grok-4.20-experimental-beta-latest"
               },
               {
-                "regex": "^grok-4\\.20-experimental-beta-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-experimental-beta-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8335,15 +8510,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8352,7 +8519,7 @@
                 "equals": "grok-4.20-experimental-beta-non-reasoning-latest"
               },
               {
-                "regex": "^grok-4\\.20-experimental-beta-non-reasoning-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-experimental-beta-non-reasoning-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8388,15 +8555,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8405,7 +8564,7 @@
                 "equals": "grok-4.20-experimental-beta-reasoning-latest"
               },
               {
-                "regex": "^grok-4\\.20-experimental-beta-reasoning-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-experimental-beta-reasoning-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8441,15 +8600,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8458,7 +8609,7 @@
                 "equals": "grok-4.20-multi-agent"
               },
               {
-                "regex": "^grok-4\\.20-multi-agent-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-multi-agent-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8494,15 +8645,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.2,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.4
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "both",
           "name": "Grok 4.20 Multi-Agent",
@@ -8513,7 +8656,7 @@
                 "equals": "grok-4.20-multi-agent-0309"
               },
               {
-                "regex": "^grok-4\\.20-multi-agent-0309-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-multi-agent-0309-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8549,15 +8692,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8566,7 +8701,7 @@
                 "equals": "grok-4.20-multi-agent-beta-0309"
               },
               {
-                "regex": "^grok-4\\.20-multi-agent-beta-0309-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-multi-agent-beta-0309-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8602,15 +8737,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8619,7 +8746,7 @@
                 "equals": "grok-4.20-multi-agent-beta-latest"
               },
               {
-                "regex": "^grok-4\\.20-multi-agent-beta-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-multi-agent-beta-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8655,15 +8782,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8672,7 +8791,7 @@
                 "equals": "grok-4.20-multi-agent-experimental-beta-0304"
               },
               {
-                "regex": "^grok-4\\.20-multi-agent-experimental-beta-0304-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-multi-agent-experimental-beta-0304-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8708,15 +8827,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8725,7 +8836,7 @@
                 "equals": "grok-4.20-multi-agent-experimental-beta-latest"
               },
               {
-                "regex": "^grok-4\\.20-multi-agent-experimental-beta-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-multi-agent-experimental-beta-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8761,15 +8872,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8778,7 +8881,7 @@
                 "equals": "grok-4.20-multi-agent-latest"
               },
               {
-                "regex": "^grok-4\\.20-multi-agent-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-multi-agent-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8814,15 +8917,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8831,7 +8926,7 @@
                 "equals": "grok-4.20-non-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-non-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-non-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8867,15 +8962,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8884,7 +8971,7 @@
                 "equals": "grok-4.20-non-reasoning-gv2"
               },
               {
-                "regex": "^grok-4\\.20-non-reasoning-gv2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-non-reasoning-gv2-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8920,15 +9007,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8937,7 +9016,7 @@
                 "equals": "grok-4.20-non-reasoning-latest"
               },
               {
-                "regex": "^grok-4\\.20-non-reasoning-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-non-reasoning-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -8973,15 +9052,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -8990,7 +9061,7 @@
                 "equals": "grok-4.20-reasoning"
               },
               {
-                "regex": "^grok-4\\.20-reasoning-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-reasoning-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9026,15 +9097,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -9043,7 +9106,7 @@
                 "equals": "grok-4.20-reasoning-gv2"
               },
               {
-                "regex": "^grok-4\\.20-reasoning-gv2-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-reasoning-gv2-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9079,15 +9142,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -9096,7 +9151,7 @@
                 "equals": "grok-4.20-reasoning-latest"
               },
               {
-                "regex": "^grok-4\\.20-reasoning-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.20-reasoning-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9132,15 +9187,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.2,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.4
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "both",
           "name": "Grok 4.3",
@@ -9151,7 +9198,7 @@
                 "equals": "grok-4.3"
               },
               {
-                "regex": "^grok-4\\.3-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.3-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9187,15 +9234,7 @@
               ]
             },
             "input_image_mtok": 1.25,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1.25
           },
           "x_source": "litellm",
           "match": {
@@ -9204,7 +9243,7 @@
                 "equals": "grok-4.3-latest"
               },
               {
-                "regex": "^grok-4\\.3-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.3-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9240,15 +9279,7 @@
               ]
             },
             "input_image_mtok": 2,
-            "cache_image_read_mtok": {
-              "base": 0.3,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.6
-                }
-              ]
-            }
+            "cache_image_read_mtok": 2
           },
           "x_source": "both",
           "name": "Grok 4.5",
@@ -9259,7 +9290,7 @@
                 "equals": "grok-4.5"
               },
               {
-                "regex": "^grok-4\\.5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.5-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9295,15 +9326,7 @@
               ]
             },
             "input_image_mtok": 2,
-            "cache_image_read_mtok": {
-              "base": 0.3,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.6
-                }
-              ]
-            }
+            "cache_image_read_mtok": 2
           },
           "x_source": "litellm",
           "match": {
@@ -9312,7 +9335,7 @@
                 "equals": "grok-4.5-latest"
               },
               {
-                "regex": "^grok-4\\.5-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.5-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9348,15 +9371,7 @@
               ]
             },
             "input_image_mtok": 2,
-            "cache_image_read_mtok": {
-              "base": 0.5,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 1
-                }
-              ]
-            }
+            "cache_image_read_mtok": 2
           },
           "x_source": "both",
           "name": "Grok 4.6",
@@ -9367,7 +9382,7 @@
                 "equals": "grok-4.6"
               },
               {
-                "regex": "^grok-4\\.6-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.6-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9403,15 +9418,7 @@
               ]
             },
             "input_image_mtok": 2,
-            "cache_image_read_mtok": {
-              "base": 0.5,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 1
-                }
-              ]
-            }
+            "cache_image_read_mtok": 2
           },
           "x_source": "both",
           "name": "Grok 4.7",
@@ -9422,7 +9429,7 @@
                 "equals": "grok-4.7"
               },
               {
-                "regex": "^grok-4\\.7-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-4\\.7-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9458,15 +9465,7 @@
               ]
             },
             "input_image_mtok": 1,
-            "cache_image_read_mtok": {
-              "base": 0.2,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.4
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1
           },
           "x_source": "both",
           "name": "Grok Build 0.1",
@@ -9477,7 +9476,7 @@
                 "equals": "grok-build-0.1"
               },
               {
-                "regex": "^grok-build-0\\.1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-build-0\\.1-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9513,15 +9512,7 @@
               ]
             },
             "input_image_mtok": 2,
-            "cache_image_read_mtok": {
-              "base": 0.3,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.6
-                }
-              ]
-            }
+            "cache_image_read_mtok": 2
           },
           "x_source": "litellm",
           "match": {
@@ -9530,7 +9521,7 @@
                 "equals": "grok-build-latest"
               },
               {
-                "regex": "^grok-build-latest-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-build-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9566,15 +9557,7 @@
               ]
             },
             "input_image_mtok": 1,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1
           },
           "x_source": "litellm",
           "match": {
@@ -9583,7 +9566,7 @@
                 "equals": "grok-code-fast"
               },
               {
-                "regex": "^grok-code-fast-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-code-fast-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9619,15 +9602,7 @@
               ]
             },
             "input_image_mtok": 1,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1
           },
           "x_source": "litellm",
           "match": {
@@ -9636,7 +9611,7 @@
                 "equals": "grok-code-fast-1"
               },
               {
-                "regex": "^grok-code-fast-1-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-code-fast-1-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9672,15 +9647,7 @@
               ]
             },
             "input_image_mtok": 1,
-            "cache_image_read_mtok": {
-              "base": 0.19999999999999998,
-              "tiers": [
-                {
-                  "start": 199999,
-                  "price": 0.39999999999999997
-                }
-              ]
-            }
+            "cache_image_read_mtok": 1
           },
           "x_source": "litellm",
           "match": {
@@ -9689,7 +9656,139 @@
                 "equals": "grok-code-fast-1-0825"
               },
               {
-                "regex": "^grok-code-fast-1-0825-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-code-fast-1-0825-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+              }
+            ]
+          }
+        },
+        {
+          "id": "grok-imagine-image",
+          "prices": {},
+          "x_source": "both",
+          "x_extra_prices": {
+            "per_image": 0.02
+          },
+          "name": "Grok Imagine Image",
+          "context_window": 16000,
+          "match": {
+            "or": [
+              {
+                "equals": "grok-imagine-image"
+              },
+              {
+                "regex": "^grok-imagine-image-(?!2026-03-02$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+              }
+            ]
+          }
+        },
+        {
+          "id": "grok-imagine-image-2.0",
+          "prices": {},
+          "x_source": "litellm",
+          "x_extra_prices": {
+            "per_image": {
+              "1024x1024/low": 0.04
+            }
+          },
+          "match": {
+            "or": [
+              {
+                "equals": "grok-imagine-image-2.0"
+              },
+              {
+                "regex": "^grok-imagine-image-2\\.0-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+              }
+            ]
+          }
+        },
+        {
+          "id": "grok-imagine-image-2026-03-02",
+          "prices": {},
+          "x_source": "litellm",
+          "x_extra_prices": {
+            "per_image": 0.02
+          },
+          "match": {
+            "or": [
+              {
+                "equals": "grok-imagine-image-2026-03-02"
+              },
+              {
+                "regex": "^grok-imagine-image-2026-03-02-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+              }
+            ]
+          }
+        },
+        {
+          "id": "grok-imagine-image-pro",
+          "prices": {},
+          "x_source": "litellm",
+          "x_extra_prices": {
+            "per_image": 0.05
+          },
+          "match": {
+            "or": [
+              {
+                "equals": "grok-imagine-image-pro"
+              },
+              {
+                "regex": "^grok-imagine-image-pro-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+              }
+            ]
+          }
+        },
+        {
+          "id": "grok-imagine-image-quality",
+          "prices": {},
+          "x_source": "both",
+          "x_extra_prices": {
+            "per_image": 0.05
+          },
+          "name": "Grok Imagine Image Quality",
+          "context_window": 16000,
+          "match": {
+            "or": [
+              {
+                "equals": "grok-imagine-image-quality"
+              },
+              {
+                "regex": "^grok-imagine-image-quality-(?!20260403$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+              }
+            ]
+          }
+        },
+        {
+          "id": "grok-imagine-image-quality-20260403",
+          "prices": {},
+          "x_source": "litellm",
+          "x_extra_prices": {
+            "per_image": 0.05
+          },
+          "match": {
+            "or": [
+              {
+                "equals": "grok-imagine-image-quality-20260403"
+              },
+              {
+                "regex": "^grok-imagine-image-quality-20260403-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+              }
+            ]
+          }
+        },
+        {
+          "id": "grok-imagine-image-quality-latest",
+          "prices": {},
+          "x_source": "litellm",
+          "x_extra_prices": {
+            "per_image": 0.05
+          },
+          "match": {
+            "or": [
+              {
+                "equals": "grok-imagine-image-quality-latest"
+              },
+              {
+                "regex": "^grok-imagine-image-quality-latest-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9699,6 +9798,7 @@
           "prices": {},
           "x_source": "both",
           "x_extra_prices": {
+            "input_per_image": 0.002,
             "per_video_second": {
               "default": 0.05,
               "480p": 0.05,
@@ -9713,7 +9813,7 @@
                 "equals": "grok-imagine-video"
               },
               {
-                "regex": "^grok-imagine-video-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-imagine-video-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9723,6 +9823,7 @@
           "prices": {},
           "x_source": "both",
           "x_extra_prices": {
+            "input_per_image": 0.01,
             "per_video_second": {
               "default": 0.08,
               "1080p": 0.25,
@@ -9738,7 +9839,7 @@
                 "equals": "grok-imagine-video-1.5"
               },
               {
-                "regex": "^grok-imagine-video-1\\.5-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-imagine-video-1\\.5-(?!2026-05-30$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9748,6 +9849,7 @@
           "prices": {},
           "x_source": "litellm",
           "x_extra_prices": {
+            "input_per_image": 0.01,
             "per_video_second": {
               "default": 0.08,
               "1080p": 0.25,
@@ -9761,7 +9863,7 @@
                 "equals": "grok-imagine-video-1.5-2026-05-30"
               },
               {
-                "regex": "^grok-imagine-video-1\\.5-2026-05-30-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-imagine-video-1\\.5-2026-05-30-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9771,6 +9873,7 @@
           "prices": {},
           "x_source": "litellm",
           "x_extra_prices": {
+            "input_per_image": 0.01,
             "per_video_second": {
               "default": 0.08,
               "1080p": 0.25,
@@ -9784,7 +9887,7 @@
                 "equals": "grok-imagine-video-1.5-preview"
               },
               {
-                "regex": "^grok-imagine-video-1\\.5-preview-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
+                "regex": "^grok-imagine-video-1\\.5-preview-(?!(?!)$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$"
               }
             ]
           }
@@ -9803,6 +9906,46 @@
     },
     {
       "provider": "google",
+      "model": "gemini-3.1-flash-image-preview",
+      "field": "x_extra_prices.per_image",
+      "source_a": "litellm:gemini-3.1-flash-image-preview",
+      "source_b": "litellm:gemini/gemini-3.1-flash-image-preview",
+      "prior": 0.0672,
+      "candidate": 0.045,
+      "adopted": 0.0672
+    },
+    {
+      "provider": "google",
+      "model": "gemini-3.1-flash-image",
+      "field": "x_extra_prices.per_image",
+      "source_a": "litellm:gemini-3.1-flash-image",
+      "source_b": "litellm:gemini/gemini-3.1-flash-image",
+      "prior": 0.0672,
+      "candidate": 0.045,
+      "adopted": 0.0672
+    },
+    {
+      "provider": "google",
+      "model": "gemini-exp-1206",
+      "field": "input_mtok",
+      "source_a": "litellm:gemini-exp-1206",
+      "source_b": "litellm:gemini/gemini-exp-1206",
+      "prior": 0.3,
+      "candidate": 0,
+      "adopted": 0.3
+    },
+    {
+      "provider": "google",
+      "model": "gemini-exp-1206",
+      "field": "output_mtok",
+      "source_a": "litellm:gemini-exp-1206",
+      "source_b": "litellm:gemini/gemini-exp-1206",
+      "prior": 2.5,
+      "candidate": 0,
+      "adopted": 2.5
+    },
+    {
+      "provider": "google",
       "model": "gemini-omni-flash-preview",
       "field": "output_mtok",
       "litellm": 9,
@@ -9810,6 +9953,7 @@
       "adopted": 17.5
     }
   ],
-  "generated_at": "2026-09-27T03:09:00.902Z",
-  "version": "2026-09-27T03:09:00.902Z-9b78de0862f0"
+  "skipped": [],
+  "generated_at": "2026-09-27T03:26:22.885Z",
+  "version": "2026-09-27T03:26:22.885Z-f0bfc1f1f66f"
 }
