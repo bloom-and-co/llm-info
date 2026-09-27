@@ -5,7 +5,7 @@ it('bundles and imports a memory-store Worker without Node modules', async () =>
   const result = await build({
     stdin: {
       contents:
-        "import { createLlmPrices, memoryStore } from './src/index.ts'; export default { fetch() { return new Response(String(createLlmPrices({store:memoryStore()}).info().stale)) } };",
+        "import { createLlmInfo, memoryStore } from './src/index.ts'; export default { fetch() { return new Response(String(createLlmInfo({store:memoryStore()}).info().stale)) } };",
       resolveDir: process.cwd(),
       sourcefile: 'worker.ts',
       loader: 'ts',

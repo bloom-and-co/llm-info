@@ -49,6 +49,7 @@ export function providerOf(v, id) {
 function num(v) {
   return typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : undefined;
 }
+const mtok = (value) => Number((value * 1e6).toPrecision(12));
 function put(obj, key, value) {
   if (value !== undefined) obj[key] = value;
 }
@@ -56,7 +57,7 @@ function fromLite(v, provider) {
   const prices = {};
   const extras = {};
   for (const [k, d] of Object.entries(direct))
-    put(prices, d, num(v[k]) === undefined ? undefined : v[k] * 1e6);
+    put(prices, d, num(v[k]) === undefined ? undefined : mtok(v[k]));
   if (v.mode === 'image_generation' || v.output_cost_per_image !== undefined)
     put(extras, 'per_image', num(v.output_cost_per_image));
   // https://docs.x.ai/developers/pricing: xAI Imagine charges per generated image; LiteLLM stores this as input_cost_per_image.
@@ -97,13 +98,58 @@ function fromLite(v, provider) {
     ]) {
       const val = num(v[k + '_' + suffix]);
       if (val !== undefined) {
-        (tiers[d] ??= []).push({ start: start - 1, price: val * 1e6 });
+        (tiers[d] ??= []).push({ start: start - 1, price: mtok(val) });
       }
     }
   for (const [k, t] of Object.entries(tiers))
     if (prices[k] !== undefined)
       prices[k] = { base: prices[k], tiers: t.sort((a, b) => a.start - b.start) };
-  return { prices, extras };
+  const modes = {};
+  for (const [suffix, mode] of [
+    ['priority', 'priority'],
+    ['flex', 'flex'],
+    ['batches', 'batch'],
+  ]) {
+    const modePrices = {};
+    for (const [field, key] of Object.entries(direct)) {
+      put(
+        modePrices,
+        key,
+        num(v[`${field}_${suffix}`]) === undefined ? undefined : mtok(v[`${field}_${suffix}`]),
+      );
+      const tierValues = [];
+      for (const [tierSuffix, start] of [
+        ['above_128k_tokens', 128000],
+        ['above_200k_tokens', 200000],
+        ['above_272k_tokens', 272000],
+      ]) {
+        const value = num(v[`${field}_${tierSuffix}_${suffix}`]);
+        if (value !== undefined) tierValues.push({ start: start - 1, price: mtok(value) });
+      }
+      if (tierValues.length && modePrices[key] !== undefined)
+        modePrices[key] = { base: modePrices[key], tiers: tierValues };
+    }
+    if (Object.keys(modePrices).length) modes[mode] = { prices: modePrices };
+  }
+  const fastMultiplier = num(v.provider_specific_entry?.fast);
+  if (fastMultiplier !== undefined)
+    modes.fast = {
+      prices: Object.fromEntries(
+        Object.entries(prices).map(([key, value]) => [key, scalePrice(value, fastMultiplier)]),
+      ),
+    };
+  const region = {};
+  put(region, 'us', num(v.regional_processing_uplift_multiplier_us));
+  put(region, 'eu', num(v.regional_processing_uplift_multiplier_eu));
+  return { prices, extras, modes, region, capabilities: liteCapabilities(v) };
+}
+function scalePrice(value, factor) {
+  return typeof value === 'number'
+    ? value * factor
+    : {
+        base: value.base * factor,
+        tiers: value.tiers.map((t) => ({ ...t, price: t.price * factor })),
+      };
 }
 function fromModels(v, imageOutput = false) {
   const prices = {};
@@ -118,7 +164,108 @@ function fromModels(v, imageOutput = false) {
           t.tiers.push({ start: tier.tier.size - 1, price: tier[k] });
           prices[d] = t;
         }
-  return { prices, extras: {} };
+  const modes = {};
+  for (const [name, mode] of Object.entries(v.experimental?.modes ?? {})) {
+    if (!['fast', 'priority', 'flex', 'batch'].includes(name) || !mode.cost) continue;
+    modes[name] = {
+      prices: fromModels({ cost: mode.cost }, imageOutput).prices,
+      request: mode.provider ?? {},
+    };
+  }
+  return { prices, extras: {}, modes, region: {}, capabilities: modelsCapabilities(v) };
+}
+const modality = (x) =>
+  ({ file: 'pdf', images: 'image', vision: 'image' })[String(x).toLowerCase()] ??
+  String(x).toLowerCase();
+const modalities = (x) => (Array.isArray(x) ? [...new Set(x.map(modality))].sort() : []);
+function liteCapabilities(v) {
+  const flags = ['none', 'low', 'medium', 'high', 'xhigh', 'max'];
+  let efforts = Array.isArray(v.reasoning_effort_levels) ? v.reasoning_effort_levels : null;
+  if (!efforts) {
+    const declared = flags.filter((level) => v[`supports_${level}_reasoning_effort`] === true);
+    if (v.supports_minimal_reasoning_effort === true) declared.push('minimal');
+    efforts = declared.length ? declared : null;
+  }
+  return {
+    reasoning: v.supports_reasoning,
+    reasoning_efforts: efforts,
+    default_reasoning_effort: v.default_reasoning_effort,
+    tool_call: v.supports_function_calling,
+    parallel_tool_calls: v.supports_parallel_function_calling,
+    structured_output: v.supports_response_schema,
+    web_search: v.supports_web_search,
+    input_modalities: modalities(v.supported_modalities),
+    output_modalities: modalities(v.supported_output_modalities),
+    temperature: v.supports_sampling_params,
+    prompt_caching: v.supports_prompt_caching,
+    computer_use: v.supports_computer_use,
+    context_window: v.max_input_tokens,
+    max_input_tokens: v.max_input_tokens,
+    max_output_tokens: v.max_output_tokens,
+    knowledge_cutoff: v.knowledge_cutoff,
+    release_date: v.release_date,
+    endpoints: v.supported_endpoints,
+  };
+}
+function modelsCapabilities(v) {
+  return {
+    reasoning: v.reasoning,
+    reasoning_efforts: v.reasoning_options?.find((x) => x.type === 'effort')?.values,
+    default_reasoning_effort: v.default_reasoning_effort,
+    tool_call: v.tool_call,
+    parallel_tool_calls: v.parallel_tool_calls,
+    structured_output: v.structured_output,
+    web_search: v.web_search,
+    input_modalities: modalities(v.modalities?.input),
+    output_modalities: modalities(v.modalities?.output),
+    temperature: v.temperature,
+    prompt_caching: v.prompt_caching,
+    computer_use: v.computer_use,
+    context_window: v.limit?.context,
+    max_input_tokens: v.limit?.input,
+    max_output_tokens: v.limit?.output,
+    knowledge_cutoff: v.knowledge,
+    release_date: v.release_date,
+    endpoints: v.endpoints,
+  };
+}
+function mergeCapabilities(old, incoming, source, conflicts, provider, model) {
+  const values = old?.values ?? {},
+    sources = old?.sources ?? {};
+  for (const [field, candidate] of Object.entries(incoming)) {
+    if (
+      candidate === undefined ||
+      candidate === null ||
+      (Array.isArray(candidate) && !candidate.length)
+    )
+      continue;
+    const prior = values[field];
+    if (prior === undefined || prior === null || (Array.isArray(prior) && !prior.length)) {
+      values[field] = candidate;
+      sources[field] = source;
+      continue;
+    }
+    const different = JSON.stringify(prior) !== JSON.stringify(candidate);
+    if (different)
+      conflicts.push({
+        provider,
+        model,
+        field,
+        previous: prior,
+        incoming: candidate,
+        source_a: sources[field],
+        source_b: source,
+      });
+    if (Array.isArray(prior) && field.includes('modalities'))
+      values[field] = [...new Set([...prior, ...candidate])].sort();
+    else if (field === 'reasoning_efforts')
+      values[field] = source === 'models_dev' ? candidate : prior;
+    else if (typeof prior === 'boolean') values[field] = prior || candidate;
+    else if (typeof prior === 'number') values[field] = Math.min(prior, candidate);
+    else if (source === 'models_dev') values[field] = candidate;
+    sources[field] = different ? 'both' : sources[field] === source ? source : 'both';
+  }
+  return { values, sources };
 }
 function base(v) {
   return typeof v === 'number' ? v : v?.base;
@@ -190,6 +337,7 @@ function completeSdkPriceKeys(model, providerMetadata) {
 export function mergeSources(lite, models, gp) {
   const map = new Map(),
     conflicts = [],
+    capability_conflicts = [],
     imageModels = new Set(),
     skipped = [];
   function add(p, id, v, source, sourceId = id) {
@@ -280,6 +428,39 @@ export function mergeSources(lite, models, gp) {
       }
     }
     if (Object.keys(v.extras).length) mergeExtra((old.x_extra_prices ??= {}), v.extras, '');
+    for (const [mode, entry] of Object.entries(v.modes ?? {})) {
+      const target = ((old.x_modes ??= {})[mode] ??= { prices: {} });
+      for (const [field, value] of Object.entries(entry.prices)) {
+        target.prices[field] = mergePrice(
+          target.prices[field],
+          value,
+          { provider: p, model: id, field: `x_modes.${mode}.${field}` },
+          conflicts,
+        );
+      }
+      if (entry.request) target.request = entry.request;
+    }
+    for (const [region, factor] of Object.entries(v.region ?? {})) {
+      const prior = (old.x_region_uplift ??= {})[region];
+      if (prior !== undefined && prior !== factor)
+        conflicts.push({
+          provider: p,
+          model: id,
+          field: `x_region_uplift.${region}`,
+          prior,
+          candidate: factor,
+          adopted: Math.max(prior, factor),
+        });
+      old.x_region_uplift[region] = Math.max(prior ?? 0, factor);
+    }
+    old._cap = mergeCapabilities(
+      old._cap,
+      v.capabilities ?? {},
+      source,
+      capability_conflicts,
+      p,
+      id,
+    );
     map.set(key, old);
   }
   const sizedImages = [];
@@ -361,6 +542,40 @@ export function mergeSources(lite, models, gp) {
       const dev = models[id === 'x-ai' ? 'xai' : id]?.models?.[m.id];
       if (dev?.name) m.name = dev.name;
       if (dev?.limit?.context) m.context_window = dev.limit.context;
+      const cap = m._cap ?? { values: {}, sources: {} };
+      m.x_capabilities = {
+        ...Object.fromEntries(
+          [
+            'reasoning',
+            'reasoning_efforts',
+            'default_reasoning_effort',
+            'tool_call',
+            'parallel_tool_calls',
+            'structured_output',
+            'web_search',
+            'input_modalities',
+            'output_modalities',
+            'temperature',
+            'prompt_caching',
+            'computer_use',
+            'context_window',
+            'max_input_tokens',
+            'max_output_tokens',
+            'knowledge_cutoff',
+            'release_date',
+            'endpoints',
+          ].map((field) => [
+            field,
+            cap.values[field] ??
+              (field.endsWith('modalities')
+                ? []
+                : ['reasoning', 'tool_call', 'structured_output'].includes(field)
+                  ? false
+                  : null),
+          ]),
+        ),
+        sources: cap.sources,
+      };
       try {
         completeSdkPriceKeys(m, rest);
       } catch (error) {
@@ -370,6 +585,7 @@ export function mergeSources(lite, models, gp) {
       }
       delete m.x_lite_sources;
       delete m.x_lite_extra_sources;
+      delete m._cap;
       const exactChildren = ms
         .filter(
           (x) =>
@@ -390,7 +606,8 @@ export function mergeSources(lite, models, gp) {
     return { ...rest, extractors: makeExtractors(id, upstream ?? []), models: valid };
   });
   conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  return { providers, conflicts, skipped };
+  capability_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
+  return { providers, conflicts, capability_conflicts, skipped };
 }
 function makeExtractors(id, existing) {
   const e = clean(existing);
@@ -474,6 +691,7 @@ export function stableContent(doc) {
   return JSON.stringify({
     providers: doc.providers,
     conflicts: doc.conflicts,
+    capability_conflicts: doc.capability_conflicts,
     skipped: doc.skipped,
   });
 }

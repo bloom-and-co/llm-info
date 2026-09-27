@@ -4,16 +4,16 @@ from decimal import Decimal
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from llm_prices import LlmPrices, MemoryStore, FileStore, PricesNotLoadedError
-from llm_prices._sdk import snapshot_from_data
+from llm_info import LlmInfo, MemoryStore, FileStore, PricesNotLoadedError
+from llm_info._sdk import snapshot_from_data
 
 DATA = json.loads(
-    (Path(__file__).resolve().parents[2] / "data/prices.json").read_text()
+    (Path(__file__).resolve().parents[2] / "data/llm-info.json").read_text()
 )
 
 
 def make(fetch=None, store=None, **kwargs):
-    return LlmPrices(
+    return LlmInfo(
         store=store or MemoryStore(),
         fetch=fetch or (lambda u, e: (200, "tag", DATA)),
         **kwargs,
@@ -54,6 +54,41 @@ def test_load_and_four_providers():
     )
     assert p.calc("openai", "unknown", {"input_tokens": 1}) is None
     assert p.calc("openai", "text-davinci-003", {"input_tokens": 1}) is None
+
+
+def test_capabilities_modes_and_region():
+    p = make()
+    p.load()
+    assert p.capabilities("openai", "gpt-6-luna-2026-09-22")["reasoning_efforts"] == [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max",
+    ]
+    assert p.capabilities("google", "gemini-3.8-flash")["reasoning_efforts"] == [
+        "low",
+        "medium",
+        "high",
+    ]
+    assert p.capabilities("x-ai", "grok-4.7")["web_search"] is True
+    assert p.capabilities("anthropic", "claude-opus-5-5")["temperature"] is False
+    assert any(row["id"] == "gpt-6-luna" for row in p.models("openai"))
+    assert p.capabilities("openai", "unknown") is None
+    usage = {"input_tokens": 1000, "output_tokens": 1000}
+    assert p.calc("anthropic", "claude-opus-5-5", usage, mode="fast")[
+        "total_usd"
+    ] == Decimal("0.048")
+    assert p.from_response(
+        "openai", {"model": "gpt-6-luna", "service_tier": "priority", "usage": usage}
+    )["total_usd"] == Decimal("0.0012")
+    assert p.calc("openai", "gpt-6-luna", usage, region="us")["total_usd"] == Decimal(
+        "0.00066"
+    )
+    missing = p.calc("x-ai", "grok-4.7", usage, mode="fast")
+    assert "missing_price:mode:fast" in missing["warnings"]
+    assert missing["total_usd"] >= Decimal("0.008")
 
 
 def test_fallback_304_and_failure():
@@ -114,11 +149,11 @@ def test_stale_background_refresh():
 
 def test_stores(tmp_path):
     d = {"cache_schema": 1, "data": DATA}
-    s = FileStore(tmp_path / "prices.json")
+    s = FileStore(tmp_path / "llm-info.json")
     s.write(d)
     s.write({**d, "data": {**DATA, "generated_at": "2000-01-01T00:00:00Z"}})
     assert s.read()["data"]["version"] == DATA["version"]
-    assert [x.name for x in tmp_path.iterdir()] == ["prices.json"]
+    assert [x.name for x in tmp_path.iterdir()] == ["llm-info.json"]
     m = MemoryStore(d)
     m.write({**d, "data": {**DATA, "generated_at": "2000-01-01T00:00:00Z"}})
     assert m.read()["data"]["version"] == DATA["version"]

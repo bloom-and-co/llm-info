@@ -11,10 +11,10 @@ from urllib.error import HTTPError
 from ._sdk import snapshot_from_data, Usage
 
 DEFAULT_URL = (
-    "https://raw.githubusercontent.com/bloom-and-co/llm-prices/main/data/prices.json"
+    "https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json"
 )
 FALLBACK_URL = (
-    "https://cdn.jsdelivr.net/gh/bloom-and-co/llm-prices@main/data/prices.json"
+    "https://cdn.jsdelivr.net/gh/bloom-and-co/llm-info@main/data/llm-info.json"
 )
 
 
@@ -67,10 +67,10 @@ class FileStore:
     def __init__(self, path=None):
         self.path = Path(
             path
-            or os.environ.get("LLM_PRICES_CACHE")
+            or os.environ.get("LLM_INFO_CACHE")
             or Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
-            / "llm-prices"
-            / "prices.json"
+            / "llm-info"
+            / "llm-info.json"
         )
 
     def read(self):
@@ -156,7 +156,7 @@ def _video_seconds(response, request, model):
     return duration * count
 
 
-class LlmPrices:
+class LlmInfo:
     def __init__(
         self,
         url=DEFAULT_URL,
@@ -322,7 +322,29 @@ class LlmPrices:
                 return {"status": "error", "info": self.info()}
             raise RuntimeError("Unable to load prices: " + error)
 
-    def calc(self, provider, model, usage, at=None, options=None):
+    def capabilities(self, provider, model):
+        if not self.doc:
+            raise PricesNotLoadedError("Prices are not loaded; call load() first")
+        p = next(
+            (p for p in self.doc["data"]["providers"] if p["id"] == provider), None
+        )
+        m = _match(p, model) if p else None
+        return m.get("x_capabilities") if m else None
+
+    def models(self, provider=None):
+        if not self.doc:
+            raise PricesNotLoadedError("Prices are not loaded; call load() first")
+        return [
+            {"provider": p["id"], "id": m["id"], "capabilities": m["x_capabilities"]}
+            for p in self.doc["data"]["providers"]
+            if provider is None or p["id"] == provider
+            for m in p["models"]
+            if "x_capabilities" in m
+        ]
+
+    def calc(
+        self, provider, model, usage, at=None, options=None, mode=None, region=None
+    ):
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
         p = next(
@@ -331,6 +353,34 @@ class LlmPrices:
         m = _match(p, model) if p else None
         if not m:
             return None
+        options = options or {}
+        selected_mode = mode or options.get("mode") or "standard"
+        modes = m.get("x_modes", {})
+        prices = dict(m["prices"])
+        warnings = []
+        if selected_mode != "standard":
+            selected = modes.get(selected_mode, {}).get("prices", {})
+            if selected:
+                prices.update(selected)
+            else:
+                warnings.append("missing_price:mode:" + selected_mode)
+
+                def base(price):
+                    return (
+                        price
+                        if isinstance(price, (int, float))
+                        else max(
+                            [price["base"]] + [tier["price"] for tier in price["tiers"]]
+                        )
+                    )
+
+                for entry in modes.values():
+                    for key, value in entry.get("prices", {}).items():
+                        prices[key] = (
+                            max(base(value), base(prices[key]))
+                            if key in prices
+                            else base(value)
+                        )
         clean = {
             k: v
             for k, v in usage.items()
@@ -340,7 +390,16 @@ class LlmPrices:
         try:
             # Restrict SDK matching to the selected row; alias regexes can precede dated IDs.
             selected = snapshot_from_data(
-                {"providers": [{**p, "models": [{**m, "match": {"equals": m["id"]}}]}]}
+                {
+                    "providers": [
+                        {
+                            **p,
+                            "models": [
+                                {**m, "prices": prices, "match": {"equals": m["id"]}}
+                            ],
+                        }
+                    ]
+                }
             )
             for _ in range(16):
                 try:
@@ -359,8 +418,6 @@ class LlmPrices:
             return None
         d = Decimal
         extra = d(0)
-        warnings = []
-        options = options or {}
         x = m.get("x_extra_prices", {})
         if self.info()["stale"]:
             warnings.append("stale_data")
@@ -413,13 +470,17 @@ class LlmPrices:
             "output_video_seconds"
         ):
             warnings.append("missing_param:duration")
-        if options.get("service_tier") not in (None, "default"):
-            warnings.append("service_tier_ignored")
+        uplift = (
+            m.get("x_region_uplift", {}).get(region, 1)
+            if region not in (None, "global")
+            else 1
+        )
+        multiplier = d(str(uplift))
         return {
-            "total_usd": result.total_price + extra,
-            "input_usd": result.input_price,
-            "output_usd": result.output_price,
-            "extra_usd": extra,
+            "total_usd": (result.total_price + extra) * multiplier,
+            "input_usd": result.input_price * multiplier,
+            "output_usd": result.output_price * multiplier,
+            "extra_usd": extra * multiplier,
             "provider": provider,
             "model": m["id"],
             "requested_model": model,
@@ -568,10 +629,31 @@ class LlmPrices:
             )
         return {"model": model, "usage": out}
 
-    def from_response(self, provider, response, request=None, api_flavor=None, at=None):
+    def from_response(
+        self,
+        provider,
+        response,
+        request=None,
+        api_flavor=None,
+        at=None,
+        mode=None,
+        region=None,
+    ):
         extracted = self.extract_usage(provider, response, request, api_flavor)
         if not extracted["model"]:
             return None
+        # https://platform.openai.com/docs/api-reference/responses: service_tier is the actual tier.
+        # https://platform.claude.com/docs/en/build-with-claude/fast-mode: usage.speed marks fast processing.
+        inferred_mode = (
+            response.get("service_tier")
+            if response.get("service_tier") in ("priority", "flex")
+            else (
+                "fast"
+                if response.get("speed") == "fast"
+                or (response.get("usage") or {}).get("speed") == "fast"
+                else None
+            )
+        )
         return self.calc(
             provider,
             extracted["model"],
@@ -582,4 +664,6 @@ class LlmPrices:
                 **response,
                 "service_tier": response.get("service_tier"),
             },
+            mode=mode or inferred_mode,
+            region=region,
         )

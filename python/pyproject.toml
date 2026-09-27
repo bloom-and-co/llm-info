@@ -2,12 +2,12 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
-name = "bloom-llm-prices"
+name = "bloom-llm-info"
 version = "0.1.0"
 description = "Local cached LLM prices from LiteLLM and models.dev"
 requires-python = ">=3.10"
 dependencies = ["genai-prices==0.1.9"]
 [tool.hatch.build.targets.wheel]
-packages = ["llm_prices"]
+packages = ["llm_info"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]

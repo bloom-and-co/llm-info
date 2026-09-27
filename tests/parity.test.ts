@@ -1,11 +1,11 @@
 import { it, expect, vi } from 'vitest';
 import { readFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
-import { createLlmPrices, memoryStore } from '../src/index.ts';
+import { createLlmInfo, memoryStore } from '../src/index.ts';
 
 it('matches Python totals and warnings for every fixture', async () => {
   vi.resetModules();
-  const data = JSON.parse(await readFile('data/prices.json', 'utf8'));
+  const data = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
   const fixtures = JSON.parse(await readFile('tests/fixtures/responses.json', 'utf8'));
   fixtures.push(
     {
@@ -31,7 +31,7 @@ it('matches Python totals and warnings for every fixture', async () => {
       request: { model: 'imagen-3.0-fast-generate-001' },
     },
   );
-  const p = createLlmPrices({
+  const p = createLlmInfo({
     store: memoryStore(),
     fetch: async () => new Response(JSON.stringify(data)),
   });

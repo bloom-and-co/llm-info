@@ -21,6 +21,52 @@ it('adopts higher price and records conflicts', () => {
   expect(m.prices.output_mtok).toBe(3);
   expect(d.conflicts).toHaveLength(2);
 });
+it('merges capability limits and alternative prices from both sources', () => {
+  const lite = {
+    'gpt-6-luna': {
+      litellm_provider: 'openai',
+      input_cost_per_token: 1e-7,
+      input_cost_per_token_priority: 2e-7,
+      regional_processing_uplift_multiplier_us: 1.1,
+      supports_reasoning: true,
+      supports_none_reasoning_effort: true,
+      supports_web_search: true,
+      max_input_tokens: 900000,
+      supported_modalities: ['text', 'image'],
+    },
+  };
+  const models = {
+    openai: {
+      models: {
+        'gpt-6-luna': {
+          reasoning: true,
+          reasoning_options: [{ type: 'effort', values: ['none', 'low', 'medium', 'high'] }],
+          limit: { input: 922000 },
+          modalities: { input: ['text', 'pdf'], output: ['text'] },
+          cost: { input: 0.1, output: 0.5 },
+          experimental: {
+            modes: {
+              fast: {
+                cost: { input: 0.2, output: 1 },
+                provider: { body: { service_tier: 'priority' } },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+  const d = mergeSources(lite, models, gp);
+  const m = d.providers[0].models.find((x: any) => x.id === 'gpt-6-luna')!;
+  expect(m.x_capabilities.reasoning_efforts).toEqual(['none', 'low', 'medium', 'high']);
+  expect(m.x_capabilities.max_input_tokens).toBe(900000);
+  expect(m.x_capabilities.input_modalities).toEqual(['image', 'pdf', 'text']);
+  expect(m.x_capabilities.web_search).toBe(true);
+  expect(m.x_modes.fast.prices.output_mtok).toBe(1);
+  expect(m.x_modes.priority.prices.input_mtok).toBeCloseTo(0.2);
+  expect(m.x_region_uplift.us).toBe(1.1);
+  expect(d.capability_conflicts.some((x: any) => x.field === 'max_input_tokens')).toBe(true);
+});
 it('maps context tiers with greater-than boundary', () => {
   const d = mergeSources(
     {},
@@ -42,7 +88,7 @@ it('maps context tiers with greater-than boundary', () => {
   expect((d.providers[0].models[0].prices.input_mtok as any).tiers[0].start).toBe(271999);
 });
 it('output version remains stable and validation catches bad prices and drops', async () => {
-  const d = JSON.parse(await readFile('data/prices.json', 'utf8'));
+  const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
   expect(finalize(d, d)).toBe(d);
   const bad = structuredClone(d);
   bad.providers[0].models[0].prices.input_mtok = -1;
@@ -273,7 +319,7 @@ it('takes the higher duplicate per-image price and records its source', () => {
 });
 
 it('never matches a published request ID to differently priced rows', async () => {
-  const d = JSON.parse(await readFile('data/prices.json', 'utf8'));
+  const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
   for (const p of d.providers) {
     const ids = p.models.flatMap((m) => [m.id, `${m.id}-20260927`]);
     for (const id of ids) {

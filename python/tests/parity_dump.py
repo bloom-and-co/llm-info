@@ -4,10 +4,10 @@ from decimal import Decimal
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from llm_prices import LlmPrices, MemoryStore
+from llm_info import LlmInfo, MemoryStore
 
 root = Path(__file__).resolve().parents[2]
-data = json.loads((root / "data/prices.json").read_text())
+data = json.loads((root / "data/llm-info.json").read_text())
 fixtures = json.loads((root / "tests/fixtures/responses.json").read_text())
 fixtures += [
     {
@@ -37,7 +37,7 @@ fixtures += [
         "request": {"model": "imagen-3.0-fast-generate-001"},
     },
 ]
-p = LlmPrices(store=MemoryStore(), fetch=lambda u, e: (200, None, data))
+p = LlmInfo(store=MemoryStore(), fetch=lambda u, e: (200, None, data))
 p.load()
 out = []
 for f in fixtures:

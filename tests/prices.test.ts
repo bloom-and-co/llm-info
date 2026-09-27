@@ -3,7 +3,7 @@ import { extractUsage as sdkExtract } from '@pydantic/genai-prices';
 import { readFile, mkdtemp, rm, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-const data = JSON.parse(await readFile('data/prices.json', 'utf8'));
+const data = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
 let api: any;
 beforeEach(async () => {
   vi.resetModules();
@@ -12,7 +12,7 @@ beforeEach(async () => {
 const response = (body: any = data, status = 200, etag = 'x') =>
   new Response(status === 304 ? null : JSON.stringify(body), { status, headers: { etag } });
 const client = (fetcher: any = async () => response(), store?: any, extra: any = {}) =>
-  api.createLlmPrices({ store: store ?? api.memoryStore(), fetch: fetcher, ...extra });
+  api.createLlmInfo({ store: store ?? api.memoryStore(), fetch: fetcher, ...extra });
 it('requires load and enforces singleton', () => {
   const p = client();
   expect(() =>
@@ -32,6 +32,46 @@ it('loads empty store and calculates all four providers', async () => {
     expect(
       p.calc({ provider, model, usage: { input_tokens: 1000, output_tokens: 1000 } })?.totalUsd,
     ).toBeCloseTo(expected, 8);
+});
+it('lists merged capabilities with dated model matching', async () => {
+  const p = client();
+  await p.load();
+  expect(
+    p.capabilities({ provider: 'openai', model: 'gpt-6-luna-2026-09-22' }).reasoning_efforts,
+  ).toEqual(['none', 'low', 'medium', 'high', 'xhigh', 'max']);
+  expect(
+    p.capabilities({ provider: 'google', model: 'gemini-3.8-flash' }).reasoning_efforts,
+  ).toEqual(['low', 'medium', 'high']);
+  expect(p.capabilities({ provider: 'x-ai', model: 'grok-4.7' }).web_search).toBe(true);
+  expect(p.capabilities({ provider: 'anthropic', model: 'claude-opus-5-5' }).temperature).toBe(
+    false,
+  );
+  expect(p.models({ provider: 'openai' }).some((x: any) => x.id === 'gpt-6-luna')).toBe(true);
+  expect(p.capabilities({ provider: 'openai', model: 'unknown' })).toBeNull();
+});
+it('prices fast, inferred priority, regional uplift and missing modes', async () => {
+  const p = client();
+  await p.load();
+  const usage = { input_tokens: 1000, output_tokens: 1000 };
+  expect(
+    p.calc({ provider: 'anthropic', model: 'claude-opus-5-5', usage, mode: 'fast' })?.totalUsd,
+  ).toBeCloseTo(0.048, 8);
+  expect(
+    p.fromResponse({
+      provider: 'openai',
+      response: {
+        model: 'gpt-6-luna',
+        service_tier: 'priority',
+        usage: { input_tokens: 1000, output_tokens: 1000 },
+      },
+    })?.totalUsd,
+  ).toBeCloseTo(0.0012, 8);
+  expect(
+    p.calc({ provider: 'openai', model: 'gpt-6-luna', usage, region: 'us' })?.totalUsd,
+  ).toBeCloseTo(0.00066, 8);
+  const missing = p.calc({ provider: 'x-ai', model: 'grok-4.7', usage, mode: 'fast' });
+  expect(missing?.warnings).toContain('missing_price:mode:fast');
+  expect(missing!.totalUsd).toBeGreaterThanOrEqual(0.008);
 });
 it('matches dated snapshots and separates gpt-6 from luna', async () => {
   const p = client();

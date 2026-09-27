@@ -3,8 +3,8 @@ import { dirname, join } from 'node:path';
 import { homedir, tmpdir } from 'node:os';
 import type { CacheDoc, PriceStore } from './index.js';
 export function fileStore(
-  path = process.env.LLM_PRICES_CACHE ??
-    join(process.env.XDG_CACHE_HOME ?? join(homedir(), '.cache'), 'llm-prices', 'prices.json'),
+  path = process.env.LLM_INFO_CACHE ??
+    join(process.env.XDG_CACHE_HOME ?? join(homedir(), '.cache'), 'llm-info', 'llm-info.json'),
 ): PriceStore {
   return {
     async read() {

@@ -1,8 +1,8 @@
 import { calcPrice, type Provider } from '@pydantic/genai-prices';
 export const DEFAULT_URL =
-  'https://raw.githubusercontent.com/bloom-and-co/llm-prices/main/data/prices.json';
+  'https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json';
 export const FALLBACK_URL =
-  'https://cdn.jsdelivr.net/gh/bloom-and-co/llm-prices@main/data/prices.json';
+  'https://cdn.jsdelivr.net/gh/bloom-and-co/llm-info@main/data/llm-info.json';
 export class PricesNotLoadedError extends Error {
   constructor() {
     super('Prices are not loaded; await load() first');
@@ -16,6 +16,7 @@ export type PriceData = {
   providers: Provider[];
   conflicts?: unknown[];
   skipped?: unknown[];
+  capability_conflicts?: unknown[];
 };
 export type CacheDoc = {
   cache_schema: 1;
@@ -152,8 +153,8 @@ function videoSeconds(r: any, request: any, model: string | null) {
     1;
   return duration * count;
 }
-export function createLlmPrices(options: Options = {}) {
-  if (created) throw Error('Only one createLlmPrices instance is allowed per process');
+export function createLlmInfo(options: Options = {}) {
+  if (created) throw Error('Only one createLlmInfo instance is allowed per process');
   created = true;
   const url = options.url ?? DEFAULT_URL,
     urls = [url, ...(options.fallbackUrls ?? [FALLBACK_URL])],
@@ -277,18 +278,35 @@ export function createLlmPrices(options: Options = {}) {
       lastError: doc?.last_error ?? null,
     };
   }
+  function capabilities({ provider, model }: { provider: string; model: string }) {
+    const p = current().data.providers.find((x) => x.id === provider);
+    return (p && (matchModel(p, model) as any))?.x_capabilities ?? null;
+  }
+  function models({ provider }: { provider?: string } = {}) {
+    return current()
+      .data.providers.filter((p) => !provider || p.id === provider)
+      .flatMap((p) =>
+        (p.models as any[])
+          .filter((m) => m.x_capabilities)
+          .map((m) => ({ provider: p.id, id: m.id, capabilities: m.x_capabilities })),
+      );
+  }
   function calc({
     provider,
     model,
     usage,
     at,
     options: opts = {},
+    mode,
+    region,
   }: {
     provider: string;
     model: string;
     usage: Record<string, number>;
     at?: Date;
     options?: Record<string, any>;
+    mode?: 'standard' | 'fast' | 'priority' | 'flex' | 'batch';
+    region?: 'us' | 'eu' | 'global';
   }): Cost | null {
     const d = current().data,
       p = d.providers.find((x) => x.id === provider),
@@ -298,11 +316,35 @@ export function createLlmPrices(options: Options = {}) {
     delete clean.output_images;
     delete clean.output_video_seconds;
     delete clean.web_searches;
+    const warnings: string[] = [];
+    const selectedMode = mode ?? opts.mode ?? 'standard';
+    const modes = (m as any).x_modes ?? {};
+    let prices = m.prices;
+    if (selectedMode !== 'standard') {
+      const selected = modes[selectedMode]?.prices;
+      if (selected && Object.keys(selected).length) prices = { ...prices, ...selected };
+      else {
+        warnings.push(`missing_price:mode:${selectedMode}`);
+        const max = (a: any, b: any): any => {
+          if (a === undefined) return b;
+          if (b === undefined) return a;
+          return Math.max(
+            ...[a, b].flatMap((v) =>
+              typeof v === 'number' ? [v] : [v.base, ...v.tiers.map((t: any) => t.price)],
+            ),
+          );
+        };
+        prices = { ...prices };
+        for (const entry of Object.values(modes) as any[])
+          for (const [key, value] of Object.entries(entry.prices ?? {}))
+            (prices as any)[key] = max((prices as any)[key], value);
+      }
+    }
     let result;
     for (let attempt = 0; attempt < 16; attempt++) {
       try {
         result = calcPrice(clean, m.id, {
-          provider: { ...p, models: [{ ...m, match: { equals: m.id } }] },
+          provider: { ...p, models: [{ ...m, prices, match: { equals: m.id } }] },
           timestamp: at,
         });
         break;
@@ -313,7 +355,6 @@ export function createLlmPrices(options: Options = {}) {
       }
     }
     if (!result) return null;
-    const warnings: string[] = [];
     if (stale()) warnings.push('stale_data');
     let extra = 0;
     const x = (m as any).x_extra_prices ?? {};
@@ -328,12 +369,12 @@ export function createLlmPrices(options: Options = {}) {
     }
     if (x.per_video_second !== undefined && !usage.output_video_seconds)
       warnings.push('missing_param:duration');
-    if (opts.service_tier && opts.service_tier !== 'default') warnings.push('service_tier_ignored');
+    const uplift = region && region !== 'global' ? ((m as any).x_region_uplift?.[region] ?? 1) : 1;
     return {
-      totalUsd: result.total_price + extra,
-      inputUsd: result.input_price,
-      outputUsd: result.output_price,
-      extraUsd: extra,
+      totalUsd: (result.total_price + extra) * uplift,
+      inputUsd: result.input_price * uplift,
+      outputUsd: result.output_price * uplift,
+      extraUsd: extra * uplift,
       provider,
       model: m.id,
       requestedModel: model,
@@ -430,13 +471,23 @@ export function createLlmPrices(options: Options = {}) {
   function fromResponse(args: any) {
     const { model, usage } = extractUsage(args);
     if (!model) return null;
+    // https://platform.openai.com/docs/api-reference/responses: service_tier reports the tier actually used.
+    // https://platform.claude.com/docs/en/build-with-claude/fast-mode: usage.speed reports fast processing.
+    const inferredMode =
+      args.response?.service_tier === 'priority' || args.response?.service_tier === 'flex'
+        ? args.response.service_tier
+        : args.response?.usage?.speed === 'fast' || args.response?.speed === 'fast'
+          ? 'fast'
+          : undefined;
     return calc({
       provider: args.provider,
       model,
       usage,
       at: args.at,
+      mode: args.mode ?? inferredMode,
+      region: args.region,
       options: { ...args.request, ...args.response, service_tier: args.response?.service_tier },
     });
   }
-  return { load, refresh, info, calc, extractUsage, fromResponse };
+  return { load, refresh, info, capabilities, models, calc, extractUsage, fromResponse };
 }

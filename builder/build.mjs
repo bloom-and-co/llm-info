@@ -19,7 +19,7 @@ async function get(url) {
 }
 const [l, m, g] = await Promise.all(Object.values(URLs).map(get));
 const previous = await fs
-  .readFile('data/prices.json', 'utf8')
+  .readFile('data/llm-info.json', 'utf8')
   .then(JSON.parse)
   .catch(() => null);
 const doc = {
@@ -48,7 +48,7 @@ try {
   await fs.unlink(tmp);
 }
 const out = finalize(doc, previous);
-if (out !== previous) await fs.writeFile('data/prices.json', JSON.stringify(out, null, 2) + '\n');
+if (out !== previous) await fs.writeFile('data/llm-info.json', JSON.stringify(out, null, 2) + '\n');
 console.log(
   `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${doc.providers.map((p) => p.id + '=' + p.models.length).join(' ')}; conflicts=${doc.conflicts.length}; skipped=${doc.skipped.length}`,
 );
