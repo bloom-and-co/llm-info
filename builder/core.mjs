@@ -221,6 +221,26 @@ export function mergeSources(lite, models, gp) {
             candidate,
             adopted: Math.max(prior, candidate),
           });
+        const priorTiers = typeof old.prices[field] === 'number' ? [] : old.prices[field].tiers;
+        const nextTiers = typeof val === 'number' ? [] : val.tiers;
+        for (const next of nextTiers) {
+          const existing = priorTiers.find((tier) => tier.start === next.start);
+          if (
+            existing &&
+            Math.abs(existing.price - next.price) / Math.max(existing.price, next.price, 1e-12) >=
+              0.005
+          )
+            conflicts.push({
+              provider: p,
+              model: id,
+              field: `${field}@${next.start + 1}`,
+              source_a: old.x_lite_sources?.[field],
+              source_b: 'litellm:' + sourceId,
+              prior: existing.price,
+              candidate: next.price,
+              adopted: Math.max(existing.price, next.price),
+            });
+        }
         old.prices[field] = mergePrice(
           old.prices[field],
           val,
@@ -234,8 +254,13 @@ export function mergeSources(lite, models, gp) {
       for (const [name, value] of Object.entries(incoming)) {
         const path = prefix ? `${prefix}.${name}` : name;
         const prior = target[name];
-        if (prior === undefined) target[name] = value;
-        else if (typeof prior === 'number' && typeof value === 'number') {
+        if (prior === undefined) {
+          target[name] = value;
+          if (value && typeof value === 'object' && source === 'litellm') {
+            for (const nested of Object.keys(value))
+              (old.x_lite_extra_sources ??= {})[`${path}.${nested}`] = 'litellm:' + sourceId;
+          }
+        } else if (typeof prior === 'number' && typeof value === 'number') {
           if (Math.abs(prior - value) / Math.max(prior, value, 1e-12) >= 0.005)
             conflicts.push({
               provider: p,

@@ -327,3 +327,30 @@ it('interprets xAI image-only flat prices as generated-image charges', () => {
   expect(m.x_extra_prices.per_image).toBe(0.02);
   expect(m.x_extra_prices.input_per_image).toBeUndefined();
 });
+
+it('records duplicate LiteLLM tier conflicts with source IDs', () => {
+  const d = mergeSources(
+    {
+      'gemini/gemini-tier': {
+        litellm_provider: 'gemini',
+        input_cost_per_token: 1e-6,
+        input_cost_per_token_above_128k_tokens: 2e-6,
+      },
+      'gemini-tier': {
+        litellm_provider: 'gemini',
+        input_cost_per_token: 1e-6,
+        input_cost_per_token_above_128k_tokens: 3e-6,
+      },
+    },
+    {},
+    gp,
+  );
+  expect(d.conflicts).toContainEqual(
+    expect.objectContaining({
+      field: 'input_mtok@128000',
+      adopted: 3,
+      source_a: 'litellm:gemini-tier',
+      source_b: 'litellm:gemini/gemini-tier',
+    }),
+  );
+});
