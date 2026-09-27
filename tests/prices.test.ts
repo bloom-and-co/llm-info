@@ -1,5 +1,4 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { extractUsage as sdkExtract } from '@pydantic/genai-prices';
 import { readFile, mkdtemp, rm, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -13,12 +12,12 @@ const response = (body: any = data, status = 200, etag = 'x') =>
   new Response(status === 304 ? null : JSON.stringify(body), { status, headers: { etag } });
 const client = (fetcher: any = async () => response(), store?: any, extra: any = {}) =>
   api.createLlmInfo({ store: store ?? api.memoryStore(), fetch: fetcher, ...extra });
-it('requires load and enforces singleton', () => {
+it('requires load and permits independent instances', () => {
   const p = client();
   expect(() =>
     p.calc({ provider: 'openai', model: 'gpt-6-luna', usage: { input_tokens: 1 } }),
   ).toThrow('not loaded');
-  expect(() => client()).toThrow('Only one');
+  expect(() => client()).not.toThrow();
 });
 it('loads empty store and calculates all four providers', async () => {
   const p = client();
@@ -244,8 +243,9 @@ it('uses size and resolution variants', async () => {
   expect(video.extraUsd).toBeCloseTo(0.16, 8);
 });
 
-it('SDK extractor counts Google image tokens once', () => {
-  const provider = data.providers.find((p: any) => p.id === 'google');
+it('extractor counts Google image tokens once', async () => {
+  const p = client();
+  await p.load();
   const fixture = {
     modelVersion: 'gemini-3.1-flash-image',
     usageMetadata: {
@@ -254,7 +254,7 @@ it('SDK extractor counts Google image tokens once', () => {
       candidatesTokensDetails: [{ modality: 'IMAGE', tokenCount: 50 }],
     },
   };
-  expect(sdkExtract(provider, fixture).usage.output_image_tokens).toBe(50);
+  expect(p.extractUsage({provider: 'google', response: fixture}).usage.output_image_tokens).toBe(50);
 });
 
 it('prices Gemini text and image output tokens at separate rates', async () => {
@@ -462,4 +462,14 @@ it('counts Veo SDK and Vertex video response shapes', async () => {
   expect(p.fromResponse({ provider: 'google', response: {}, request })?.extraUsd).toBe(4);
   expect(p.fromResponse({ provider: 'google', response: { videos: [{}, {}, {}] }, request })?.extraUsd).toBe(6);
   expect(p.fromResponse({ provider: 'google', response: { generateVideoResponse: { generatedSamples: [{}, {}] } }, request })?.extraUsd).toBe(4);
+});
+
+it('does not add xAI Responses reasoning twice', async () => {
+  const p = client();
+  await p.load();
+  const cost = p.fromResponse({ provider: 'x-ai', apiFlavor: 'responses', response: {
+    model: 'grok-4.7', usage: { input_tokens: 100, output_tokens: 30,
+      output_tokens_details: { reasoning_tokens: 20 } },
+  } });
+  expect(cost?.outputUsd).toBeCloseTo(30 * 6 / 1e6, 9);
 });
