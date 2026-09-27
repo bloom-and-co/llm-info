@@ -44,6 +44,7 @@ def test_stale_background_refresh():
     assert not p.info()['stale']
 def test_stores(tmp_path):
     d={'cache_schema':1,'data':DATA};s=FileStore(tmp_path/'prices.json');s.write(d);s.write({**d,'data':{**DATA,'generated_at':'2000-01-01T00:00:00Z'}});assert s.read()['data']['version']==DATA['version']
+    assert [x.name for x in tmp_path.iterdir()]==['prices.json']
     m=MemoryStore(d);m.write({**d,'data':{**DATA,'generated_at':'2000-01-01T00:00:00Z'}});assert m.read()['data']['version']==DATA['version']
 def test_response_totals():
     p=make();p.load()
