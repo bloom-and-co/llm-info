@@ -314,6 +314,21 @@ it('extractor counts Google image tokens once', async () => {
     50,
   );
 });
+it('bills an OpenAI image response without output details at image token price', async () => {
+  const p = client();
+  await p.load();
+  const result = p.fromResponse({
+    provider: 'openai',
+    apiFlavor: 'openai-images',
+    response: {
+      model: 'gpt-image-1.5',
+      usage: { input_tokens: 50, output_tokens: 4160 },
+      data: [{}],
+    },
+  });
+  expect(result.totalUsd).toBeCloseTo(0.13352, 9);
+  expect(result.warnings).toContain('output_breakdown_missing');
+});
 
 it('prices Gemini text and image output tokens at separate rates', async () => {
   const p = client();

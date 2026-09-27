@@ -142,3 +142,49 @@ it('matches aliases regardless of case', () => {
   const copy = { ...model, aliases: ['Model-Latest'] };
   expect(findModel([copy], 'GOOGLE', 'model-latest')).toBe(copy);
 });
+it('prices missing image output, input, and cache detail conservatively', () => {
+  const image = {
+    provider: 'openai',
+    id: 'image',
+    mode: 'image_generation',
+    prices: {
+      input: 5,
+      input_image: 8,
+      cache_read: 1.25,
+      cache_image_read: 2,
+      output: 10,
+      output_image: 32,
+    },
+    capabilities: { input_modalities: ['image', 'text'], output_modalities: ['image', 'text'] },
+  } as any;
+  const missing = calculate(image, {
+    input_tokens: 50,
+    cache_read_tokens: 20,
+    output_tokens: 4160,
+  });
+  expect(missing.inputUsd).toBeCloseTo((30 * 8 + 20 * 2) / 1e6, 10);
+  expect(missing.outputUsd).toBeCloseTo((4160 * 32) / 1e6, 10);
+  expect(missing.warnings).toContain('output_breakdown_missing');
+  expect(missing.warnings).toContain('input_breakdown_missing');
+  expect(missing.warnings).toContain('cache_breakdown_missing');
+  const exact = calculate(image, {
+    input_tokens: 50,
+    input_breakdown_present: 1,
+    input_image_tokens: 10,
+    cache_read_tokens: 20,
+    cache_breakdown_present: 1,
+    cache_image_read_tokens: 5,
+    output_tokens: 100,
+    output_breakdown_present: 1,
+    output_image_tokens: 40,
+  });
+  expect(exact.outputUsd).toBeCloseTo((40 * 32 + 60 * 10) / 1e6, 10);
+  expect(exact.warnings).not.toContain('output_breakdown_missing');
+  const audio = {
+    ...image,
+    mode: 'audio_transcription',
+    prices: { input: 1, input_audio: 10, output: 2 },
+    capabilities: { input_modalities: ['audio', 'text'], output_modalities: ['text'] },
+  };
+  expect(calculate(audio, { input_tokens: 100 }).inputUsd).toBeCloseTo(1000 / 1e6, 10);
+});
