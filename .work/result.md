@@ -239,3 +239,42 @@ Python wheel/install smoke: PASS
 ```
 
 `npm ci`、`npm ci --ignore-scripts`、`npm run build`、`npm run test:worker` も成功。Worker は `dist` を browser platform で bundle/import して確認した。`det.mjs` は両データセットで `det true`、逆順ソースで `order-indep true`。生成データの `eq committed false` は取得時刻を更新する `sources` フィールドが異なるため。GitHub repo 作成・push・公開はしていない。
+
+## Task 7
+
+Anthropic の 1 時間キャッシュ書き込み料金を復活した。LiteLLM の `cache_creation_input_token_cost_above_1hr` を `cache_write_1h`（USD/100 万 token）へ変換し、models.dev に同名の料金があれば高い方を採用する。今回の models.dev のライブ `cost` には対応キーがなく、LiteLLM の値を採用した。ティア、モード、地域倍率は他の token 単価と同様に扱う。公開データの `claude-opus-5-5` は `cache_write_1h: 8`、fast は 16 となった。
+
+JS/Python の両エンジンに独立した `cache_write_1h_tokens` bucket を追加した。Anthropic のレスポンス `usage.cache_creation.ephemeral_5m_input_tokens` と `ephemeral_1h_input_tokens` を分け、total だけがある旧形式では 5 分へ割り当てる。1 時間単価がないモデルは Anthropic の [料金表](https://platform.claude.com/docs/en/about-claude/pricing) に従って active input 単価の 2 倍で見積もり、`fallback_price:cache_write_1h` を返す。使用量の形は [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) を参照した。Opus 5.5 の 100 万 1 時間 write は $8、5 分と 1 時間を各 50 万なら $6.50、total だけなら $5 を JS/Python とも確認した。README の旧制約を削除した。
+
+公開 JSON の変更判定を `models` と `skipped` のみにした。両者が同じなら `sources` の取得時刻・ref/etag、`generated_at`、`version` をすべて保持する。新モデル ID を含む内容変更時は従来どおり `latest_new_model_at` を更新する。取得の実行時刻は workflow の builder ログに出し、6 時間ごとの無変更 commit を避ける。異なる fetch metadata による二つのビルドがバイト単位で一致する回帰テストと、ライブ再ビルドの SHA-256 一致を確認した。
+
+回帰テストを先にコミットした（`31fa84d`）。最初の実行は JS `Tests  4 failed | 51 passed (55)`、Python `1 failed, 21 passed in 0.11s` で、1 時間 bucket と安定した公開 metadata の欠落を再現した。mutation script に 1 時間料金の変換、fallback、allocation、mode tier と metadata の分岐を追加し、fuzz に新 field を追加した。
+
+最終確認の原文要約:
+
+```text
+All matched files use Prettier code style!
+4 files already formatted
+All checks passed!
+ Test Files  6 passed (6)
+      Tests  70 passed (70)
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+23 passed in 0.05s
+builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=265; skipped=13
+builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=265; skipped=13
+byte identity: PASS
+KILLED  one-hour cache price mapping dropped
+KILLED  one-hour models.dev price mapping dropped
+KILLED  source metadata enters content hash
+KILLED  one-hour write allocation dropped
+KILLED  one-hour fallback uses five-minute rate
+KILLED  one-hour mode tier ratio dropped
+total diffs 0 warning diffs 0 of 20000
+npm pack/install smoke: PASS
+Python wheel/install smoke: PASS
+```
+
+Builder mutation は 22 件、engine mutation は 23 件すべて kill し、`SURVIVED` と `NOTFOUND` は 0 件。`npm run build` と `npm run test:worker` で dist Worker bundle も成功した。GitHub repo 作成・push・公開はしていない。
