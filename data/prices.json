@@ -3,11 +3,11 @@
   "sources": {
     "litellm": {
       "ref": "W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"",
-      "fetched_at": "2026-09-27T03:01:47.243Z"
+      "fetched_at": "2026-09-27T03:09:00.607Z"
     },
     "models_dev": {
       "etag": "W/\"d01edbc7b83be1d60b6192f02ae700f7\"",
-      "fetched_at": "2026-09-27T03:01:47.451Z"
+      "fetched_at": "2026-09-27T03:09:00.762Z"
     }
   },
   "providers": [
@@ -2969,7 +2969,7 @@
             "input_image_mtok": 10,
             "output_image_mtok": 40,
             "cache_image_read_mtok": 2.5,
-            "output_mtok": 5
+            "output_mtok": 0
           },
           "x_source": "both",
           "x_extra_prices": {
@@ -3005,7 +3005,7 @@
             "input_image_mtok": 2.5,
             "output_image_mtok": 8,
             "cache_image_read_mtok": 0.25,
-            "output_mtok": 2
+            "output_mtok": 0
           },
           "x_source": "both",
           "name": "gpt-image-1-mini",
@@ -3073,7 +3073,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 30
+            "output_mtok": 0
           },
           "x_source": "both",
           "name": "gpt-image-2",
@@ -3096,7 +3096,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 5
+            "output_mtok": 0
           },
           "x_source": "litellm",
           "match": {
@@ -3118,7 +3118,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 5
+            "output_mtok": 0
           },
           "x_source": "litellm",
           "match": {
@@ -3140,7 +3140,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 5
+            "output_mtok": 0
           },
           "x_source": "litellm",
           "match": {
@@ -3162,7 +3162,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 5
+            "output_mtok": 0
           },
           "x_source": "litellm",
           "match": {
@@ -3184,7 +3184,7 @@
             "input_image_mtok": 8,
             "output_image_mtok": 30,
             "cache_image_read_mtok": 2,
-            "output_mtok": 5
+            "output_mtok": 0
           },
           "x_source": "litellm",
           "match": {
@@ -3927,14 +3927,6 @@
               "required": false
             },
             {
-              "path": [
-                "cache_creation",
-                "ephemeral_1h_input_tokens"
-              ],
-              "dest": "cache_write_1h_tokens",
-              "required": false
-            },
-            {
               "path": "cache_read_input_tokens",
               "dest": "cache_read_tokens",
               "required": false
@@ -4003,9 +3995,6 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 20
-          },
           "name": "Claude Fable 5",
           "context_window": 1000000,
           "match": {
@@ -4028,9 +4017,6 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 20
-          },
           "name": "Claude Fable 5.1",
           "context_window": 1000000,
           "match": {
@@ -4053,9 +4039,6 @@
             "cache_write_mtok": 1.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 2
-          },
           "name": "Claude Haiku 4.5 (latest)",
           "context_window": 200000,
           "match": {
@@ -4078,9 +4061,6 @@
             "cache_write_mtok": 1.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 2
-          },
           "name": "Claude Haiku 4.5",
           "context_window": 200000,
           "match": {
@@ -4103,9 +4083,6 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "litellm",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 20
-          },
           "match": {
             "or": [
               {
@@ -4126,9 +4103,6 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "litellm",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 20
-          },
           "match": {
             "or": [
               {
@@ -4149,9 +4123,6 @@
             "cache_write_mtok": 12.5
           },
           "x_source": "litellm",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 20
-          },
           "match": {
             "or": [
               {
@@ -4172,9 +4143,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "name": "Claude Opus 4.5 (latest)",
           "context_window": 200000,
           "match": {
@@ -4197,9 +4165,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "name": "Claude Opus 4.5",
           "context_window": 200000,
           "match": {
@@ -4222,9 +4187,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "name": "Claude Opus 4.6",
           "context_window": 1000000,
           "match": {
@@ -4247,9 +4209,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "litellm",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "match": {
             "or": [
               {
@@ -4270,9 +4229,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "name": "Claude Opus 4.7",
           "context_window": 1000000,
           "match": {
@@ -4295,9 +4251,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "litellm",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "match": {
             "or": [
               {
@@ -4318,9 +4271,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "name": "Claude Opus 4.8",
           "context_window": 1000000,
           "match": {
@@ -4343,9 +4293,6 @@
             "cache_write_mtok": 6.25
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 10
-          },
           "name": "Claude Opus 5",
           "context_window": 1000000,
           "match": {
@@ -4368,9 +4315,6 @@
             "cache_write_mtok": 5
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 8
-          },
           "name": "Claude Opus 5.5",
           "context_window": 1000000,
           "match": {
@@ -4425,9 +4369,6 @@
             }
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 6
-          },
           "name": "Claude Sonnet 4.5 (latest)",
           "context_window": 1000000,
           "match": {
@@ -4482,9 +4423,6 @@
             }
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 6
-          },
           "name": "Claude Sonnet 4.5",
           "context_window": 1000000,
           "match": {
@@ -4507,9 +4445,6 @@
             "cache_write_mtok": 3.75
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 6
-          },
           "name": "Claude Sonnet 4.6",
           "context_window": 1000000,
           "match": {
@@ -4532,9 +4467,6 @@
             "cache_write_mtok": 2.5
           },
           "x_source": "both",
-          "x_extra_prices": {
-            "cache_write_1h_mtok": 4
-          },
           "name": "Claude Sonnet 5",
           "context_window": 1000000,
           "match": {
@@ -5029,14 +4961,6 @@
               "required": false
             },
             {
-              "path": [
-                "cache_creation",
-                "ephemeral_1h_input_tokens"
-              ],
-              "dest": "cache_write_1h_tokens",
-              "required": false
-            },
-            {
               "path": "cache_read_input_tokens",
               "dest": "cache_read_tokens",
               "required": false
@@ -5111,7 +5035,8 @@
                 }
               ]
             },
-            "output_mtok": {
+            "output_mtok": 12,
+            "output_image_mtok": {
               "base": 12,
               "tiers": [
                 {
@@ -5156,7 +5081,8 @@
                 }
               ]
             },
-            "output_mtok": {
+            "output_mtok": 12,
+            "output_image_mtok": {
               "base": 12,
               "tiers": [
                 {
@@ -5334,7 +5260,7 @@
           "id": "gemini-2.5-flash-image",
           "prices": {
             "input_mtok": 0.3,
-            "output_mtok": 30,
+            "output_mtok": 2.5,
             "output_reasoning_mtok": 2.5,
             "input_audio_mtok": 1,
             "output_image_mtok": 30,
@@ -5672,7 +5598,7 @@
               ]
             },
             "output_mtok": {
-              "base": 120,
+              "base": 12,
               "tiers": [
                 {
                   "start": 199999,
@@ -5721,7 +5647,7 @@
               ]
             },
             "output_mtok": {
-              "base": 120,
+              "base": 12,
               "tiers": [
                 {
                   "start": 199999,
@@ -5804,7 +5730,7 @@
           "id": "gemini-3.1-flash-image",
           "prices": {
             "input_mtok": 0.5,
-            "output_mtok": 60,
+            "output_mtok": 3,
             "cache_read_mtok": 0.049999999999999996,
             "output_image_mtok": 60
           },
@@ -5829,7 +5755,7 @@
           "id": "gemini-3.1-flash-image-preview",
           "prices": {
             "input_mtok": 0.5,
-            "output_mtok": 60,
+            "output_mtok": 3,
             "cache_read_mtok": 0.049999999999999996,
             "output_image_mtok": 60
           },
@@ -5878,7 +5804,7 @@
           "id": "gemini-3.1-flash-lite-image",
           "prices": {
             "input_mtok": 0.25,
-            "output_mtok": 30,
+            "output_mtok": 1.5,
             "cache_read_mtok": 0.024999999999999998,
             "output_image_mtok": 30
           },
@@ -5996,6 +5922,15 @@
                   "price": 0.4
                 }
               ]
+            },
+            "output_image_mtok": {
+              "base": 12,
+              "tiers": [
+                {
+                  "start": 199999,
+                  "price": 18
+                }
+              ]
             }
           },
           "x_source": "both",
@@ -6042,6 +5977,15 @@
                 {
                   "start": 199999,
                   "price": 0.4
+                }
+              ]
+            },
+            "output_image_mtok": {
+              "base": 12,
+              "tiers": [
+                {
+                  "start": 199999,
+                  "price": 18
                 }
               ]
             }
@@ -6956,7 +6900,8 @@
           "id": "lyria-3-clip-preview",
           "prices": {
             "input_mtok": 0,
-            "output_mtok": 0
+            "output_mtok": 0,
+            "output_image_mtok": 0
           },
           "x_source": "both",
           "x_extra_prices": {
@@ -6979,7 +6924,8 @@
           "id": "lyria-3-pro-preview",
           "prices": {
             "input_mtok": 0,
-            "output_mtok": 0
+            "output_mtok": 0,
+            "output_image_mtok": 0
           },
           "x_source": "both",
           "x_extra_prices": {
@@ -9857,54 +9803,6 @@
     },
     {
       "provider": "google",
-      "model": "gemini-2.5-flash-image",
-      "field": "output_mtok",
-      "litellm": 2.5,
-      "models_dev": 30,
-      "adopted": 30
-    },
-    {
-      "provider": "google",
-      "model": "gemini-3-pro-image-preview",
-      "field": "output_mtok",
-      "litellm": 12,
-      "models_dev": 120,
-      "adopted": 120
-    },
-    {
-      "provider": "google",
-      "model": "gemini-3-pro-image",
-      "field": "output_mtok",
-      "litellm": 12,
-      "models_dev": 120,
-      "adopted": 120
-    },
-    {
-      "provider": "google",
-      "model": "gemini-3.1-flash-image-preview",
-      "field": "output_mtok",
-      "litellm": 3,
-      "models_dev": 60,
-      "adopted": 60
-    },
-    {
-      "provider": "google",
-      "model": "gemini-3.1-flash-image",
-      "field": "output_mtok",
-      "litellm": 3,
-      "models_dev": 60,
-      "adopted": 60
-    },
-    {
-      "provider": "google",
-      "model": "gemini-3.1-flash-lite-image",
-      "field": "output_mtok",
-      "litellm": 1.5,
-      "models_dev": 30,
-      "adopted": 30
-    },
-    {
-      "provider": "google",
       "model": "gemini-omni-flash-preview",
       "field": "output_mtok",
       "litellm": 9,
@@ -9912,6 +9810,6 @@
       "adopted": 17.5
     }
   ],
-  "generated_at": "2026-09-27T03:01:47.593Z",
-  "version": "2026-09-27T03:01:47.593Z-0925c4e9e7fa"
+  "generated_at": "2026-09-27T03:09:00.902Z",
+  "version": "2026-09-27T03:09:00.902Z-9b78de0862f0"
 }
