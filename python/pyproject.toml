@@ -6,7 +6,7 @@ name = "bloom-llm-info"
 version = "0.1.0"
 description = "Local cached LLM prices from LiteLLM and models.dev"
 requires-python = ">=3.10"
-dependencies = ["genai-prices==0.1.9"]
+dependencies = []
 [tool.hatch.build.targets.wheel]
 packages = ["llm_info"]
 [tool.pytest.ini_options]

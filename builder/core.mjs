@@ -1,5 +1,4 @@
 import { createHash } from 'node:crypto';
-import { calcPrice } from '@pydantic/genai-prices';
 
 export const IDS = ['openai', 'anthropic', 'google', 'x-ai'];
 const direct = {
@@ -300,41 +299,7 @@ function mergePrice(a, b, meta, conflicts) {
 function escaped(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
-function completeSdkPriceKeys(model, providerMetadata) {
-  for (let attempt = 0; attempt < 12; attempt++) {
-    try {
-      calcPrice({ input_tokens: 1 }, model.id, {
-        provider: { ...providerMetadata, models: [{ ...model, match: { equals: model.id } }] },
-      });
-      return;
-    } catch (error) {
-      const key = String(error).match(/Missing (?:join|ancestor) price key ([a-z0-9_]+)/)?.[1];
-      if (!key) throw error;
-      const prices = model.prices;
-      const fallback =
-        key === 'output_mtok'
-          ? prices.output_image_mtok
-          : key === 'output_image_reasoning_mtok'
-            ? (prices.output_image_mtok ?? prices.output_reasoning_mtok ?? prices.output_mtok)
-            : key === 'output_audio_reasoning_mtok'
-              ? (prices.output_audio_mtok ?? prices.output_reasoning_mtok ?? prices.output_mtok)
-              : key === 'cache_audio_read_mtok'
-                ? (prices.cache_audio_read_mtok ?? prices.input_audio_mtok)
-                : key === 'cache_audio_write_mtok'
-                  ? (prices.cache_audio_write_mtok ?? prices.input_audio_mtok)
-                  : key === 'cache_image_read_mtok'
-                    ? (prices.cache_image_read_mtok ?? prices.input_image_mtok)
-                    : key.startsWith('output_')
-                      ? (prices.output_mtok ?? prices.output_image_mtok ?? prices.output_audio_mtok)
-                      : key.includes('cache_')
-                        ? (prices.cache_read_mtok ?? prices.cache_write_mtok ?? prices.input_mtok)
-                        : prices.input_mtok;
-      if (fallback === undefined || attempt === 11) throw error;
-      model.prices[key] = fallback;
-    }
-  }
-}
-export function mergeSources(lite, models, gp) {
+export function mergeSources(lite, models) {
   const map = new Map(),
     conflicts = [],
     capability_conflicts = [],
@@ -528,154 +493,128 @@ export function mergeSources(lite, models, gp) {
         liteModel?.x_extra_prices?.per_image !== undefined;
       add(p, id, fromModels(v, imageOutput), 'models_dev');
     }
-  const providers = IDS.map((id) => {
-    const meta = gp.find((p) => p.id === id);
-    if (!meta) throw Error('missing metadata ' + id);
-    const { models: ignored, extractors: upstream, ...rest } = meta;
+  const modelsOut = [];
+  for (const provider of IDS) {
     const ms = [...map.entries()]
-      .filter(([key]) => key.startsWith(id + '\0'))
+      .filter(([key]) => key.startsWith(provider + '\0'))
       .map(([, m]) => m)
-      .filter((m) => Object.keys(m.prices).length || m.x_extra_prices);
-    ms.sort((a, b) => a.id.localeCompare(b.id, 'en'));
-    const valid = [];
+      .filter((m) => Object.keys(m.prices).length || m.x_extra_prices)
+      .sort((a, b) => a.id.localeCompare(b.id, 'en'));
     for (const m of ms) {
-      const dev = models[id === 'x-ai' ? 'xai' : id]?.models?.[m.id];
-      if (dev?.name) m.name = dev.name;
-      if (dev?.limit?.context) m.context_window = dev.limit.context;
+      const dev = models[provider === 'x-ai' ? 'xai' : provider]?.models?.[m.id];
       const cap = m._cap ?? { values: {}, sources: {} };
-      m.x_capabilities = {
-        ...Object.fromEntries(
-          [
-            'reasoning',
-            'reasoning_efforts',
-            'default_reasoning_effort',
-            'tool_call',
-            'parallel_tool_calls',
-            'structured_output',
-            'web_search',
-            'input_modalities',
-            'output_modalities',
-            'temperature',
-            'prompt_caching',
-            'computer_use',
-            'context_window',
-            'max_input_tokens',
-            'max_output_tokens',
-            'knowledge_cutoff',
-            'release_date',
-            'endpoints',
-          ].map((field) => [
-            field,
-            cap.values[field] ??
-              (field.endsWith('modalities')
-                ? []
-                : ['reasoning', 'tool_call', 'structured_output'].includes(field)
-                  ? false
-                  : null),
-          ]),
-        ),
-        sources: cap.sources,
+      const capabilities = Object.fromEntries(
+        [
+          'reasoning',
+          'reasoning_efforts',
+          'default_reasoning_effort',
+          'tool_call',
+          'parallel_tool_calls',
+          'structured_output',
+          'web_search',
+          'input_modalities',
+          'output_modalities',
+          'temperature',
+          'prompt_caching',
+          'computer_use',
+          'context_window',
+          'max_input_tokens',
+          'max_output_tokens',
+          'knowledge_cutoff',
+          'release_date',
+          'endpoints',
+        ].map((field) => [
+          field,
+          cap.values[field] ??
+            (field.endsWith('modalities')
+              ? []
+              : ['reasoning', 'tool_call', 'structured_output'].includes(field)
+                ? false
+                : null),
+        ]),
+      );
+      capabilities.sources = cap.sources;
+      const convert = (old) => {
+        const out = {},
+          tiers = new Map();
+        for (const [key, value] of Object.entries(old)) {
+          const target = key.replace(/_mtok$/, '').replace(/^output_reasoning$/, 'reasoning');
+          if (typeof value === 'number') out[target] = value;
+          else {
+            out[target] = value.base;
+            for (const t of value.tiers) {
+              const row = tiers.get(t.start) ?? {};
+              row[target] = t.price;
+              tiers.set(t.start, row);
+            }
+          }
+        }
+        if (tiers.size)
+          out.tiers = [...tiers]
+            .sort((a, b) => a[0] - b[0])
+            .map(([threshold, prices]) => ({ above_input_tokens: threshold + 1, prices }));
+        return out;
       };
-      try {
-        completeSdkPriceKeys(m, rest);
-      } catch (error) {
-        skipped.push({ provider: id, model: m.id, reason: String(error) });
-        console.warn(`skipped ${id}/${m.id}: ${error}`);
-        continue;
+      const prices = { ...convert(m.prices) };
+      for (const [k, v] of Object.entries(m.x_extra_prices ?? {})) {
+        const target = k === 'web_search' ? 'per_web_search' : k;
+        if (target !== 'input_per_image') prices[target] = v;
       }
-      delete m.x_lite_sources;
-      delete m.x_lite_extra_sources;
-      delete m._cap;
-      const exactChildren = ms
-        .filter(
-          (x) =>
-            x !== m &&
-            new RegExp(`^${escaped(m.id)}-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$`).test(x.id),
-        )
-        .map((x) => x.id);
-      m.match = {
-        or: [
-          { equals: m.id },
+      const modes = Object.fromEntries(
+        Object.entries(m.x_modes ?? {}).map(([k, v]) => [
+          k,
           {
-            regex: `^${escaped(m.id)}-(?!${exactChildren.map((x) => escaped(x.slice(m.id.length + 1))).join('|') || '(?!)'}$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$`,
+            prices: convert(v.prices),
+            ...(v.request ? { request: v.request } : {}),
           },
-        ],
-      };
-      valid.push(m);
-    }
-    return { ...rest, extractors: makeExtractors(id, upstream ?? []), models: valid };
-  });
-  conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  capability_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  return { providers, conflicts, capability_conflicts, skipped };
-}
-function makeExtractors(id, existing) {
-  const e = clean(existing);
-  for (const extractor of e)
-    extractor.mappings = extractor.mappings.filter(
-      (mapping) => mapping.dest !== 'cache_write_1h_tokens',
-    );
-  const map = (path, dest) => ({ path, dest, required: false });
-  if (id === 'openai') {
-    if (!e.some((x) => x.api_flavor === 'images')) {
-      const image = {
-        api_flavor: 'images',
-        root: 'usage',
-        model_path: 'model',
-        mappings: [
-          map('input_tokens', 'input_tokens'),
-          map('output_tokens', 'output_tokens'),
-          map(['input_tokens_details', 'image_tokens'], 'input_image_tokens'),
-          map(['output_tokens_details', 'image_tokens'], 'output_image_tokens'),
-        ],
-      };
-      e.push(image);
+        ]),
+      );
+      const exact = [m.id];
+      modelsOut.push({
+        provider,
+        id: m.id,
+        name: dev?.name ?? m.id,
+        aliases: [],
+        match: { exact, dated_suffix: true },
+        source: m.x_source,
+        prices,
+        modes,
+        region_uplift: m.x_region_uplift ?? {},
+        capabilities,
+      });
     }
   }
-  if (id === 'google')
-    for (const x of e.filter((x) => x.api_flavor === 'default')) {
-      if (!x.mappings.some((m) => m.dest === 'input_image_tokens'))
-        x.mappings.push(
-          map(
-            [
-              'promptTokensDetails',
-              { field: 'modality', match: { equals: 'IMAGE' }, type: 'array-match' },
-              'tokenCount',
-            ],
-            'input_image_tokens',
-          ),
-        );
-      if (!x.mappings.some((m) => m.dest === 'output_image_tokens'))
-        x.mappings.push(
-          map(
-            [
-              'candidatesTokensDetails',
-              { field: 'modality', match: { equals: 'IMAGE' }, type: 'array-match' },
-              'tokenCount',
-            ],
-            'output_image_tokens',
-          ),
-        );
-    }
-  return e;
+  conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
+  capability_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
+  return { models: modelsOut, conflicts, capability_conflicts, skipped };
 }
 export function validate(doc, previous) {
-  if (doc.schema !== 1 || !Array.isArray(doc.providers) || doc.providers.length !== 4)
-    throw Error('invalid document');
-  for (const p of doc.providers) {
-    const old = previous?.providers?.find((x) => x.id === p.id);
-    if (old && p.models.length < old.models.length * 0.8)
-      throw Error('model count dropped: ' + p.id);
-    for (const m of p.models) {
-      if (!Object.keys(m.prices).length && !m.x_extra_prices)
-        throw Error('model without price ' + m.id);
-      const walk = (x) => {
-        if (typeof x === 'number' && (!Number.isFinite(x) || x < 0))
-          throw Error('invalid price ' + m.id);
-        if (x && typeof x === 'object') Object.values(x).forEach(walk);
-      };
-      walk(m.prices);
-      walk(m.x_extra_prices);
+  if (doc.schema !== 2 || !Array.isArray(doc.models)) throw Error('invalid document');
+  for (const provider of IDS) {
+    const rows = doc.models.filter((m) => m.provider === provider);
+    const old =
+      previous?.models?.filter((m) => m.provider === provider).length ??
+      previous?.providers?.find((p) => p.id === provider)?.models?.length;
+    if (old && rows.length < old * 0.8) throw Error('model count dropped: ' + provider);
+    if (!rows.length) throw Error('empty provider: ' + provider);
+  }
+  for (const m of doc.models) {
+    if (!Object.keys(m.prices ?? {}).some((key) => key !== 'tiers'))
+      throw Error('model without price ' + m.id);
+    const walk = (x) => {
+      if (typeof x === 'number' && (!Number.isFinite(x) || x < 0))
+        throw Error('invalid price ' + m.id);
+      if (x && typeof x === 'object') Object.values(x).forEach(walk);
+    };
+    walk(m.prices);
+    walk(m.modes);
+    walk(m.region_uplift);
+    for (const prices of [m.prices, ...Object.values(m.modes ?? {}).map((mode) => mode.prices)]) {
+      let last = -1;
+      for (const tier of prices?.tiers ?? []) {
+        if (tier.above_input_tokens <= last) throw Error('tier thresholds not ascending ' + m.id);
+        last = tier.above_input_tokens;
+      }
     }
   }
   for (const [p, id] of [
@@ -684,12 +623,12 @@ export function validate(doc, previous) {
     ['google', 'gemini-3.8-flash'],
     ['x-ai', 'grok-4.7'],
   ])
-    if (!doc.providers.find((x) => x.id === p)?.models.some((x) => x.id === id))
+    if (!doc.models.some((m) => m.provider === p && m.id === id))
       throw Error('missing flagship ' + id);
 }
 export function stableContent(doc) {
   return JSON.stringify({
-    providers: doc.providers,
+    models: doc.models,
     conflicts: doc.conflicts,
     capability_conflicts: doc.capability_conflicts,
     skipped: doc.skipped,

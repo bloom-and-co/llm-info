@@ -1,14 +1,19 @@
 """Cached, source-attributed LLM price estimates."""
 
 from __future__ import annotations
-import json, os, tempfile, threading, time
+
+import json
+import os
+import tempfile
+import threading
+import time
 from datetime import datetime, timezone
-from decimal import Decimal
 from pathlib import Path
 from typing import Protocol
-from urllib.request import Request, urlopen
 from urllib.error import HTTPError
-from ._sdk import snapshot_from_data, Usage
+from urllib.request import Request, urlopen
+
+from ._engine import calculate, find_model
 
 DEFAULT_URL = (
     "https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json"
@@ -39,10 +44,13 @@ def _valid(d):
     try:
         return bool(
             isinstance(d, dict)
-            and d.get("schema") == 1
+            and d.get("schema") == 2
             and isinstance(d.get("version"), str)
-            and len(d.get("providers", [])) == 4
-            and all(isinstance(p.get("models"), list) for p in d["providers"])
+            and isinstance(d.get("models"), list)
+            and all(
+                m.get("provider") and m.get("id") and m.get("prices")
+                for m in d["models"]
+            )
             and _date(d["generated_at"])
         )
     except (TypeError, ValueError, KeyError):
@@ -107,21 +115,12 @@ def _fetch(url, etag):
         raise
 
 
-def _match(provider, model):
-    from re import fullmatch, escape
-
-    for m in provider["models"]:
-        if m["id"].lower() == model.lower():
-            return m
-    for m in sorted(provider["models"], key=lambda m: -len(m["id"])):
-        if fullmatch(
-            escape(m["id"]) + r"-(?:20\d{6}|20\d{2}-\d{2}-\d{2})", model, flags=2
-        ):
-            return m
-    return None
-
-
 def _video_seconds(response, request, model):
+    response = (
+        (response.get("operation") or {}).get("response")
+        or response.get("response")
+        or response
+    )
     raw = next(
         (
             v
@@ -130,6 +129,7 @@ def _video_seconds(response, request, model):
                 response.get("duration"),
                 request.get("duration"),
                 request.get("durationSeconds"),
+                (request.get("config") or {}).get("durationSeconds"),
                 (request.get("parameters") or {}).get("durationSeconds"),
             ]
             if v is not None
@@ -145,12 +145,20 @@ def _video_seconds(response, request, model):
         duration = 8
     if duration is None:
         return None
-    videos = response.get("generatedVideos") or response.get("generated_videos")
+    videos = (
+        response.get("generatedVideos")
+        or response.get("generated_videos")
+        or response.get("videos")
+        or (response.get("generateVideoResponse") or {}).get("generatedSamples")
+    )
     count = (
         len(videos)
         if isinstance(videos, list)
         else (request.get("parameters") or {}).get(
-            "sampleCount", request.get("sampleCount", 1)
+            "sampleCount",
+            (request.get("config") or {}).get(
+                "numberOfVideos", request.get("sampleCount", 1)
+            ),
         )
     )
     return duration * count
@@ -179,7 +187,6 @@ class LlmInfo:
         self.accept = accept
         self.on_event = on_event
         self.doc = None
-        self.snapshot = None
         self._lock = threading.RLock()
 
     def _emit(self, event, detail=None):
@@ -187,15 +194,6 @@ class LlmInfo:
             self.on_event(event, detail)
 
     def _activate(self, doc):
-        snapshot = snapshot_from_data(doc["data"])
-        for p in doc["data"]["providers"]:
-            if not p["models"]:
-                raise ValueError("empty provider")
-            for m in p["models"]:
-                snapshot.calc(
-                    Usage(input_tokens=1, output_tokens=1), m["id"], p["id"], None, None
-                )
-        self.snapshot = snapshot
         self.doc = doc
 
     def _persist(self, doc):
@@ -280,26 +278,6 @@ class LlmInfo:
                         "last_error": None,
                         "data": data,
                     }
-                    try:
-                        check = snapshot_from_data(data)
-                        for provider in data["providers"]:
-                            if not provider["models"]:
-                                raise ValueError("empty provider")
-                            for model in provider["models"]:
-                                check.calc(
-                                    Usage(input_tokens=1),
-                                    model["id"],
-                                    provider["id"],
-                                    None,
-                                    None,
-                                )
-                    except Exception:
-                        self._emit("rejected", "invalid_sdk_data")
-                        return {
-                            "status": "rejected",
-                            "reason": "invalid_sdk_data",
-                            "info": self.info(),
-                        }
                     if self.accept and not self.accept(
                         data, self.doc["data"] if self.doc else None
                     ):
@@ -312,7 +290,7 @@ class LlmInfo:
                     self._persist(nextdoc)
                     self._emit("updated")
                     return {"status": "updated", "info": self.info()}
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - custom fetch hooks can raise arbitrary errors.
                     error = str(e)
             if self.doc:
                 self._persist(
@@ -325,21 +303,20 @@ class LlmInfo:
     def capabilities(self, provider, model):
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
-        p = next(
-            (p for p in self.doc["data"]["providers"] if p["id"] == provider), None
-        )
-        m = _match(p, model) if p else None
-        return m.get("x_capabilities") if m else None
+        m = find_model(self.doc["data"]["models"], provider, model)
+        return m.get("capabilities") if m else None
 
     def models(self, provider=None):
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
         return [
-            {"provider": p["id"], "id": m["id"], "capabilities": m["x_capabilities"]}
-            for p in self.doc["data"]["providers"]
-            if provider is None or p["id"] == provider
-            for m in p["models"]
-            if "x_capabilities" in m
+            {
+                "provider": m["provider"],
+                "id": m["id"],
+                "capabilities": m.get("capabilities"),
+            }
+            for m in self.doc["data"]["models"]
+            if provider is None or m["provider"] == provider
         ]
 
     def calc(
@@ -347,147 +324,26 @@ class LlmInfo:
     ):
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
-        p = next(
-            (p for p in self.doc["data"]["providers"] if p["id"] == provider), None
-        )
-        m = _match(p, model) if p else None
+        m = find_model(self.doc["data"]["models"], provider, model)
         if not m:
             return None
-        options = options or {}
-        selected_mode = mode or options.get("mode") or "standard"
-        modes = m.get("x_modes", {})
-        prices = dict(m["prices"])
-        warnings = []
-        if selected_mode != "standard":
-            selected = modes.get(selected_mode, {}).get("prices", {})
-            if selected:
-                prices.update(selected)
-            else:
-                warnings.append("missing_price:mode:" + selected_mode)
-
-                def base(price):
-                    return (
-                        price
-                        if isinstance(price, (int, float))
-                        else max(
-                            [price["base"]] + [tier["price"] for tier in price["tiers"]]
-                        )
-                    )
-
-                for entry in modes.values():
-                    for key, value in entry.get("prices", {}).items():
-                        prices[key] = (
-                            max(base(value), base(prices[key]))
-                            if key in prices
-                            else base(value)
-                        )
-        clean = {
-            k: v
-            for k, v in usage.items()
-            if k not in ("output_images", "output_video_seconds")
-        }
-        clean.pop("web_searches", None)
-        try:
-            # Restrict SDK matching to the selected row; alias regexes can precede dated IDs.
-            selected = snapshot_from_data(
-                {
-                    "providers": [
-                        {
-                            **p,
-                            "models": [
-                                {**m, "prices": prices, "match": {"equals": m["id"]}}
-                            ],
-                        }
-                    ]
-                }
-            )
-            for _ in range(16):
-                try:
-                    result = selected.calc(Usage(**clean), m["id"], provider, None, at)
-                    break
-                except ValueError as error:
-                    import re
-
-                    match = re.search(r"Missing usage for ([a-z_]+_tokens)", str(error))
-                    if not match or match.group(1) in clean:
-                        raise
-                    clean[match.group(1)] = (
-                        0  # Unknown overlap: conservative billable split.
-                    )
-        except LookupError:
-            return None
-        d = Decimal
-        extra = d(0)
-        x = m.get("x_extra_prices", {})
-        if self.info()["stale"]:
-            warnings.append("stale_data")
-        for field, tag in [
-            ("output_images", "per_image"),
-            ("output_video_seconds", "per_video_second"),
-        ]:
-            if not usage.get(field) or (
-                field == "output_images" and usage.get("output_image_tokens")
-            ):
-                continue
-            rate = x.get(tag)
-            if isinstance(rate, dict):
-                if (
-                    tag == "per_image"
-                    and "default" not in rate
-                    and not options.get("size")
-                ):
-                    warnings.append("missing_param:size")
-                    continue
-                if (
-                    tag == "per_image"
-                    and "default" not in rate
-                    and not options.get("quality")
-                ):
-                    warnings.append("missing_param:quality")
-                    continue
-                if tag == "per_image":
-                    key = (
-                        f"{options['size']}/{options['quality']}"
-                        if options.get("size") and options.get("quality")
-                        else None
-                    )
-                else:
-                    key = options.get("resolution")
-                if not key and "default" not in rate:
-                    warnings.append("missing_param:resolution")
-                    continue
-                rate = rate.get(key, rate.get("default"))
-            if rate is None:
-                warnings.append("missing_price:" + tag)
-                continue
-            extra += d(str(rate)) * d(str(usage[field]))
-        if usage.get("web_searches"):
-            if x.get("web_search") is not None:
-                extra += d(str(x["web_search"])) * d(str(usage["web_searches"]))
-            else:
-                warnings.append("missing_price:web_search")
-        if x.get("per_video_second") is not None and not usage.get(
-            "output_video_seconds"
-        ):
-            warnings.append("missing_param:duration")
-        uplift = (
-            m.get("x_region_uplift", {}).get(region, 1)
-            if region not in (None, "global")
-            else 1
+        result = calculate(
+            m,
+            usage,
+            options,
+            mode or (options or {}).get("mode") or "standard",
+            region or "global",
         )
-        multiplier = d(str(uplift))
+        if self.info()["stale"]:
+            result["warnings"].append("stale_data")
         return {
-            "total_usd": (result.total_price + extra) * multiplier,
-            "input_usd": result.input_price * multiplier,
-            "output_usd": result.output_price * multiplier,
-            "extra_usd": extra * multiplier,
+            **result,
             "provider": provider,
             "model": m["id"],
             "requested_model": model,
             "usage": usage,
             "data_version": self.doc["data"]["version"],
-            "source": m.get("x_source", "unknown"),
-            "warnings": warnings,
+            "source": m.get("source", "unknown"),
         }
 
     def extract_usage(self, provider, response, request=None, api_flavor=None):
@@ -532,11 +388,12 @@ class LlmInfo:
                 + (u.get("thoughtsTokenCount") or 0),
             )
             set_("cache_read_tokens", u.get("cachedContentTokenCount"))
-            p = next(
-                (p for p in self.doc["data"]["providers"] if p["id"] == provider), None
+            m = (
+                find_model(self.doc["data"]["models"], provider, model)
+                if model
+                else None
             )
-            m = _match(p, model) if p and model else None
-            if m and m["prices"].get("output_reasoning_mtok"):
+            if m and m["prices"].get("reasoning"):
                 set_("output_reasoning_tokens", u.get("thoughtsTokenCount"))
             for source, dest, modality in [
                 ("promptTokensDetails", "input_image_tokens", "IMAGE"),
@@ -548,7 +405,7 @@ class LlmInfo:
             ]:
                 if isinstance(u.get(source), list):
                     out[dest] = out.get(dest, 0) + sum(
-                        x.get("tokenCount", 0)
+                        (x.get("tokenCount") or 0)
                         for x in u[source]
                         if x.get("modality") == modality
                     )
@@ -578,11 +435,12 @@ class LlmInfo:
                 "output_image_tokens",
                 (u.get("output_tokens_details") or {}).get("image_tokens"),
             )
-            p = next(
-                (p for p in self.doc["data"]["providers"] if p["id"] == provider), None
+            m = (
+                find_model(self.doc["data"]["models"], provider, model)
+                if model
+                else None
             )
-            m = _match(p, model) if p and model else None
-            if m and m["prices"].get("output_reasoning_mtok"):
+            if m and m["prices"].get("reasoning"):
                 set_(
                     "output_reasoning_tokens",
                     (
@@ -607,7 +465,11 @@ class LlmInfo:
                     or {}
                 ).get("audio_tokens"),
             )
-            if provider == "x-ai":
+            if (
+                provider == "x-ai"
+                and api_flavor != "responses"
+                and response.get("object") != "response"
+            ):
                 # https://docs.x.ai/developers/tools/tool-usage-details: completion is final text, reasoning separate.
                 reasoning = (
                     u.get("completion_tokens_details")

@@ -1,4 +1,4 @@
-import { calcPrice, type Provider } from '@pydantic/genai-prices';
+import { calculate, findModel, type Model } from './engine.js';
 export const DEFAULT_URL =
   'https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json';
 export const FALLBACK_URL =
@@ -13,7 +13,7 @@ export type PriceData = {
   schema: number;
   version: string;
   generated_at: string;
-  providers: Provider[];
+  models: Model[];
   conflicts?: unknown[];
   skipped?: unknown[];
   capability_conflicts?: unknown[];
@@ -71,20 +71,13 @@ type Options = {
   accept?: (next: PriceData, prev: PriceData | null) => boolean | Promise<boolean>;
   onEvent?: (event: string, detail?: unknown) => void;
 };
-let created = false;
 function valid(data: any): data is PriceData {
   return (
-    data?.schema === 1 &&
+    data?.schema === 2 &&
     typeof data.version === 'string' &&
     Number.isFinite(Date.parse(data.generated_at)) &&
-    Array.isArray(data.providers) &&
-    data.providers.length === 4 &&
-    data.providers.every(
-      (p: any) =>
-        typeof p.id === 'string' &&
-        Array.isArray(p.models) &&
-        p.models.every((m: any) => m.id && m.match && m.prices),
-    )
+    Array.isArray(data.models) &&
+    data.models.every((m: any) => m.provider && m.id && m.prices)
   );
 }
 function stamp() {
@@ -93,69 +86,31 @@ function stamp() {
 function number(x: any): number | undefined {
   return typeof x === 'number' && Number.isFinite(x) ? x : undefined;
 }
-function matchModel(p: Provider, id: string) {
-  const models = p.models as any[];
-  const exact = models.find((m) => m.id.toLowerCase() === id.toLowerCase());
-  if (exact) return exact;
-  return models
-    .filter((m) =>
-      new RegExp(
-        `^${m.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$`,
-        'i',
-      ).test(id),
-    )
-    .sort((a, b) => b.id.length - a.id.length)[0];
-}
-function pick(table: any, opt: any, warnings: string[], tag: string) {
-  if (typeof table === 'number') return table;
-  if (!table) {
-    warnings.push('missing_price:' + tag);
-    return 0;
-  }
-  if (tag === 'per_image' && !('default' in table)) {
-    if (!opt.size) {
-      warnings.push('missing_param:size');
-      return 0;
-    }
-    if (!opt.quality) {
-      warnings.push('missing_param:quality');
-      return 0;
-    }
-  }
-  const key = tag === 'per_image' ? `${opt.size}/${opt.quality}` : opt.resolution;
-  if (!key && !('default' in table)) {
-    warnings.push('missing_param:resolution');
-    return 0;
-  }
-  const n = number(table[key] ?? table.default);
-  if (n === undefined) {
-    warnings.push('missing_price:' + tag);
-    return 0;
-  }
-  return n;
-}
 function videoSeconds(r: any, request: any, model: string | null) {
+  const result = r.operation?.response ?? r.response ?? r;
   const raw =
-    r.seconds ??
-    r.duration ??
+    result.seconds ??
+    result.duration ??
     request?.duration ??
     request?.durationSeconds ??
+    request?.config?.durationSeconds ??
     request?.parameters?.durationSeconds;
   const seconds = typeof raw === 'string' && raw.trim() ? Number(raw) : raw;
   // https://ai.google.dev/gemini-api/docs/veo: Veo 3.1 generates 8-second videos by default.
   const duration = number(seconds) ?? (model?.startsWith('veo-') ? 8 : undefined);
   if (duration === undefined) return undefined;
   const count =
-    r.generatedVideos?.length ??
-    r.generated_videos?.length ??
+    result.generatedVideos?.length ??
+    result.generated_videos?.length ??
+    result.videos?.length ??
+    result.generateVideoResponse?.generatedSamples?.length ??
+    request?.config?.numberOfVideos ??
     request?.parameters?.sampleCount ??
     request?.sampleCount ??
     1;
   return duration * count;
 }
 export function createLlmInfo(options: Options = {}) {
-  if (created) throw Error('Only one createLlmInfo instance is allowed per process');
-  created = true;
   const url = options.url ?? DEFAULT_URL,
     urls = [url, ...(options.fallbackUrls ?? [FALLBACK_URL])],
     ttl = options.ttl ?? 21600000;
@@ -217,17 +172,6 @@ export function createLlmInfo(options: Options = {}) {
             emit('rejected', 'older_data');
             return { status: 'rejected', reason: 'older_data', info: info() };
           }
-          try {
-            for (const p of next.providers) {
-              if (!p.models.length) throw Error('empty provider');
-              for (const m of p.models)
-                if (!calcPrice({ input_tokens: 1, output_tokens: 1 }, m.id, { provider: p }))
-                  throw Error('invalid SDK data');
-            }
-          } catch {
-            emit('rejected', 'invalid_sdk_data');
-            return { status: 'rejected', reason: 'invalid_sdk_data', info: info() };
-          }
           if (options.accept && !(await options.accept(next, doc?.data ?? null))) {
             emit('rejected', 'accept_false');
             return { status: 'rejected', reason: 'accept_false', info: info() };
@@ -279,17 +223,12 @@ export function createLlmInfo(options: Options = {}) {
     };
   }
   function capabilities({ provider, model }: { provider: string; model: string }) {
-    const p = current().data.providers.find((x) => x.id === provider);
-    return (p && (matchModel(p, model) as any))?.x_capabilities ?? null;
+    return findModel(current().data.models, provider, model)?.capabilities ?? null;
   }
   function models({ provider }: { provider?: string } = {}) {
     return current()
-      .data.providers.filter((p) => !provider || p.id === provider)
-      .flatMap((p) =>
-        (p.models as any[])
-          .filter((m) => m.x_capabilities)
-          .map((m) => ({ provider: p.id, id: m.id, capabilities: m.x_capabilities })),
-      );
+      .data.models.filter((m) => !provider || m.provider === provider)
+      .map((m) => ({ provider: m.provider, id: m.id, capabilities: m.capabilities }));
   }
   function calc({
     provider,
@@ -308,85 +247,25 @@ export function createLlmInfo(options: Options = {}) {
     mode?: 'standard' | 'fast' | 'priority' | 'flex' | 'batch';
     region?: 'us' | 'eu' | 'global';
   }): Cost | null {
-    const d = current().data,
-      p = d.providers.find((x) => x.id === provider),
-      m = p && matchModel(p, model);
-    if (!p || !m) return null;
-    const clean = { ...usage };
-    delete clean.output_images;
-    delete clean.output_video_seconds;
-    delete clean.web_searches;
-    const warnings: string[] = [];
+    const d = current().data;
+    const m = findModel(d.models, provider, model);
+    if (!m) return null;
     const selectedMode = mode ?? opts.mode ?? 'standard';
-    const modes = (m as any).x_modes ?? {};
-    let prices = m.prices;
-    if (selectedMode !== 'standard') {
-      const selected = modes[selectedMode]?.prices;
-      if (selected && Object.keys(selected).length) prices = { ...prices, ...selected };
-      else {
-        warnings.push(`missing_price:mode:${selectedMode}`);
-        const max = (a: any, b: any): any => {
-          if (a === undefined) return b;
-          if (b === undefined) return a;
-          return Math.max(
-            ...[a, b].flatMap((v) =>
-              typeof v === 'number' ? [v] : [v.base, ...v.tiers.map((t: any) => t.price)],
-            ),
-          );
-        };
-        prices = { ...prices };
-        for (const entry of Object.values(modes) as any[])
-          for (const [key, value] of Object.entries(entry.prices ?? {}))
-            (prices as any)[key] = max((prices as any)[key], value);
-      }
-    }
-    let result;
-    for (let attempt = 0; attempt < 16; attempt++) {
-      try {
-        result = calcPrice(clean, m.id, {
-          provider: { ...p, models: [{ ...m, prices, match: { equals: m.id } }] },
-          timestamp: at,
-        });
-        break;
-      } catch (error) {
-        const key = String(error).match(/Missing usage value for ([a-z_]+_tokens)/)?.[1];
-        if (!key || key in clean) throw error;
-        clean[key] = 0; // Unknown overlap: zero is the conservative billable split.
-      }
-    }
-    if (!result) return null;
-    if (stale()) warnings.push('stale_data');
-    let extra = 0;
-    const x = (m as any).x_extra_prices ?? {};
-    if (usage.output_images && !usage.output_image_tokens)
-      extra += pick(x.per_image, opts, warnings, 'per_image') * usage.output_images;
-    if (usage.output_video_seconds)
-      extra +=
-        pick(x.per_video_second, opts, warnings, 'per_video_second') * usage.output_video_seconds;
-    if (usage.web_searches) {
-      if (typeof x.web_search === 'number') extra += x.web_search * usage.web_searches;
-      else warnings.push('missing_price:web_search');
-    }
-    if (x.per_video_second !== undefined && !usage.output_video_seconds)
-      warnings.push('missing_param:duration');
-    const uplift = region && region !== 'global' ? ((m as any).x_region_uplift?.[region] ?? 1) : 1;
+    const result = calculate(m, usage, opts, selectedMode, region ?? 'global');
+    if (stale()) result.warnings.push('stale_data');
     return {
-      totalUsd: (result.total_price + extra) * uplift,
-      inputUsd: result.input_price * uplift,
-      outputUsd: result.output_price * uplift,
-      extraUsd: extra * uplift,
+      ...result,
       provider,
       model: m.id,
       requestedModel: model,
       usage,
       dataVersion: d.version,
-      source: (m as any).x_source ?? 'unknown',
-      warnings,
+      source: m.source ?? 'unknown',
     };
   }
   function extractUsage({ provider, apiFlavor, response, request }: any) {
-    const p = current().data.providers.find((x) => x.id === provider);
-    if (!p) throw Error('Unknown provider ' + provider);
+    const rows = current().data.models.filter((x) => x.provider === provider);
+    if (!rows.length) throw Error('Unknown provider ' + provider);
     const r = response ?? {},
       u = r.usage ?? r.usageMetadata ?? {},
       usage: Record<string, number> = {};
@@ -409,7 +288,7 @@ export function createLlmInfo(options: Options = {}) {
       set('input_tokens', (u.promptTokenCount ?? 0) + (u.toolUsePromptTokenCount ?? 0));
       set('output_tokens', (u.candidatesTokenCount ?? 0) + (u.thoughtsTokenCount ?? 0));
       set('cache_read_tokens', u.cachedContentTokenCount);
-      if (u.thoughtsTokenCount && model && matchModel(p, model)?.prices?.output_reasoning_mtok)
+      if (u.thoughtsTokenCount && model && findModel(rows, provider, model)?.prices?.reasoning)
         set('output_reasoning_tokens', u.thoughtsTokenCount);
       for (const [arr, key, modality] of [
         [u.promptTokensDetails, 'input_image_tokens', 'IMAGE'],
@@ -446,13 +325,13 @@ export function createLlmInfo(options: Options = {}) {
       );
       set('input_image_tokens', u.input_tokens_details?.image_tokens);
       set('output_image_tokens', u.output_tokens_details?.image_tokens);
-      if (model && matchModel(p, model)?.prices?.output_reasoning_mtok)
+      if (model && findModel(rows, provider, model)?.prices?.reasoning)
         set(
           'output_reasoning_tokens',
           u.completion_tokens_details?.reasoning_tokens ??
             u.output_tokens_details?.reasoning_tokens,
         );
-      if (provider === 'x-ai') {
+      if (provider === 'x-ai' && apiFlavor !== 'responses' && r.object !== 'response') {
         // https://docs.x.ai/developers/tools/tool-usage-details: completion_tokens is final text; reasoning_tokens is separate.
         const reasoning =
           u.completion_tokens_details?.reasoning_tokens ??

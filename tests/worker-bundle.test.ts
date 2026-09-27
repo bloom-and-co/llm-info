@@ -1,11 +1,13 @@
 import { it, expect } from 'vitest';
 import { build } from 'esbuild';
+import { execFileSync } from 'node:child_process';
 
 it('bundles and imports a memory-store Worker without Node modules', async () => {
+  execFileSync('npm', ['run', 'build'], { stdio: 'pipe' });
   const result = await build({
     stdin: {
       contents:
-        "import { createLlmInfo, memoryStore } from './src/index.ts'; export default { fetch() { return new Response(String(createLlmInfo({store:memoryStore()}).info().stale)) } };",
+        "import { createLlmInfo, memoryStore } from './dist/index.js'; export default { fetch() { return new Response(String(createLlmInfo({store:memoryStore()}).info().stale)) } };",
       resolveDir: process.cwd(),
       sourcefile: 'worker.ts',
       loader: 'ts',

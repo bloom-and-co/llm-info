@@ -37,11 +37,9 @@ it('matches Python totals and warnings for every fixture', async () => {
   });
   await p.load();
   const py = JSON.parse(
-    execFileSync(
-      'uv',
-      ['run', '--with', 'genai-prices==0.1.9', 'python', 'python/tests/parity_dump.py'],
-      { encoding: 'utf8' },
-    ),
+    execFileSync('uv', ['run', '--project', 'python', 'python', 'python/tests/parity_dump.py'], {
+      encoding: 'utf8',
+    }),
   );
   for (const [i, f] of fixtures.entries()) {
     const cost = p.fromResponse(f);

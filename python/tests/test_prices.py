@@ -1,11 +1,13 @@
-import json, sys, time
-from pathlib import Path
+import json
+import sys
+import time
 from decimal import Decimal
+from pathlib import Path
+
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from llm_info import LlmInfo, MemoryStore, FileStore, PricesNotLoadedError
-from llm_info._sdk import snapshot_from_data
+from llm_info import FileStore, LlmInfo, MemoryStore, PricesNotLoadedError
 
 DATA = json.loads(
     (Path(__file__).resolve().parents[2] / "data/llm-info.json").read_text()
@@ -20,15 +22,14 @@ def make(fetch=None, store=None, **kwargs):
     )
 
 
-def test_private_adapter():
-    assert len(snapshot_from_data(DATA).providers) == 4
-    assert snapshot_from_data(DATA).calc(
-        __import__("genai_prices").types.Usage(input_tokens=1000),
-        "gpt-6-luna",
-        "openai",
-        None,
-        None,
-    ).total_price == Decimal("0.0001")
+def test_schema_and_own_engine():
+    assert DATA["schema"] == 2
+    assert len({m["provider"] for m in DATA["models"]}) == 4
+    p = make()
+    p.load()
+    assert p.calc("openai", "gpt-6-luna", {"input_tokens": 1000})[
+        "total_usd"
+    ] == Decimal("0.0001")
 
 
 def test_not_loaded():
@@ -255,7 +256,9 @@ def test_size_resolution_prices():
     assert video["extra_usd"] == Decimal(".16")
 
 
-def test_sdk_google_image_extractor_once():
+def test_google_image_extractor_once():
+    p = make()
+    p.load()
     fixture = {
         "modelVersion": "gemini-3.1-flash-image",
         "usageMetadata": {
@@ -264,8 +267,7 @@ def test_sdk_google_image_extractor_once():
             "candidatesTokensDetails": [{"modality": "IMAGE", "tokenCount": 50}],
         },
     }
-    extracted = snapshot_from_data(DATA).extract_usage(fixture, provider_id="google")
-    assert extracted.usage.output_image_tokens == 50
+    assert p.extract_usage("google", fixture)["usage"]["output_image_tokens"] == 50
 
 
 def test_gemini_text_and_image_output_have_separate_rates():
@@ -293,13 +295,13 @@ def test_dated_image_audio_video_null_and_tools():
     p.load()
     assert p.calc("openai", "gpt-4o-2024-05-13", {"input_tokens": 1_000_000})[
         "input_usd"
-    ] == Decimal("5")
+    ] == Decimal(5)
     assert p.from_response(
         "openai",
         {"usage": {"output_tokens": 1_000_000}, "data": [{}]},
         {"model": "gpt-image-2"},
         "images",
-    )["output_usd"] == Decimal("30")
+    )["output_usd"] == Decimal(30)
     u = p.extract_usage(
         "google",
         {
@@ -338,7 +340,7 @@ def test_dated_image_audio_video_null_and_tools():
         "google",
         {"generatedVideos": [{}, {}]},
         {"model": "veo-3.1-generate-001", "parameters": {"durationSeconds": "5"}},
-    )["extra_usd"] == Decimal("4")
+    )["extra_usd"] == Decimal(4)
     assert (
         p.from_response("openai", {"seconds": "5"}, {"model": "sora-2"})["extra_usd"]
         > 0
@@ -409,3 +411,86 @@ def test_xai_image_default_without_size():
     )
     assert cost["extra_usd"] == Decimal(".06")
     assert "missing_param:size" not in cost["warnings"]
+
+
+def test_xai_responses_reasoning_is_in_output_total():
+    p = make()
+    p.load()
+    cost = p.from_response(
+        "x-ai",
+        {
+            "object": "response",
+            "model": "grok-4.7",
+            "usage": {
+                "input_tokens": 100,
+                "output_tokens": 30,
+                "output_tokens_details": {"reasoning_tokens": 20},
+            },
+        },
+        api_flavor="responses",
+    )
+    assert cost["output_usd"] == Decimal("0.00018")
+
+
+def test_conservative_cache_overlap_and_fallback():
+    from llm_info._engine import calculate
+
+    model = {
+        "prices": {
+            "input": 1,
+            "input_audio": 10,
+            "cache_read": 0.1,
+            "cache_audio_read": 2,
+            "output": 3,
+        },
+        "capabilities": {},
+    }
+    usage = {
+        "input_tokens": 1_000_000,
+        "input_audio_tokens": 600_000,
+        "cache_read_tokens": 500_000,
+    }
+    result = calculate(model, usage)
+    assert result["input_usd"] == Decimal("5.24")
+    assert "inconsistent_usage" in result["warnings"]
+    del model["prices"]["cache_audio_read"]
+    fallback = calculate(model, usage)
+    assert fallback["input_usd"] == Decimal("6.4")
+    assert "fallback_price:cache_audio_read" in fallback["warnings"]
+
+
+def test_veo_sdk_vertex_rest_and_operation_counts():
+    p = make()
+    p.load()
+    request = {
+        "model": "veo-3.1-generate-001",
+        "config": {"durationSeconds": 5, "numberOfVideos": 2},
+    }
+    for response, expected in [
+        ({}, 4),
+        ({"videos": [{}, {}, {}]}, 6),
+        ({"generateVideoResponse": {"generatedSamples": [{}, {}]}}, 4),
+        (
+            {
+                "operation": {
+                    "response": {
+                        "generateVideoResponse": {"generatedSamples": [{}, {}]}
+                    }
+                }
+            },
+            4,
+        ),
+    ]:
+        assert p.from_response("google", response, request)["extra_usd"] == Decimal(
+            expected
+        )
+
+
+def test_included_reasoning_uses_disjoint_output_bucket():
+    from llm_info._engine import calculate
+
+    result = calculate(
+        {"prices": {"output": 3, "reasoning": 5}},
+        {"output_tokens": 100, "output_reasoning_tokens": 20},
+    )
+    assert result["output_usd"] == Decimal("0.00034")

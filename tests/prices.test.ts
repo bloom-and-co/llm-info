@@ -254,7 +254,9 @@ it('extractor counts Google image tokens once', async () => {
       candidatesTokensDetails: [{ modality: 'IMAGE', tokenCount: 50 }],
     },
   };
-  expect(p.extractUsage({provider: 'google', response: fixture}).usage.output_image_tokens).toBe(50);
+  expect(p.extractUsage({ provider: 'google', response: fixture }).usage.output_image_tokens).toBe(
+    50,
+  );
 });
 
 it('prices Gemini text and image output tokens at separate rates', async () => {
@@ -436,21 +438,32 @@ it('uses the conservative default for xAI generated images without size metadata
 it('charges image-only token output once', async () => {
   const p = client();
   await p.load();
-  const cost = p.fromResponse({ provider: 'openai', apiFlavor: 'images', response: {
-    usage: { input_tokens: 50, output_tokens: 4160 }, data: [{}],
-  }, request: { model: 'gpt-image-1', size: '1024x1024', quality: 'high' } });
+  const cost = p.fromResponse({
+    provider: 'openai',
+    apiFlavor: 'images',
+    response: {
+      usage: { input_tokens: 50, output_tokens: 4160 },
+      data: [{}],
+    },
+    request: { model: 'gpt-image-1', size: '1024x1024', quality: 'high' },
+  });
   expect(cost?.extraUsd).toBe(0);
 });
 
 it('handles overlapping cache and modality totals conservatively', async () => {
   const p = client();
   await p.load();
-  const cost = p.fromResponse({ provider: 'google', response: {
-    modelVersion: 'gemini-3.8-flash', usageMetadata: {
-      promptTokenCount: 1_000_000, cachedContentTokenCount: 500_000,
-      promptTokensDetails: [{ modality: 'AUDIO', tokenCount: 600_000 }],
+  const cost = p.fromResponse({
+    provider: 'google',
+    response: {
+      modelVersion: 'gemini-3.8-flash',
+      usageMetadata: {
+        promptTokenCount: 1_000_000,
+        cachedContentTokenCount: 500_000,
+        promptTokensDetails: [{ modality: 'AUDIO', tokenCount: 600_000 }],
+      },
     },
-  } });
+  });
   expect(cost?.totalUsd).toBeGreaterThan(0);
   expect(cost?.warnings).toContain('inconsistent_usage');
 });
@@ -458,18 +471,46 @@ it('handles overlapping cache and modality totals conservatively', async () => {
 it('counts Veo SDK and Vertex video response shapes', async () => {
   const p = client();
   await p.load();
-  const request = { model: 'veo-3.1-generate-001', config: { durationSeconds: 5, numberOfVideos: 2 } };
+  const request = {
+    model: 'veo-3.1-generate-001',
+    config: { durationSeconds: 5, numberOfVideos: 2 },
+  };
   expect(p.fromResponse({ provider: 'google', response: {}, request })?.extraUsd).toBe(4);
-  expect(p.fromResponse({ provider: 'google', response: { videos: [{}, {}, {}] }, request })?.extraUsd).toBe(6);
-  expect(p.fromResponse({ provider: 'google', response: { generateVideoResponse: { generatedSamples: [{}, {}] } }, request })?.extraUsd).toBe(4);
+  expect(
+    p.fromResponse({ provider: 'google', response: { videos: [{}, {}, {}] }, request })?.extraUsd,
+  ).toBe(6);
+  expect(
+    p.fromResponse({
+      provider: 'google',
+      response: { generateVideoResponse: { generatedSamples: [{}, {}] } },
+      request,
+    })?.extraUsd,
+  ).toBe(4);
+  expect(
+    p.fromResponse({
+      provider: 'google',
+      response: {
+        operation: { response: { generateVideoResponse: { generatedSamples: [{}, {}] } } },
+      },
+      request,
+    })?.extraUsd,
+  ).toBe(4);
 });
 
 it('does not add xAI Responses reasoning twice', async () => {
   const p = client();
   await p.load();
-  const cost = p.fromResponse({ provider: 'x-ai', apiFlavor: 'responses', response: {
-    model: 'grok-4.7', usage: { input_tokens: 100, output_tokens: 30,
-      output_tokens_details: { reasoning_tokens: 20 } },
-  } });
-  expect(cost?.outputUsd).toBeCloseTo(30 * 6 / 1e6, 9);
+  const cost = p.fromResponse({
+    provider: 'x-ai',
+    apiFlavor: 'responses',
+    response: {
+      model: 'grok-4.7',
+      usage: {
+        input_tokens: 100,
+        output_tokens: 30,
+        output_tokens_details: { reasoning_tokens: 20 },
+      },
+    },
+  });
+  expect(cost?.outputUsd).toBeCloseTo((30 * 6) / 1e6, 9);
 });
