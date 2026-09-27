@@ -627,6 +627,42 @@ def test_xai_responses_reasoning_is_in_output_total():
     assert cost["output_usd"] == Decimal("0.00018")
 
 
+def test_openai_compatible_output_recovers_total_gap():
+    p = make()
+    p.load()
+    cases = [
+        ("google", "openai-chat", "gemini-3.5-flash", {"prompt_tokens": 2000, "completion_tokens": 600, "total_tokens": 3000}, 1000, True),
+        ("x-ai", "xai-chat", "grok-4.7", {"prompt_tokens": 100, "completion_tokens": 10, "total_tokens": 150, "completion_tokens_details": {"reasoning_tokens": 20}}, 50, True),
+        ("x-ai", "xai-chat", "grok-4.7", {"prompt_tokens": 100, "completion_tokens": 10, "total_tokens": 130, "completion_tokens_details": {"reasoning_tokens": 20}}, 30, False),
+        ("openai", "openai-chat", "gpt-6-luna", {"prompt_tokens": 100, "completion_tokens": 30, "total_tokens": 130, "completion_tokens_details": {"reasoning_tokens": 20}}, 30, False),
+        ("google", "openai-responses", "gemini-3.5-flash", {"input_tokens": 2000, "output_tokens": 600, "total_tokens": 3000}, 1000, True),
+        ("x-ai", "xai-responses", "grok-4.7", {"input_tokens": 100, "output_tokens": 30, "total_tokens": 150, "output_tokens_details": {"reasoning_tokens": 20}}, 50, True),
+    ]
+    for provider, flavor, model, usage, output, warned in cases:
+        response = {"model": model, "usage": usage}
+        assert p.extract_usage(provider, response, api_flavor=flavor)["usage"]["output_tokens"] == output
+        cost = p.from_response(provider, response, api_flavor=flavor)
+        assert cost["usage"]["output_tokens"] == output
+        assert ("output_from_total" in cost["warnings"]) == warned
+
+
+def test_requested_model_override_controls_reasoning_and_pricing():
+    p = make()
+    p.load()
+    for model, output_price, reasoning_price in [
+        ("gemini-robotics-er-2-preview", 5, 10),
+        ("gemini-omni-flash-preview", 17.5, 9),
+    ]:
+        for model_version in [None, "unknown-response-model"]:
+            response = {"modelVersion": model_version, "usageMetadata": {"promptTokenCount": 100, "candidatesTokenCount": 10, "thoughtsTokenCount": 20}}
+            extracted = p.extract_usage("google", response, model=model)
+            assert extracted["model"] == model
+            assert extracted["usage"]["output_reasoning_tokens"] == 20
+            cost = p.from_response("google", response, model=model)
+            assert cost["requested_model"] == model
+            assert cost["output_usd"] == Decimal(str((10 * output_price + 20 * reasoning_price) / 1e6))
+
+
 def test_conservative_cache_overlap_and_fallback():
     from llm_info._engine import calculate
 
