@@ -1,4 +1,2 @@
 Price data is derived from LiteLLM (MIT, https://github.com/BerriAI/litellm)
 and models.dev (MIT, https://github.com/sst/models.dev).
-The wrappers use pydantic/genai-prices (MIT, https://github.com/pydantic/genai-prices).
-Provider metadata and extractor shapes are adapted from genai-prices; model prices are not.

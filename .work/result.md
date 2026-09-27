@@ -170,3 +170,30 @@ builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=
 npm pack/install smoke: PASS
 Python wheel/install smoke: PASS
 ```
+
+## Task 5
+
+`@pydantic/genai-prices` / `genai-prices` への依存を完全に除去した。公開データを schema 2 のフラットな `models` 配列へ変更し、provider、ID、名前、alias、match、source、USD/100万 token の単価、tier、mode、地域倍率、capability を各行に持たせた。builder は LiteLLM と models.dev のデータから直接この形式を作る。旧 SDK の provider metadata、extractor 配列、単価キー補完、エラー文の正規表現パース、Python private API、JS singleton 制限を削除した。model 数減少、旗艦 model、負数・NaN、tier 順序の検証を残した。schema 1 の旧ファイルからの model 数比較にも対応する。生成データは openai=149、anthropic=20、google=90、x-ai=54（計313）、価格衝突14、capability 衝突180、skipped 0。
+
+JS と Python の独立した計算エンジンを実装した。input/cache/modality/output/reasoning を重複のない bucket へ割り当て、曖昧な cache×modality の重なりでは実現可能な最大額を選ぶ。たとえば input 100万、audio 60万、cached 50万では audio cache が最低10万必要で、テスト用単価による最大額 $5.24 を両言語で確認した。矛盾する usage は clamp して `inconsistent_usage` を返す。専用単価のない bucket は最も高い適用可能な fallback を使い、`fallback_price:<key>` または `missing_price:<key>` を返す。tier は threshold を超えた場合だけ、mode は token cost、地域倍率は総額へ適用する。JS の金額は最後に 1e-10 USD へ丸め、Python は Decimal を使う。既存の手計算合計や response fixture の期待金額は変更していない。
+
+review の問題は失敗する回帰テストを先にコミットした（`cdfa27e`、`2aac517`）。gpt-image-1 の output token がある Images response は `per_image` を重ねて加算しない。Google の cache/audio および xAI の cache/image 重複では throw せず、最大額となる割当を使う。Veo の `config.durationSeconds` / `config.numberOfVideos`、Vertex `videos`、Gemini REST `generateVideoResponse.generatedSamples` と operation wrapper を数える。xAI Chat Completions は reasoning が completion の外側だが、Responses の公式例では `total_tokens = input_tokens + output_tokens` かつ `output_tokens_details.reasoning_tokens` が示されるため、Responses では reasoning を足し直さない。根拠: https://docs.x.ai/developers/rest-api-reference/inference/chat-completions 、https://docs.x.ai/developers/rest-api-reference/inference/responses 、https://docs.x.ai/developers/advanced-api-usage/prompt-caching/usage-and-pricing 。Worker テストは `dist/index.js` を build 後に bundle する。
+
+README に schema 2、bucket 割当、fallback と warning、capability、mode、region、store hook、D1 Worker 例、GitHub からの install を記した。NOTICE は LiteLLM と models.dev だけにした。`.work/` の外で `rg -i 'genai' .` は結果 0 件。GitHub への push、repository 作成、公開は行っていない。
+
+最終実行の要約行（原文）:
+
+```text
+All matched files use Prettier code style!
+ Test Files  5 passed (5)
+      Tests  41 passed (41)
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+All checks passed!
+21 passed in 0.05s
+builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=14; skipped=0
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+npm pack/install smoke: PASS
+Python wheel/install smoke: PASS
+```

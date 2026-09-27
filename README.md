@@ -1,6 +1,6 @@
 # llm-info
 
-A cached price table and thin cost calculators for OpenAI, Anthropic, Google, and xAI. Prices are built every six hours from [LiteLLM](https://github.com/BerriAI/litellm) and [models.dev](https://github.com/sst/models.dev), then validated with [genai-prices](https://github.com/pydantic/genai-prices). Conflicting fields use the higher price and appear in `data/llm-info.json`.
+A cached LLM price table and independent cost calculators for OpenAI, Anthropic, Google, and xAI. The builder merges [LiteLLM](https://github.com/BerriAI/litellm) and [models.dev](https://github.com/sst/models.dev) data. Conflicting prices use the higher value and are listed in `data/llm-info.json`.
 
 ## Install
 
@@ -14,19 +14,20 @@ pip install "git+https://github.com/bloom-and-co/llm-info#subdirectory=python"
 ```js
 import { createLlmInfo } from '@bloom-and-co/llm-info';
 import { fileStore } from '@bloom-and-co/llm-info/file';
-const prices = createLlmInfo({ store: fileStore() });
-await prices.load();
-const cost = prices.fromResponse({ provider: 'openai', apiFlavor: 'responses', response });
-// Or: prices.calc({ provider: 'openai', model: 'gpt-6-luna', usage: { input_tokens: 1000, output_tokens: 500 } });
-const capabilities = prices.capabilities({ provider: 'openai', model: 'gpt-6-luna' });
-const available = prices.models({ provider: 'openai' });
+const info = createLlmInfo({ store: fileStore() });
+await info.load();
+const cost = info.fromResponse({ provider: 'openai', apiFlavor: 'responses', response });
+const direct = info.calc({ provider: 'openai', model: 'gpt-6-luna', usage: { input_tokens: 1000, output_tokens: 500 } });
+const capabilities = info.capabilities({ provider: 'openai', model: 'gpt-6-luna' });
+const models = info.models({ provider: 'openai' });
 ```
 
-`load()` fetches on an empty cache. A stale cache is immediately usable while a background refresh runs. Call `refresh({force:true})` to wait for a refresh. The JS main entry works in Workers and browsers when given a `PriceStore`; the Node file store is available at `@bloom-and-co/llm-info/file`.
+`load()` fetches into an empty cache. Stale data remains usable while a background refresh runs. Call `refresh({ force: true })` to wait for a refresh. Multiple instances can use separate stores. A store implements `read(): CacheDoc | null` and `write(doc): void`, synchronously or asynchronously. The main entry works in browsers and Workers; the `/file` entry uses Node.
+
+A D1 store for Cloudflare Workers:
 
 ```js
-import { createLlmInfo } from '@bloom-and-co/llm-info';
-// D1 table: CREATE TABLE prices (id INTEGER PRIMARY KEY, doc TEXT NOT NULL)
+// CREATE TABLE prices (id INTEGER PRIMARY KEY, doc TEXT NOT NULL);
 const store = {
   async read() {
     const row = await env.DB.prepare('SELECT doc FROM prices WHERE id=1').first();
@@ -37,34 +38,32 @@ const store = {
       .bind(JSON.stringify(doc)).run();
   },
 };
-const prices = createLlmInfo({ store });
-```
-
-A KV or Redis store has the same interface:
-
-```js
-const store = {
-  read: async () => JSON.parse((await kv.get('llm-info')) || 'null'),
-  write: async doc => { await kv.put('llm-info', JSON.stringify(doc)); },
-};
+const info = createLlmInfo({ store });
+await info.load();
 ```
 
 ## Python
 
 ```python
 from llm_info import LlmInfo
-prices = LlmInfo()
-prices.load()
-cost = prices.from_response(provider='anthropic', response=response)
-capabilities = prices.capabilities(provider='anthropic', model='claude-opus-5-5')
-available = prices.models(provider='anthropic')
-# Money fields are Decimal.
+info = LlmInfo()
+info.load()
+cost = info.from_response(provider='anthropic', response=response)
+capabilities = info.capabilities(provider='anthropic', model='claude-opus-5-5')
 ```
 
-Python uses a synchronous API. `auto_refresh` starts a daemon thread for stale cached data. Both libraries support memory and file stores, fallback URLs, an acceptance hook, and events. Default cache path is `~/.cache/llm-info/llm-info.json` or `$XDG_CACHE_HOME/llm-info/llm-info.json`; set `LLM_INFO_CACHE` to override it. The JSON data default URL is `https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json` with jsDelivr fallback.
+Python money fields are `Decimal`. Its API is synchronous; `auto_refresh` starts a daemon thread for stale cached data. The default cache path is `~/.cache/llm-info/llm-info.json` or `$XDG_CACHE_HOME/llm-info/llm-info.json`; `LLM_INFO_CACHE` overrides it. Both libraries support memory and file stores, fallback URLs, an acceptance hook, and events. The default data URL is `https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json`, with a jsDelivr fallback.
 
-`calc` and `fromResponse` (Python: `from_response`) accept `mode` (`standard`, `fast`, `priority`, `flex`, `batch`) and `region` (`global`, `us`, `eu`). The response's OpenAI `service_tier` or Anthropic `usage.speed` selects a mode when no explicit mode is given. A mode without a published price uses the highest known rate for that model and adds `missing_price:mode:<mode>`. Regional uplift applies to the whole computed amount, including image and video charges; the source does not split its multiplier by charge type. The builder takes the smaller limit when sources disagree and records disagreements in `capability_conflicts`.
+## Published data and calculation
 
-For reasoning efforts, models.dev's effort list takes precedence. Otherwise the builder uses LiteLLM's `reasoning_effort_levels`, then only effort levels explicitly marked `supports_<level>_reasoning_effort: true`. It leaves the list `null` when no level is declared; it does not infer low, medium, or high from `supports_reasoning` alone.
+`data/llm-info.json` has `schema: 2`, a version and timestamp, source refs, and a flat `models` array. Each row gives `provider`, `id`, `name`, `aliases`, deterministic `match` rules, `source`, `prices`, `modes`, `region_uplift`, and `capabilities`. Prices for token buckets are USD per million tokens. `per_image`, `per_video_second`, and `per_web_search` are USD per unit. A tier `{ "above_input_tokens": 272000, "prices": {...} }` applies only when total input is **greater** than 272,000. Exact dated model rows win over aliases and suffix matching. Known provider prefixes are stripped case insensitively.
 
-MIT licensed. See [NOTICE](NOTICE) for upstream attribution.
+Usage totals include their modality and cache subcounts. The engine makes disjoint input and output buckets, and never charges the same reported token twice. When cache and modality counts overlap without a detailed split, it chooses the allocation with the **highest plausible cost**. For example, 1 million input tokens with 600,000 audio and 500,000 cached tokens require at least 100,000 cached audio tokens; the remaining cache allocation follows the most expensive feasible split. Counts that exceed a total are clamped and add `inconsistent_usage`.
+
+A missing bucket price uses the most expensive applicable fallback and adds `fallback_price:<key>`; when no applicable price exists, it uses the model's highest token price and adds `missing_price:<key>`. Other warnings are `missing_price:mode:<mode>`, `missing_price:per_image`, `missing_price:per_video_second`, `missing_price:web_search`, `missing_param:size`, `missing_param:quality`, `missing_param:resolution`, `missing_param:duration`, and `stale_data`. Warnings describe estimates; they do not stop calculation. Image count charges apply only if output image tokens were not reported. For image-only models, reported output tokens also suppress the per-image charge.
+
+`mode` accepts `standard`, `fast`, `priority`, `flex`, and `batch`. Mode prices override base prices, and a mode multiplier applies to token cost. If a requested mode is absent, the highest known mode prices are used with a warning. `region` accepts `global`, `us`, and `eu`; its uplift multiplies the total, including image and video charges. An OpenAI `service_tier` or Anthropic `usage.speed` may select a mode from a response. The builder merges capability fields from both sources, records disagreements in `capability_conflicts`, and lists records it cannot publish in `skipped`.
+
+xAI Chat Completions reports reasoning outside `completion_tokens`, so the wrapper adds it. The xAI Responses sample reports reasoning within `output_tokens`, so the wrapper does not add it again. See [Chat Completions](https://docs.x.ai/developers/rest-api-reference/inference/chat-completions) and [Responses](https://docs.x.ai/developers/rest-api-reference/inference/responses).
+
+MIT licensed. See [NOTICE](NOTICE) for attribution.
