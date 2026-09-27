@@ -147,7 +147,7 @@ export function calculate(
     if (key === 'cache_write_1h') {
       if (warn) warnings.push('fallback_price:cache_write_1h');
       // https://platform.claude.com/docs/en/about-claude/pricing: 1h writes cost 2x standard input.
-      return rate('input', [], false) * 2;
+      return Math.max(rate('input', [], false) * 2, prices.cache_write ?? 0);
     }
     const candidates = fallbacks
       .map((k) => prices[k])

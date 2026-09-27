@@ -8,6 +8,7 @@ import tempfile
 import threading
 import time
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Protocol
 from urllib.error import HTTPError
@@ -115,6 +116,18 @@ def _fetch(url, etag):
         raise
 
 
+def _usage_number(value):
+    if value is None:
+        return Decimal(0)
+    if isinstance(value, bool):
+        return Decimal("NaN")
+    try:
+        number = Decimal(str(value))
+        return number if number.is_finite() and number >= 0 else Decimal("NaN")
+    except (InvalidOperation, ValueError, TypeError):
+        return Decimal("NaN")
+
+
 def _video_seconds(response, request, model):
     response = (
         (response.get("operation") or {}).get("response")
@@ -164,7 +177,7 @@ def _video_seconds(response, request, model):
             ),
         )
     )
-    return duration * count
+    return Decimal(str(duration)) * _usage_number(count)
 
 
 class LlmInfo:
@@ -380,25 +393,30 @@ class LlmInfo:
         out = {}
 
         def set_(key, val):
-            if isinstance(val, (int, float)):
+            if val is not None:
                 out[key] = val
 
         if provider == "anthropic":
             # https://platform.claude.com/docs/en/build-with-claude/prompt-caching: cache_creation splits writes by TTL.
             # The same fields are accepted from Vertex/Bedrock Anthropic responses.
             creation = u.get("cache_creation") or {}
-            one_hour = creation.get("ephemeral_1h_input_tokens") or 0
+            one_hour = _usage_number(creation.get("ephemeral_1h_input_tokens"))
             five_minute = creation.get("ephemeral_5m_input_tokens")
             if five_minute is None:
-                five_minute = max(
-                    0, (u.get("cache_creation_input_tokens") or 0) - one_hour
+                difference = (
+                    _usage_number(u.get("cache_creation_input_tokens")) - one_hour
                 )
+                five_minute = (
+                    max(0, difference) if difference.is_finite() else difference
+                )
+            else:
+                five_minute = _usage_number(five_minute)
             set_(
                 "input_tokens",
-                (u.get("input_tokens") or 0)
+                _usage_number(u.get("input_tokens"))
                 + five_minute
                 + one_hour
-                + (u.get("cache_read_input_tokens") or 0),
+                + _usage_number(u.get("cache_read_input_tokens")),
             )
             set_("output_tokens", u.get("output_tokens"))
             set_("cache_read_tokens", u.get("cache_read_input_tokens"))
@@ -411,13 +429,13 @@ class LlmInfo:
         elif provider == "google":
             set_(
                 "input_tokens",
-                (u.get("promptTokenCount") or 0)
-                + (u.get("toolUsePromptTokenCount") or 0),
+                _usage_number(u.get("promptTokenCount"))
+                + _usage_number(u.get("toolUsePromptTokenCount")),
             )
             set_(
                 "output_tokens",
-                (u.get("candidatesTokenCount") or 0)
-                + (u.get("thoughtsTokenCount") or 0),
+                _usage_number(u.get("candidatesTokenCount"))
+                + _usage_number(u.get("thoughtsTokenCount")),
             )
             set_("cache_read_tokens", u.get("cachedContentTokenCount"))
             m = (
@@ -436,8 +454,8 @@ class LlmInfo:
                 ("candidatesTokensDetails", "output_audio_tokens", "AUDIO"),
             ]:
                 if isinstance(u.get(source), list):
-                    out[dest] = out.get(dest, 0) + sum(
-                        (x.get("tokenCount") or 0)
+                    out[dest] = _usage_number(out.get(dest)) + sum(
+                        _usage_number(x.get("tokenCount"))
                         for x in u[source]
                         if x.get("modality") == modality
                     )
@@ -516,8 +534,10 @@ class LlmInfo:
                     or u.get("output_tokens_details")
                     or {}
                 ).get("reasoning_tokens")
-                if isinstance(reasoning, (int, float)):
-                    out["output_tokens"] = out.get("output_tokens", 0) + reasoning
+                if reasoning is not None:
+                    out["output_tokens"] = _usage_number(
+                        out.get("output_tokens")
+                    ) + _usage_number(reasoning)
             if api_flavor == "images" or "data" in response:
                 set_(
                     "output_images",

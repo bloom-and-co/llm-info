@@ -84,6 +84,11 @@ function stamp() {
 function number(x: any): number | undefined {
   return typeof x === 'number' && Number.isFinite(x) ? x : undefined;
 }
+function usageNumber(x: any): number {
+  if (x === undefined || x === null) return 0;
+  const parsed = typeof x === 'string' && x.trim() ? Number(x) : x;
+  return typeof parsed === 'number' && Number.isFinite(parsed) && parsed >= 0 ? parsed : NaN;
+}
 function videoSeconds(r: any, request: any, model: string | null) {
   const result = r.operation?.response ?? r.response ?? r;
   const raw =
@@ -93,7 +98,7 @@ function videoSeconds(r: any, request: any, model: string | null) {
     request?.durationSeconds ??
     request?.config?.durationSeconds ??
     request?.parameters?.durationSeconds;
-  const seconds = typeof raw === 'string' && raw.trim() ? Number(raw) : raw;
+  const seconds = raw === undefined || raw === null ? undefined : usageNumber(raw);
   // https://ai.google.dev/gemini-api/docs/veo: Veo 3.1 generates 8-second videos by default.
   // https://platform.openai.com/docs/api-reference/videos: Sora default is four seconds.
   const duration =
@@ -108,7 +113,7 @@ function videoSeconds(r: any, request: any, model: string | null) {
     request?.parameters?.sampleCount ??
     request?.sampleCount ??
     1;
-  return duration * count;
+  return duration * usageNumber(count);
 }
 export function createLlmInfo(options: Options = {}) {
   const url = options.url ?? DEFAULT_URL,
@@ -292,25 +297,27 @@ export function createLlmInfo(options: Options = {}) {
       usage: Record<string, number> = {};
     let model = r.model ?? r.modelVersion ?? request?.model ?? null;
     const set = (k: string, v: any) => {
-      if (number(v) !== undefined) usage[k] = v;
+      if (v !== undefined && v !== null) usage[k] = v;
     };
+    const n = usageNumber;
     if (provider === 'anthropic') {
       // https://platform.claude.com/docs/en/build-with-claude/prompt-caching: cache_creation splits writes by TTL;
       // cache_creation_input_tokens is their total, including Vertex/Bedrock Anthropic responses.
-      const oneHour = u.cache_creation?.ephemeral_1h_input_tokens ?? 0;
+      const oneHour = n(u.cache_creation?.ephemeral_1h_input_tokens);
       const fiveMinute =
-        u.cache_creation?.ephemeral_5m_input_tokens ??
-        Math.max(0, (u.cache_creation_input_tokens ?? 0) - oneHour);
+        u.cache_creation?.ephemeral_5m_input_tokens === undefined
+          ? Math.max(0, n(u.cache_creation_input_tokens) - oneHour)
+          : n(u.cache_creation.ephemeral_5m_input_tokens);
       const cacheCreation = fiveMinute + oneHour;
-      set('input_tokens', (u.input_tokens ?? 0) + cacheCreation + (u.cache_read_input_tokens ?? 0));
+      set('input_tokens', n(u.input_tokens) + cacheCreation + n(u.cache_read_input_tokens));
       set('output_tokens', u.output_tokens);
       set('cache_read_tokens', u.cache_read_input_tokens);
       set('cache_write_tokens', fiveMinute);
       set('cache_write_1h_tokens', oneHour);
       set('web_searches', u.server_tool_use?.web_search_requests);
     } else if (provider === 'google') {
-      set('input_tokens', (u.promptTokenCount ?? 0) + (u.toolUsePromptTokenCount ?? 0));
-      set('output_tokens', (u.candidatesTokenCount ?? 0) + (u.thoughtsTokenCount ?? 0));
+      set('input_tokens', n(u.promptTokenCount) + n(u.toolUsePromptTokenCount));
+      set('output_tokens', n(u.candidatesTokenCount) + n(u.thoughtsTokenCount));
       set('cache_read_tokens', u.cachedContentTokenCount);
       if (u.thoughtsTokenCount && model && findModel(rows, provider, model)?.prices?.reasoning)
         set('output_reasoning_tokens', u.thoughtsTokenCount);
@@ -324,10 +331,10 @@ export function createLlmInfo(options: Options = {}) {
       ] as const)
         if (Array.isArray(arr))
           usage[key] =
-            (usage[key] ?? 0) +
+            n(usage[key]) +
             arr
               .filter((x: any) => x.modality === modality)
-              .reduce((a: number, x: any) => a + (x.tokenCount ?? 0), 0);
+              .reduce((a: number, x: any) => a + n(x.tokenCount), 0);
       set(
         'output_images',
         r.generatedImages?.length ??
@@ -366,8 +373,8 @@ export function createLlmInfo(options: Options = {}) {
         const reasoning =
           u.completion_tokens_details?.reasoning_tokens ??
           u.output_tokens_details?.reasoning_tokens;
-        if (number(reasoning) !== undefined)
-          usage.output_tokens = (usage.output_tokens ?? 0) + reasoning;
+        if (reasoning !== undefined && reasoning !== null)
+          usage.output_tokens = n(usage.output_tokens) + n(reasoning);
       }
       if (apiFlavor === 'images' || r.data?.length) {
         set('output_images', r.data?.length ?? request?.n ?? 1);

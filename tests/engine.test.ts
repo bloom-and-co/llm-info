@@ -29,6 +29,10 @@ it('charges one-hour cache writes separately and derives a missing price from in
   expect(fallback.totalUsd).toBe(8);
   expect(fallback.warnings).toContain('fallback_price:cache_write_1h');
   expect(fallback.warnings).not.toContain('inconsistent_usage');
+  opus.prices.cache_write = 12;
+  expect(
+    calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 }).totalUsd,
+  ).toBe(12);
 });
 it('applies one-hour cache write tiers to mode prices', () => {
   const opus = {

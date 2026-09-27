@@ -48,8 +48,12 @@ def test_one_hour_cache_write_price_fallback():
     cost = calculate(
         model, {"input_tokens": 1_000_000, "cache_write_1h_tokens": 1_000_000}
     )
-    assert cost["total_usd"] == Decimal("8")
+    assert cost["total_usd"] == Decimal(8)
     assert "fallback_price:cache_write_1h" in cost["warnings"]
+    model["prices"]["cache_write"] = 12
+    assert calculate(
+        model, {"input_tokens": 1_000_000, "cache_write_1h_tokens": 1_000_000}
+    )["total_usd"] == Decimal(12)
     model["prices"] = {
         "input": 4,
         "cache_write_1h": 8,
@@ -66,7 +70,7 @@ def test_one_hour_cache_write_price_fallback():
         {"input_tokens": 1_000_000, "cache_write_1h_tokens": 1_000_000},
         mode="fast",
     )
-    assert mode["total_usd"] == Decimal("32")
+    assert mode["total_usd"] == Decimal(32)
 
 
 def test_load_and_four_providers():

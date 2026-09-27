@@ -40,10 +40,7 @@ def find_model(models, provider, name):
             m
             for m in rows
             if m.get("match", {}).get("dated_suffix")
-            and (
-                name.startswith(m["id"].lower() + "-")
-                or name.startswith(m["id"].lower() + "@")
-            )
+            and (name.startswith((m["id"].lower() + "-", m["id"].lower() + "@")))
         ]
         return max(matches, key=lambda m: len(m["id"])) if matches else None
     return None
@@ -155,7 +152,11 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
             if warn:
                 warnings.append("fallback_price:cache_write_1h")
             # https://platform.claude.com/docs/en/about-claude/pricing: 1h writes cost 2x standard input.
-            return rate("input", (), False) * 2
+            write_5m = prices.get("cache_write")
+            return max(
+                rate("input", (), False) * 2,
+                D(write_5m) if isinstance(write_5m, (int, float, Decimal)) else D(0),
+            )
         candidates = [
             D(prices[k])
             for k in fallbacks
