@@ -293,15 +293,54 @@ export function createLlmInfo(options: Options = {}) {
     provider = provider.toLowerCase();
     const rows = current().data.models.filter((x) => x.provider === provider);
     if (!rows.length) throw Error('Unknown provider ' + provider);
-    const r = response ?? {},
-      u = r.usage ?? r.usageMetadata ?? {},
+    const r = response ?? {};
+    const flavors: Record<string, string> = {
+      chat: 'openai-chat',
+      responses: 'openai-responses',
+      embeddings: 'openai-embeddings',
+      images: 'openai-images',
+      'xai-chat': 'xai-chat',
+      'xai-responses': 'xai-responses',
+      'xai-images': 'xai-images',
+      'openai-chat': 'openai-chat',
+      'openai-responses': 'openai-responses',
+      'openai-embeddings': 'openai-embeddings',
+      'openai-images': 'openai-images',
+      'anthropic-messages': 'anthropic-messages',
+      'gemini-generate-content': 'gemini-generate-content',
+      'gemini-embed-content': 'gemini-embed-content',
+      'gemini-predict': 'gemini-predict',
+    };
+    if (apiFlavor != null && !flavors[apiFlavor]) throw Error('Unknown apiFlavor: ' + apiFlavor);
+    const shape =
+      apiFlavor == null
+        ? provider === 'anthropic'
+          ? 'anthropic-messages'
+          : provider === 'google'
+            ? 'gemini-generate-content'
+            : r.data?.length
+              ? provider === 'x-ai'
+                ? 'xai-images'
+                : 'openai-images'
+              : r.object === 'response' || r.usage?.input_tokens != null
+                ? provider === 'x-ai'
+                  ? 'xai-responses'
+                  : 'openai-responses'
+                : provider === 'x-ai'
+                  ? 'xai-chat'
+                  : 'openai-chat'
+        : flavors[apiFlavor];
+    const openaiShape = shape.startsWith('openai-') || shape.startsWith('xai-');
+    const responsesShape = shape === 'openai-responses' || shape === 'xai-responses';
+    const imageShape = shape === 'openai-images' || shape === 'xai-images';
+    const u = r.usage ?? r.usageMetadata ?? {},
       usage: Record<string, number> = {};
     let model = r.model ?? r.modelVersion ?? request?.model ?? null;
     const set = (k: string, v: any) => {
       if (v !== undefined && v !== null) usage[k] = v;
     };
     const n = usageNumber;
-    if (provider === 'anthropic') {
+    if (shape === 'anthropic-messages') {
       // https://platform.claude.com/docs/en/build-with-claude/prompt-caching: cache_creation splits writes by TTL;
       // cache_creation_input_tokens is their total, including Vertex/Bedrock Anthropic responses.
       const oneHour = n(u.cache_creation?.ephemeral_1h_input_tokens);
@@ -316,7 +355,7 @@ export function createLlmInfo(options: Options = {}) {
       set('cache_write_tokens', fiveMinute);
       set('cache_write_1h_tokens', oneHour);
       set('web_searches', u.server_tool_use?.web_search_requests);
-    } else if (provider === 'google') {
+    } else if (shape.startsWith('gemini-')) {
       set('input_tokens', n(u.promptTokenCount) + n(u.toolUsePromptTokenCount));
       set('output_tokens', n(u.candidatesTokenCount) + n(u.thoughtsTokenCount));
       set('cache_read_tokens', u.cachedContentTokenCount);
@@ -344,40 +383,30 @@ export function createLlmInfo(options: Options = {}) {
           request?.config?.numberOfImages,
       );
       set('output_video_seconds', videoSeconds(r, request, model));
-    } else {
-      const a = u.prompt_tokens ?? u.input_tokens,
-        b = u.completion_tokens ?? u.output_tokens;
+    } else if (openaiShape) {
+      const a = responsesShape || imageShape ? u.input_tokens : u.prompt_tokens,
+        b = responsesShape || imageShape ? u.output_tokens : u.completion_tokens;
       set('input_tokens', a);
       set('output_tokens', b);
-      set(
-        'cache_read_tokens',
-        u.prompt_tokens_details?.cached_tokens ?? u.input_tokens_details?.cached_tokens,
-      );
-      set(
-        'input_audio_tokens',
-        u.prompt_tokens_details?.audio_tokens ?? u.input_tokens_details?.audio_tokens,
-      );
-      set(
-        'output_audio_tokens',
-        u.completion_tokens_details?.audio_tokens ?? u.output_tokens_details?.audio_tokens,
-      );
+      const inputDetails =
+        responsesShape || imageShape ? u.input_tokens_details : u.prompt_tokens_details;
+      const outputDetails =
+        responsesShape || imageShape ? u.output_tokens_details : u.completion_tokens_details;
+      set('cache_read_tokens', inputDetails?.cached_tokens);
+      set('cache_write_tokens', inputDetails?.cache_write_tokens);
+      set('input_audio_tokens', inputDetails?.audio_tokens);
+      set('output_audio_tokens', outputDetails?.audio_tokens);
       set('input_image_tokens', u.input_tokens_details?.image_tokens);
       set('output_image_tokens', u.output_tokens_details?.image_tokens);
       if (model && findModel(rows, provider, model)?.prices?.reasoning)
-        set(
-          'output_reasoning_tokens',
-          u.completion_tokens_details?.reasoning_tokens ??
-            u.output_tokens_details?.reasoning_tokens,
-        );
-      if (provider === 'x-ai' && apiFlavor !== 'responses' && r.object !== 'response') {
+        set('output_reasoning_tokens', outputDetails?.reasoning_tokens);
+      if (shape === 'xai-chat') {
         // https://docs.x.ai/developers/tools/tool-usage-details: completion_tokens is final text; reasoning_tokens is separate.
-        const reasoning =
-          u.completion_tokens_details?.reasoning_tokens ??
-          u.output_tokens_details?.reasoning_tokens;
+        const reasoning = outputDetails?.reasoning_tokens;
         if (reasoning !== undefined && reasoning !== null)
           usage.output_tokens = n(usage.output_tokens) + n(reasoning);
       }
-      if (apiFlavor === 'images' || r.data?.length) {
+      if (imageShape) {
         set('output_images', r.data?.length ?? request?.n ?? 1);
         model = model ?? request?.model;
       }
@@ -405,6 +434,16 @@ export function createLlmInfo(options: Options = {}) {
       region: args.region,
       options: { ...args.request, ...args.response, service_tier: args.response?.service_tier },
     });
+    const reportedUsage = args.response?.usage ?? args.response?.usageMetadata;
+    if (
+      result &&
+      reportedUsage &&
+      typeof reportedUsage === 'object' &&
+      Object.keys(reportedUsage).length > 0 &&
+      usageNumber(usage.input_tokens) === 0 &&
+      usageNumber(usage.output_tokens) === 0
+    )
+      result.warnings.push('usage_not_extracted');
     if (
       result &&
       model.startsWith('sora-') &&

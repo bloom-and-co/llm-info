@@ -385,6 +385,42 @@ class LlmInfo:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
         request = request or {}
         provider = provider.lower()
+        flavors = {
+            "chat": "openai-chat",
+            "responses": "openai-responses",
+            "embeddings": "openai-embeddings",
+            "images": "openai-images",
+            "openai-chat": "openai-chat",
+            "openai-responses": "openai-responses",
+            "openai-embeddings": "openai-embeddings",
+            "openai-images": "openai-images",
+            "anthropic-messages": "anthropic-messages",
+            "gemini-generate-content": "gemini-generate-content",
+            "gemini-embed-content": "gemini-embed-content",
+            "gemini-predict": "gemini-predict",
+            "xai-chat": "xai-chat",
+            "xai-responses": "xai-responses",
+            "xai-images": "xai-images",
+        }
+        if api_flavor is not None and api_flavor not in flavors:
+            raise ValueError(f"Unknown apiFlavor: {api_flavor}")
+        if api_flavor is not None:
+            shape = flavors[api_flavor]
+        elif provider == "anthropic":
+            shape = "anthropic-messages"
+        elif provider == "google":
+            shape = "gemini-generate-content"
+        elif response.get("data"):
+            shape = "xai-images" if provider == "x-ai" else "openai-images"
+        elif (
+            response.get("object") == "response"
+            or (response.get("usage") or {}).get("input_tokens") is not None
+        ):
+            shape = "xai-responses" if provider == "x-ai" else "openai-responses"
+        else:
+            shape = "xai-chat" if provider == "x-ai" else "openai-chat"
+        responses_shape = shape in ("openai-responses", "xai-responses")
+        image_shape = shape in ("openai-images", "xai-images")
         u = response.get("usage") or response.get("usageMetadata") or {}
         model = (
             response.get("model")
@@ -397,7 +433,7 @@ class LlmInfo:
             if val is not None:
                 out[key] = val
 
-        if provider == "anthropic":
+        if shape == "anthropic-messages":
             # https://platform.claude.com/docs/en/build-with-claude/prompt-caching: cache_creation splits writes by TTL.
             # The same fields are accepted from Vertex/Bedrock Anthropic responses.
             creation = u.get("cache_creation") or {}
@@ -427,7 +463,7 @@ class LlmInfo:
                 "web_searches",
                 (u.get("server_tool_use") or {}).get("web_search_requests"),
             )
-        elif provider == "google":
+        elif shape.startswith("gemini-"):
             set_(
                 "input_tokens",
                 _usage_number(u.get("promptTokenCount"))
@@ -476,16 +512,33 @@ class LlmInfo:
                 _video_seconds(response, request, model),
             )
         else:
-            set_("input_tokens", u.get("prompt_tokens", u.get("input_tokens")))
-            set_("output_tokens", u.get("completion_tokens", u.get("output_tokens")))
+            input_key = (
+                "input_tokens" if responses_shape or image_shape else "prompt_tokens"
+            )
+            output_key = (
+                "output_tokens"
+                if responses_shape or image_shape
+                else "completion_tokens"
+            )
+            input_details = (
+                u.get("input_tokens_details")
+                if responses_shape or image_shape
+                else u.get("prompt_tokens_details")
+            )
+            output_details = (
+                u.get("output_tokens_details")
+                if responses_shape or image_shape
+                else u.get("completion_tokens_details")
+            )
+            input_details = input_details or {}
+            output_details = output_details or {}
+            set_("input_tokens", u.get(input_key))
+            set_("output_tokens", u.get(output_key))
             set_(
                 "cache_read_tokens",
-                (
-                    u.get("prompt_tokens_details")
-                    or u.get("input_tokens_details")
-                    or {}
-                ).get("cached_tokens"),
+                input_details.get("cached_tokens"),
             )
+            set_("cache_write_tokens", input_details.get("cache_write_tokens"))
             set_(
                 "input_image_tokens",
                 (u.get("input_tokens_details") or {}).get("image_tokens"),
@@ -502,44 +555,24 @@ class LlmInfo:
             if m and m["prices"].get("reasoning"):
                 set_(
                     "output_reasoning_tokens",
-                    (
-                        u.get("completion_tokens_details")
-                        or u.get("output_tokens_details")
-                        or {}
-                    ).get("reasoning_tokens"),
+                    output_details.get("reasoning_tokens"),
                 )
             set_(
                 "input_audio_tokens",
-                (
-                    u.get("prompt_tokens_details")
-                    or u.get("input_tokens_details")
-                    or {}
-                ).get("audio_tokens"),
+                input_details.get("audio_tokens"),
             )
             set_(
                 "output_audio_tokens",
-                (
-                    u.get("completion_tokens_details")
-                    or u.get("output_tokens_details")
-                    or {}
-                ).get("audio_tokens"),
+                output_details.get("audio_tokens"),
             )
-            if (
-                provider == "x-ai"
-                and api_flavor != "responses"
-                and response.get("object") != "response"
-            ):
+            if shape == "xai-chat":
                 # https://docs.x.ai/developers/tools/tool-usage-details: completion is final text, reasoning separate.
-                reasoning = (
-                    u.get("completion_tokens_details")
-                    or u.get("output_tokens_details")
-                    or {}
-                ).get("reasoning_tokens")
+                reasoning = output_details.get("reasoning_tokens")
                 if reasoning is not None:
                     out["output_tokens"] = _usage_number(
                         out.get("output_tokens")
                     ) + _usage_number(reasoning)
-            if api_flavor == "images" or "data" in response:
+            if image_shape:
                 set_(
                     "output_images",
                     len(response["data"])
@@ -590,6 +623,15 @@ class LlmInfo:
             mode=mode or inferred_mode,
             region=region,
         )
+        reported_usage = response.get("usage") or response.get("usageMetadata")
+        if (
+            result
+            and isinstance(reported_usage, dict)
+            and reported_usage
+            and _usage_number(extracted["usage"].get("input_tokens")) == 0
+            and _usage_number(extracted["usage"].get("output_tokens")) == 0
+        ):
+            result["warnings"].append("usage_not_extracted")
         if (
             result
             and extracted["model"].startswith("sora-")

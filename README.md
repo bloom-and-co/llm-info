@@ -22,6 +22,8 @@ const capabilities = info.capabilities({ provider: 'openai', model: 'gpt-6-luna'
 const models = info.models({ provider: 'openai' });
 ```
 
+`fromResponse` (Python: `from_response`) uses `provider` to look up the model and its prices, and `apiFlavor` (Python: `api_flavor`) to select the response shape. They are independent: for Google AI Studio's OpenAI-compatible chat endpoint, pass `{ provider: 'google', apiFlavor: 'openai-chat', response }`; [Anthropic's OpenAI-compatible chat endpoint](https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk) uses `{ provider: 'anthropic', apiFlavor: 'openai-chat', response }`. Supported flavors are `openai-chat` (`chat`), `openai-responses` (`responses`), `openai-embeddings` (`embeddings`), `openai-images` (`images`), `anthropic-messages`, `gemini-generate-content`, `gemini-embed-content`, `gemini-predict` (Imagen/Veo), `xai-chat`, `xai-responses`, and `xai-images`. If omitted, the provider's native shape is used; OpenAI and xAI also infer Responses and image responses from the body. An unknown flavor throws an error. A nonempty usage object that yields zero input and output tokens adds `usage_not_extracted` to the warnings. OpenAI-style `cache_write_tokens` is a subcount of prompt/input tokens, separate from cached/read tokens.
+
 `load()` fetches into an empty cache. Stale data remains usable while a background refresh runs. Call `refresh({ force: true })` to wait for a refresh. Multiple instances can use separate stores. A store implements `read(): CacheDoc | null` and `write(doc): void`, synchronously or asynchronously. The main entry works in browsers and Workers; the `/file` entry uses Node.
 
 A D1 store for Cloudflare Workers:

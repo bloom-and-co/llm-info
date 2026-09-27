@@ -324,7 +324,9 @@ def test_response_flavor_validation_and_unextracted_usage():
     p = make()
     p.load()
     with pytest.raises(ValueError, match="Unknown apiFlavor"):
-        p.from_response("google", {"model": "gemini-3.8-flash"}, api_flavor="unsupported")
+        p.from_response(
+            "google", {"model": "gemini-3.8-flash"}, api_flavor="unsupported"
+        )
     cost = p.from_response(
         "google",
         {"model": "gemini-3.8-flash", "usage": {"prompt_tokens": 10}},

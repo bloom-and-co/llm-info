@@ -258,15 +258,18 @@ it('prices every response fixture', async () => {
   const fixtures = JSON.parse(await readFile('tests/fixtures/responses.json', 'utf8'));
   for (const f of fixtures) expect(p.fromResponse(f)?.totalUsd, f.name).toBeCloseTo(f.expected, 8);
   for (const f of fixtures)
-    if (f.expectedUsage)
-      expect(p.fromResponse(f)?.usage, f.name).toMatchObject(f.expectedUsage);
+    if (f.expectedUsage) expect(p.fromResponse(f)?.usage, f.name).toMatchObject(f.expectedUsage);
 });
 
 it('rejects unknown response flavors and warns when usage was not extracted', async () => {
   const p = client();
   await p.load();
   expect(() =>
-    p.fromResponse({ provider: 'google', apiFlavor: 'unsupported', response: { model: 'gemini-3.8-flash' } }),
+    p.fromResponse({
+      provider: 'google',
+      apiFlavor: 'unsupported',
+      response: { model: 'gemini-3.8-flash' },
+    }),
   ).toThrow('Unknown apiFlavor');
   expect(
     p.fromResponse({
