@@ -251,3 +251,21 @@ def test_gemini_text_and_image_output_have_separate_rates():
     assert cost["input_usd"] == Decimal("0.00005")
     assert cost["output_usd"] == Decimal("0.00315")
     assert cost["total_usd"] == Decimal("0.0032")
+
+
+def test_dated_image_audio_video_null_and_tools():
+    p=make(); p.load()
+    assert p.calc('openai','gpt-4o-2024-05-13',{'input_tokens':1_000_000})['input_usd']==Decimal('5')
+    assert p.from_response('openai',{'usage':{'output_tokens':1_000_000},'data':[{}]},{'model':'gpt-image-2'},'images')['output_usd']==Decimal('30')
+    u=p.extract_usage('google',{'modelVersion':'gemini-3.8-flash','usageMetadata':{'promptTokenCount':100,'toolUsePromptTokenCount':20,'cachedContentTokenCount':10,'candidatesTokenCount':10,'promptTokensDetails':[{'modality':'AUDIO','tokenCount':30}],'cacheTokensDetails':[{'modality':'AUDIO','tokenCount':5}],'candidatesTokensDetails':[{'modality':'AUDIO','tokenCount':4}],'toolUsePromptTokensDetails':[{'modality':'AUDIO','tokenCount':3}]}})['usage']
+    assert u['input_tokens']==120 and u['input_audio_tokens']==33 and u['cache_audio_read_tokens']==5 and u['output_audio_tokens']==4
+    assert p.from_response('google',{'modelVersion':'gemini-2.5-flash-image','usageMetadata':{'promptTokenCount':100,'candidatesTokenCount':50,'thoughtsTokenCount':10,'candidatesTokensDetails':[{'modality':'IMAGE','tokenCount':50}]}})['output_usd']>Decimal('.0015')
+    assert p.from_response('google',{'generatedVideos':[{},{}]},{'model':'veo-3.1-generate-001','parameters':{'durationSeconds':'5'}})['extra_usd']==Decimal('4')
+    assert p.from_response('openai',{'seconds':'5'},{'model':'sora-2'})['extra_usd']>0
+    assert 'missing_param:duration' in p.from_response('openai',{}, {'model':'sora-2'})['warnings']
+    p.from_response('openai',{'model':'gpt-4o','usage':{'prompt_tokens':10,'completion_tokens':1,'prompt_tokens_details':None}})
+    p.from_response('google',{'modelVersion':'gemini-3.8-flash','usageMetadata':{'promptTokenCount':10,'thoughtsTokenCount':None}})
+    assert p.from_response('google',{'predictions':[{},{}]},{'model':'imagen-3.0-fast-generate-001'})['extra_usd']==Decimal('.04')
+    assert p.from_response('x-ai',{'model':'grok-4.7','usage':{'prompt_tokens':100,'completion_tokens':10,'completion_tokens_details':{'reasoning_tokens':20}}})['output_usd']==Decimal('.00018')
+    a=p.from_response('anthropic',{'model':'claude-opus-5-5','usage':{'input_tokens':1,'output_tokens':1,'server_tool_use':{'web_search_requests':2}}})
+    assert a['usage']['web_searches']==2 and 'missing_price:web_search' in a['warnings']

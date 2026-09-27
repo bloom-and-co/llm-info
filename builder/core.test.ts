@@ -185,3 +185,26 @@ it('records every differing field merged from two sources', () => {
       .sort(),
   ).toEqual(['input_mtok', 'output_image_mtok']);
 });
+
+it('sets image-only output parent price and keeps dated matches unique', () => {
+ const d=mergeSources({}, {openai:{models:{'gpt-image-only':{modalities:{output:['image']},cost:{output:30}},'gpt-4o':{cost:{input:2.5,output:10}},'gpt-4o-2024-05-13':{cost:{input:5,output:15}}}}},gp);
+ const ms=d.providers.find(p=>p.id==='openai')!.models;
+ expect(ms.find(m=>m.id==='gpt-image-only')!.prices.output_mtok).toBe(30);
+ const id='gpt-4o-2024-05-13';
+ expect(ms.filter(m=>m.match.or.some(rule=>rule.equals===id || (rule.regex && new RegExp(rule.regex).test(id))))).toHaveLength(1);
+});
+
+it('merges duplicate LiteLLM ids by higher price independent of order', () => {
+ const entries=[['gemini/a',{litellm_provider:'gemini',input_cost_per_token:1e-6}],['vertex_ai/a',{litellm_provider:'vertex_ai',input_cost_per_token:2e-6}]] as const;
+ const a=mergeSources(Object.fromEntries(entries),{},gp);
+ const b=mergeSources(Object.fromEntries([...entries].reverse()),{},gp);
+ expect(a.providers.find(p=>p.id==='google')!.models).toEqual(b.providers.find(p=>p.id==='google')!.models);
+ expect(a.conflicts).toEqual(b.conflicts);
+ expect(a.conflicts.length).toBe(1);
+});
+
+it('skips one malformed model and includes flat image prices', () => {
+ const d=mergeSources({'gpt-bad':{litellm_provider:'openai',cache_read_input_token_cost:1e-6},'grok-imagine-image':{litellm_provider:'xai',mode:'image_generation',output_cost_per_image:.02}}, {}, gp);
+ expect(d.skipped).toEqual([expect.objectContaining({model:'gpt-bad'})]);
+ expect(d.providers.find(p=>p.id==='x-ai')!.models.find(m=>m.id==='grok-imagine-image')?.x_extra_prices?.per_image).toBe(.02);
+});

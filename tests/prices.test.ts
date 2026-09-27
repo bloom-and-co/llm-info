@@ -236,3 +236,40 @@ it('prices Gemini text and image output tokens at separate rates', async () => {
   expect(cost.outputUsd).toBeCloseTo(0.00315, 8);
   expect(cost.totalUsd).toBeCloseTo(0.0032, 8);
 });
+
+it('charges exact dated rows and image-only output tokens', async () => {
+  const p = client(); await p.load();
+  expect(p.calc({ provider: 'openai', model: 'gpt-4o-2024-05-13', usage: { input_tokens: 1_000_000 } })?.inputUsd).toBe(5);
+  expect(p.fromResponse({ provider: 'openai', apiFlavor: 'images', response: { usage: { output_tokens: 1_000_000 }, data: [{}] }, request: { model: 'gpt-image-2' } })?.outputUsd).toBe(30);
+});
+
+it('accounts for Gemini audio, tool input, and image reasoning', async () => {
+  const p = client(); await p.load();
+  const usage = p.extractUsage({provider:'google', response:{modelVersion:'gemini-3.8-flash',usageMetadata:{promptTokenCount:100, toolUsePromptTokenCount:20, cachedContentTokenCount:10, candidatesTokenCount:10,promptTokensDetails:[{modality:'AUDIO',tokenCount:30}],cacheTokensDetails:[{modality:'AUDIO',tokenCount:5}],candidatesTokensDetails:[{modality:'AUDIO',tokenCount:4}],toolUsePromptTokensDetails:[{modality:'AUDIO',tokenCount:3}]}}}).usage;
+  expect(usage).toMatchObject({input_tokens:120,input_audio_tokens:33,cache_audio_read_tokens:5,output_audio_tokens:4});
+  const cost = p.fromResponse({provider:'google',response:{modelVersion:'gemini-2.5-flash-image',usageMetadata:{promptTokenCount:100,candidatesTokenCount:50,thoughtsTokenCount:10,candidatesTokensDetails:[{modality:'IMAGE',tokenCount:50}]}}});
+  expect(cost.outputUsd).toBeGreaterThan(0.0015);
+});
+
+it('charges video counts and warns when duration is unknown', async () => {
+ const p=client(); await p.load();
+ expect(p.fromResponse({provider:'google',response:{generatedVideos:[{},{}]},request:{model:'veo-3.1-generate-001',parameters:{durationSeconds:'5'}}})?.extraUsd).toBe(4);
+ expect(p.fromResponse({provider:'openai',response:{seconds:'5'},request:{model:'sora-2'}})?.extraUsd).toBeGreaterThan(0);
+ expect(p.fromResponse({provider:'openai',response:{},request:{model:'sora-2'}})?.warnings).toContain('missing_param:duration');
+});
+
+it('survives null usage fields and counts Vertex predictions', async () => {
+ const p=client(); await p.load();
+ expect(()=>p.fromResponse({provider:'openai',response:{model:'gpt-4o',usage:{prompt_tokens:10,completion_tokens:1,prompt_tokens_details:null}}})).not.toThrow();
+ expect(()=>p.fromResponse({provider:'google',response:{modelVersion:'gemini-3.8-flash',usageMetadata:{promptTokenCount:10,thoughtsTokenCount:null}}})).not.toThrow();
+ expect(p.fromResponse({provider:'google',response:{predictions:[{},{}]},request:{model:'imagen-3.0-fast-generate-001'}})?.extraUsd).toBe(.04);
+});
+
+it('charges xAI reasoning and Anthropic web searches', async () => {
+ const p=client(); await p.load();
+ const x=p.fromResponse({provider:'x-ai',response:{model:'grok-4.7',usage:{prompt_tokens:100,completion_tokens:10,completion_tokens_details:{reasoning_tokens:20}}}});
+ expect(x.outputUsd).toBeCloseTo(30*6/1e6,9);
+ const a=p.fromResponse({provider:'anthropic',response:{model:'claude-opus-5-5',usage:{input_tokens:1,output_tokens:1,server_tool_use:{web_search_requests:2}}}});
+ expect(a.usage.web_searches).toBe(2);
+ expect(a.warnings).toContain('missing_price:web_search');
+});
