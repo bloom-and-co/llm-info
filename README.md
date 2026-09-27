@@ -66,7 +66,7 @@ A missing bucket price uses the most expensive applicable fallback and adds `fal
 
 ## Known limitations
 
-Anthropic one-hour cache writes use the five-minute cache write rate because the source table does not provide a separate one-hour rate. This can under-estimate those tokens by up to 37.5%. For Sora responses without a duration, the calculator uses the [Videos API's documented four-second default](https://platform.openai.com/docs/api-reference/videos) and warns.
+For Sora responses without a duration, the calculator uses the [Videos API's documented four-second default](https://platform.openai.com/docs/api-reference/videos) and warns.
 
 xAI Chat Completions reports reasoning outside `completion_tokens`, so the wrapper adds it. The xAI Responses sample reports reasoning within `output_tokens`, so the wrapper does not add it again. See [Chat Completions](https://docs.x.ai/developers/rest-api-reference/inference/chat-completions) and [Responses](https://docs.x.ai/developers/rest-api-reference/inference/responses).
 

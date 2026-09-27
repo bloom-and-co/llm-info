@@ -7,6 +7,7 @@ const direct = {
   output_cost_per_reasoning_token: 'output_reasoning_mtok',
   cache_read_input_token_cost: 'cache_read_mtok',
   cache_creation_input_token_cost: 'cache_write_mtok',
+  cache_creation_input_token_cost_above_1hr: 'cache_write_1h_mtok',
   input_cost_per_audio_token: 'input_audio_mtok',
   output_cost_per_audio_token: 'output_audio_mtok',
   input_cost_per_image_token: 'input_image_mtok',
@@ -20,6 +21,7 @@ const mdKeys = {
   output: 'output_mtok',
   cache_read: 'cache_read_mtok',
   cache_write: 'cache_write_mtok',
+  cache_write_1h: 'cache_write_1h_mtok',
   input_audio: 'input_audio_mtok',
   output_audio: 'output_audio_mtok',
   reasoning: 'output_reasoning_mtok',
@@ -690,7 +692,6 @@ export function stableContent(doc) {
   return JSON.stringify({
     models: doc.models,
     skipped: doc.skipped,
-    sources: doc.sources,
   });
 }
 export function finalize(doc, previous, now = new Date().toISOString()) {

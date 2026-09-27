@@ -295,15 +295,18 @@ export function createLlmInfo(options: Options = {}) {
       if (number(v) !== undefined) usage[k] = v;
     };
     if (provider === 'anthropic') {
-      set(
-        'input_tokens',
-        (u.input_tokens ?? 0) +
-          (u.cache_creation_input_tokens ?? 0) +
-          (u.cache_read_input_tokens ?? 0),
-      );
+      // https://platform.claude.com/docs/en/build-with-claude/prompt-caching: cache_creation splits writes by TTL;
+      // cache_creation_input_tokens is their total, including Vertex/Bedrock Anthropic responses.
+      const oneHour = u.cache_creation?.ephemeral_1h_input_tokens ?? 0;
+      const fiveMinute =
+        u.cache_creation?.ephemeral_5m_input_tokens ??
+        Math.max(0, (u.cache_creation_input_tokens ?? 0) - oneHour);
+      const cacheCreation = fiveMinute + oneHour;
+      set('input_tokens', (u.input_tokens ?? 0) + cacheCreation + (u.cache_read_input_tokens ?? 0));
       set('output_tokens', u.output_tokens);
       set('cache_read_tokens', u.cache_read_input_tokens);
-      set('cache_write_tokens', u.cache_creation_input_tokens);
+      set('cache_write_tokens', fiveMinute);
+      set('cache_write_1h_tokens', oneHour);
       set('web_searches', u.server_tool_use?.web_search_requests);
     } else if (provider === 'google') {
       set('input_tokens', (u.promptTokenCount ?? 0) + (u.toolUsePromptTokenCount ?? 0));

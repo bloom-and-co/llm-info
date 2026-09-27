@@ -384,15 +384,26 @@ class LlmInfo:
                 out[key] = val
 
         if provider == "anthropic":
+            # https://platform.claude.com/docs/en/build-with-claude/prompt-caching: cache_creation splits writes by TTL.
+            # The same fields are accepted from Vertex/Bedrock Anthropic responses.
+            creation = u.get("cache_creation") or {}
+            one_hour = creation.get("ephemeral_1h_input_tokens") or 0
+            five_minute = creation.get("ephemeral_5m_input_tokens")
+            if five_minute is None:
+                five_minute = max(
+                    0, (u.get("cache_creation_input_tokens") or 0) - one_hour
+                )
             set_(
                 "input_tokens",
-                u.get("input_tokens", 0)
-                + u.get("cache_creation_input_tokens", 0)
-                + u.get("cache_read_input_tokens", 0),
+                (u.get("input_tokens") or 0)
+                + five_minute
+                + one_hour
+                + (u.get("cache_read_input_tokens") or 0),
             )
             set_("output_tokens", u.get("output_tokens"))
             set_("cache_read_tokens", u.get("cache_read_input_tokens"))
-            set_("cache_write_tokens", u.get("cache_creation_input_tokens"))
+            set_("cache_write_tokens", five_minute)
+            set_("cache_write_1h_tokens", one_hour)
             set_(
                 "web_searches",
                 (u.get("server_tool_use") or {}).get("web_search_requests"),

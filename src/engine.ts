@@ -114,6 +114,15 @@ export function calculate(
         if (typeof raw === 'number' && raw > 0 && typeof active === 'number')
           prices[key] = (value * active) / raw;
       }
+      if (
+        modePrices.cache_write_1h === undefined &&
+        !ownTierKeys.has('cache_write_1h') &&
+        typeof prices.cache_write_1h === 'number' &&
+        typeof prices.input === 'number' &&
+        typeof tiered(model.prices).input === 'number' &&
+        tiered(model.prices).input > 0
+      )
+        prices.cache_write_1h *= prices.input / tiered(model.prices).input;
       multiplier = selected.multiplier ?? 1;
     } else {
       warnings.push(`missing_price:mode:${mode}`);
@@ -133,8 +142,13 @@ export function calculate(
     }
   }
   const highest = maxRate(prices);
-  const rate = (key: string, fallbacks: string[], warn = true) => {
+  const rate = (key: string, fallbacks: string[], warn = true): number => {
     if (typeof prices[key] === 'number') return prices[key];
+    if (key === 'cache_write_1h') {
+      if (warn) warnings.push('fallback_price:cache_write_1h');
+      // https://platform.claude.com/docs/en/about-claude/pricing: 1h writes cost 2x standard input.
+      return rate('input', [], false) * 2;
+    }
     const candidates = fallbacks
       .map((k) => prices[k])
       .filter((v): v is number => typeof v === 'number');
@@ -150,8 +164,9 @@ export function calculate(
     ),
   );
   const cacheRead = count('cache_read_tokens'),
-    cacheWrite = count('cache_write_tokens');
-  const input = Math.max(rawInput, cacheRead, cacheWrite, ...inputMod);
+    cacheWrite = count('cache_write_tokens'),
+    cacheWrite1h = count('cache_write_1h_tokens');
+  const input = Math.max(rawInput, cacheRead + cacheWrite + cacheWrite1h, ...inputMod);
   const output = Math.max(
     count('output_tokens'),
     count('output_audio_tokens'),
@@ -161,7 +176,7 @@ export function calculate(
     input !== rawInput ||
     output !== count('output_tokens') ||
     inputMod.reduce((a, b) => a + b, 0) > input ||
-    cacheRead + cacheWrite > input ||
+    cacheRead + cacheWrite + cacheWrite1h > input ||
     count('cache_audio_read_tokens') + count('cache_image_read_tokens') > cacheRead ||
     count('cache_audio_write_tokens') + count('cache_image_write_tokens') > cacheWrite
   )
@@ -185,16 +200,16 @@ export function calculate(
   for (let i = 0; i < mod.length; i++) if (capacity[i + 1]) rate(baseKeys[i + 1], ['input']);
   let inputCost = capacity.reduce((a, c, i) => a + c * baseRates[i], 0);
   let remaining = capacity.slice();
+  const cacheKey = (prefix: string, i: number) =>
+    prefix === 'cache_write_1h'
+      ? prefix
+      : `cache_${buckets[i - 1]}_${prefix === 'cache_read' ? 'read' : 'write'}`;
   const allocate = (total: number, prefix: string, explicit: number[]) => {
     let left = Math.min(total, input);
     for (let i = 1; i < remaining.length; i++) {
       const fixed = Math.min(left, remaining[i], explicit[i - 1] ?? 0);
       if (fixed) {
-        const r = rate(`cache_${buckets[i - 1]}_${prefix === 'cache_read' ? 'read' : 'write'}`, [
-          `input_${buckets[i - 1]}`,
-          prefix,
-          'input',
-        ]);
+        const r = rate(cacheKey(prefix, i), [`input_${buckets[i - 1]}`, prefix, 'input']);
         inputCost += fixed * (r - baseRates[i]);
         remaining[i] -= fixed;
         left -= fixed;
@@ -208,23 +223,14 @@ export function calculate(
           ? baseRates[i]
           : i === 0
             ? rate(prefix, ['input'], false)
-            : rate(
-                `cache_${buckets[i - 1]}_${prefix === 'cache_read' ? 'read' : 'write'}`,
-                [`input_${buckets[i - 1]}`, prefix, 'input'],
-                false,
-              ),
+            : rate(cacheKey(prefix, i), [`input_${buckets[i - 1]}`, prefix, 'input'], false),
     }));
     choices.sort((a, b) => b.r - baseRates[b.i] - (a.r - baseRates[a.i]) || a.i - b.i);
     for (const c of choices) {
       const take = Math.min(left, remaining[c.i]);
       if (!take) continue;
       if (c.i === 0) rate(prefix, ['input']);
-      else
-        rate(`cache_${buckets[c.i - 1]}_${prefix === 'cache_read' ? 'read' : 'write'}`, [
-          `input_${buckets[c.i - 1]}`,
-          prefix,
-          'input',
-        ]);
+      else rate(cacheKey(prefix, c.i), [`input_${buckets[c.i - 1]}`, prefix, 'input']);
       inputCost += take * (c.r - baseRates[c.i]);
       remaining[c.i] -= take;
       left -= take;
@@ -238,6 +244,7 @@ export function calculate(
       0,
     ]);
   if (cacheWrite) allocate(cacheWrite, 'cache_write', [count('cache_audio_write_tokens'), 0, 0]);
+  if (cacheWrite1h) allocate(cacheWrite1h, 'cache_write_1h', [0, 0, 0]);
   const outMod = ['audio', 'image'].map((k) => count(`output_${k}_tokens`));
   if (outMod[0] + outMod[1] > output) warnings.push('inconsistent_usage');
   const includedReasoning = Math.min(output, count('output_reasoning_tokens'));

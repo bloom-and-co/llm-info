@@ -9,14 +9,47 @@ const model: any = {
   capabilities: { output_modalities: ['text'] },
 };
 it('charges one-hour cache writes separately and derives a missing price from input', () => {
-  const opus = { provider: 'anthropic', id: 'opus', prices: { input: 4, output: 20, cache_write: 5, cache_write_1h: 8 } } as any;
-  expect(calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 }).totalUsd).toBe(8);
-  expect(calculate(opus, { input_tokens: 1_000_000, cache_write_tokens: 500_000, cache_write_1h_tokens: 500_000 }).totalUsd).toBe(6.5);
+  const opus = {
+    provider: 'anthropic',
+    id: 'opus',
+    prices: { input: 4, output: 20, cache_write: 5, cache_write_1h: 8 },
+  } as any;
+  expect(
+    calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 }).totalUsd,
+  ).toBe(8);
+  expect(
+    calculate(opus, {
+      input_tokens: 1_000_000,
+      cache_write_tokens: 500_000,
+      cache_write_1h_tokens: 500_000,
+    }).totalUsd,
+  ).toBe(6.5);
   delete opus.prices.cache_write_1h;
   const fallback = calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 });
   expect(fallback.totalUsd).toBe(8);
   expect(fallback.warnings).toContain('fallback_price:cache_write_1h');
   expect(fallback.warnings).not.toContain('inconsistent_usage');
+});
+it('applies one-hour cache write tiers to mode prices', () => {
+  const opus = {
+    provider: 'anthropic',
+    id: 'opus',
+    prices: {
+      input: 4,
+      cache_write_1h: 8,
+      tiers: [{ above_input_tokens: 200_000, prices: { input: 8, cache_write_1h: 16 } }],
+    },
+    modes: { fast: { prices: { input: 8, cache_write_1h: 16 } } },
+  } as any;
+  expect(
+    calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 }, {}, 'fast')
+      .totalUsd,
+  ).toBe(32);
+  delete opus.modes.fast.prices.cache_write_1h;
+  expect(
+    calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 }, {}, 'fast')
+      .totalUsd,
+  ).toBe(32);
 });
 it('allocates ambiguous cache overlap at maximum plausible cost', () => {
   const result = calculate(model, {

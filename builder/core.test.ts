@@ -38,14 +38,25 @@ it('adopts higher prices, capabilities, modes and uplift', () => {
 });
 it('maps one-hour cache writes with higher source price and tier/mode rates', () => {
   const d = mergeSources(
-    { opus: { litellm_provider: 'anthropic', input_cost_per_token: 4e-6, output_cost_per_token: 20e-6, cache_creation_input_token_cost_above_1hr: 7e-6, cache_creation_input_token_cost_above_1hr_above_200k_tokens: 9e-6, cache_creation_input_token_cost_above_1hr_priority: 10e-6 } },
+    {
+      opus: {
+        litellm_provider: 'anthropic',
+        input_cost_per_token: 4e-6,
+        output_cost_per_token: 20e-6,
+        cache_creation_input_token_cost_above_1hr: 7e-6,
+        cache_creation_input_token_cost_above_1hr_above_200k_tokens: 9e-6,
+        cache_creation_input_token_cost_above_1hr_priority: 10e-6,
+      },
+    },
     { anthropic: { models: { opus: { cost: { input: 4, output: 20, cache_write_1h: 8 } } } } },
   );
   const m = row(d, 'anthropic', 'opus');
   expect(m.prices.cache_write_1h).toBe(8);
   expect(m.prices.tiers[0].prices.cache_write_1h).toBe(9);
   expect(m.modes.priority.prices.cache_write_1h).toBe(10);
-  expect(d.conflicts).toContainEqual(expect.objectContaining({ field: 'cache_write_1h_mtok', adopted: 8 }));
+  expect(d.conflicts).toContainEqual(
+    expect.objectContaining({ field: 'cache_write_1h_mtok', adopted: 8 }),
+  );
 });
 it('keeps timestamps and version stable when only fetch metadata changes', async () => {
   const previous = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
@@ -54,6 +65,9 @@ it('keeps timestamps and version stable when only fetch metadata changes', async
   next.sources.litellm.ref = 'new-etag';
   next.sources.models_dev.etag = 'other-etag';
   expect(finalize(next, previous, '2099-01-01T00:00:00Z')).toBe(previous);
+  const first = finalize(previous, null, '2026-01-01T00:00:00Z');
+  const second = finalize(next, first, '2026-01-02T00:00:00Z');
+  expect(JSON.stringify(second, null, 2) + '\n').toBe(JSON.stringify(first, null, 2) + '\n');
 });
 it('maps context tiers with strict greater-than boundary', () => {
   const d = mergeSources(

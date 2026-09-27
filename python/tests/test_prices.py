@@ -37,6 +37,38 @@ def test_not_loaded():
         make().calc("openai", "gpt-6-luna", {"input_tokens": 1})
 
 
+def test_one_hour_cache_write_price_fallback():
+    from llm_info._engine import calculate
+
+    model = {
+        "provider": "anthropic",
+        "id": "unit",
+        "prices": {"input": 4, "output": 20, "cache_write": 5},
+    }
+    cost = calculate(
+        model, {"input_tokens": 1_000_000, "cache_write_1h_tokens": 1_000_000}
+    )
+    assert cost["total_usd"] == Decimal("8")
+    assert "fallback_price:cache_write_1h" in cost["warnings"]
+    model["prices"] = {
+        "input": 4,
+        "cache_write_1h": 8,
+        "tiers": [
+            {
+                "above_input_tokens": 200_000,
+                "prices": {"input": 8, "cache_write_1h": 16},
+            }
+        ],
+    }
+    model["modes"] = {"fast": {"prices": {"input": 8}}}
+    mode = calculate(
+        model,
+        {"input_tokens": 1_000_000, "cache_write_1h_tokens": 1_000_000},
+        mode="fast",
+    )
+    assert mode["total_usd"] == Decimal("32")
+
+
 def test_load_and_four_providers():
     p = make()
     p.load()
@@ -186,11 +218,42 @@ def test_response_totals():
     )
     assert ant["total_usd"] == Decimal(".00851")
     for usage, expected, five_minute, one_hour in [
-        ({"input_tokens": 0, "cache_creation_input_tokens": 1_000_000, "cache_creation": {"ephemeral_5m_input_tokens": 0, "ephemeral_1h_input_tokens": 1_000_000}}, "8", 0, 1_000_000),
-        ({"input_tokens": 0, "cache_creation_input_tokens": 1_000_000, "cache_creation": {"ephemeral_5m_input_tokens": 500_000, "ephemeral_1h_input_tokens": 500_000}}, "6.5", 500_000, 500_000),
-        ({"input_tokens": 0, "cache_creation_input_tokens": 1_000_000}, "5", 1_000_000, 0),
+        (
+            {
+                "input_tokens": 0,
+                "cache_creation_input_tokens": 1_000_000,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 0,
+                    "ephemeral_1h_input_tokens": 1_000_000,
+                },
+            },
+            "8",
+            0,
+            1_000_000,
+        ),
+        (
+            {
+                "input_tokens": 0,
+                "cache_creation_input_tokens": 1_000_000,
+                "cache_creation": {
+                    "ephemeral_5m_input_tokens": 500_000,
+                    "ephemeral_1h_input_tokens": 500_000,
+                },
+            },
+            "6.5",
+            500_000,
+            500_000,
+        ),
+        (
+            {"input_tokens": 0, "cache_creation_input_tokens": 1_000_000},
+            "5",
+            1_000_000,
+            0,
+        ),
     ]:
-        cost = p.from_response("anthropic", {"model": "claude-opus-5-5", "usage": usage})
+        cost = p.from_response(
+            "anthropic", {"model": "claude-opus-5-5", "usage": usage}
+        )
         assert cost["total_usd"] == Decimal(expected)
         assert cost["usage"].get("cache_write_tokens", 0) == five_minute
         assert cost["usage"].get("cache_write_1h_tokens", 0) == one_hour

@@ -15,6 +15,7 @@ async function get(url) {
   };
 }
 const [l, m] = await Promise.all(Object.values(URLs).map(get));
+console.log(`builder: checked litellm=${l.fetched_at} models_dev=${m.fetched_at}`);
 const previous = await fs
   .readFile('data/llm-info.json', 'utf8')
   .then(JSON.parse)

@@ -107,6 +107,19 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
                     and isinstance(active_base.get(key), (int, float, Decimal))
                 ):
                     prices[key] = D(value) * D(active_base[key]) / D(raw)
+            if (
+                "cache_write_1h" not in mode_prices
+                and "cache_write_1h" not in own_tiers
+                and isinstance(prices.get("cache_write_1h"), (int, float, Decimal))
+                and isinstance(prices.get("input"), (int, float, Decimal))
+                and isinstance(active_base.get("input"), (int, float, Decimal))
+                and D(active_base["input"]) > 0
+            ):
+                prices["cache_write_1h"] = (
+                    D(prices["cache_write_1h"])
+                    * D(prices["input"])
+                    / D(active_base["input"])
+                )
             multiplier = D(selected.get("multiplier", 1))
         else:
             warnings.append("missing_price:mode:" + mode)
@@ -138,6 +151,11 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     def rate(key, fallbacks=(), warn=True):
         if isinstance(prices.get(key), (int, float, Decimal)):
             return D(prices[key])
+        if key == "cache_write_1h":
+            if warn:
+                warnings.append("fallback_price:cache_write_1h")
+            # https://platform.claude.com/docs/en/about-claude/pricing: 1h writes cost 2x standard input.
+            return rate("input", (), False) * 2
         candidates = [
             D(prices[k])
             for k in fallbacks
@@ -159,7 +177,8 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         for k in ("audio", "image", "video")
     ]
     read, write = count("cache_read_tokens"), count("cache_write_tokens")
-    total = max(raw_total, read, write, *raw_mods)
+    write_1h = count("cache_write_1h_tokens")
+    total = max(raw_total, read + write + write_1h, *raw_mods)
     out_total = max(
         count("output_tokens"),
         count("output_audio_tokens"),
@@ -169,7 +188,7 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         total != raw_total
         or out_total != count("output_tokens")
         or sum(raw_mods) > total
-        or read + write > total
+        or read + write + write_1h > total
         or count("cache_audio_read_tokens") + count("cache_image_read_tokens") > read
         or count("cache_audio_write_tokens") + count("cache_image_write_tokens") > write
     ):
@@ -192,6 +211,15 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     input_cost = sum(capacity[i] * base[i] for i in range(4))
     remaining = capacity[:]
 
+    def cache_key(prefix, i):
+        if prefix == "cache_write_1h":
+            return prefix
+        return (
+            "cache_"
+            + ("audio", "image", "video")[i - 1]
+            + ("_read" if prefix == "cache_read" else "_write")
+        )
+
     def allocate(amount, prefix, explicit):
         nonlocal input_cost
         left = min(amount, total)
@@ -199,9 +227,7 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
             fixed = min(left, remaining[i], explicit[i - 1])
             if fixed:
                 r = rate(
-                    "cache_"
-                    + ("audio", "image", "video")[i - 1]
-                    + ("_read" if prefix == "cache_read" else "_write"),
+                    cache_key(prefix, i),
                     ("input_" + ("audio", "image", "video")[i - 1], prefix, "input"),
                 )
                 input_cost += fixed * (r - base[i])
@@ -210,13 +236,7 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         choices = []
         for i in range(4):
             if left and remaining[i]:
-                key = (
-                    prefix
-                    if i == 0
-                    else "cache_"
-                    + ("audio", "image", "video")[i - 1]
-                    + ("_read" if prefix == "cache_read" else "_write")
-                )
+                key = prefix if i == 0 else cache_key(prefix, i)
                 fallback = (
                     ("input",)
                     if i == 0
@@ -249,6 +269,8 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         )
     if write:
         allocate(write, "cache_write", [count("cache_audio_write_tokens"), D(0), D(0)])
+    if write_1h:
+        allocate(write_1h, "cache_write_1h", [D(0), D(0), D(0)])
     out_mod = [count("output_audio_tokens"), count("output_image_tokens")]
     if sum(out_mod) > out_total:
         warnings.append("inconsistent_usage")
