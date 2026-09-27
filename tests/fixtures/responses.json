@@ -13,6 +13,63 @@
     "expected": 0.00015
   },
   {
+    "name": "openai_chat_cache_write",
+    "provider": "openai",
+    "apiFlavor": "openai-chat",
+    "response": {
+      "model": "gpt-5.6-sol",
+      "usage": {
+        "prompt_tokens": 9100,
+        "completion_tokens": 1000,
+        "prompt_tokens_details": { "cached_tokens": 2000, "cache_write_tokens": 5000 }
+      }
+    },
+    "expected": 0.0542,
+    "expectedUsage": { "cache_read_tokens": 2000, "cache_write_tokens": 5000 }
+  },
+  {
+    "name": "openai_responses_cache_write",
+    "provider": "openai",
+    "apiFlavor": "openai-responses",
+    "response": {
+      "model": "gpt-5.6-sol",
+      "usage": {
+        "input_tokens": 9100,
+        "output_tokens": 1000,
+        "input_tokens_details": { "cached_tokens": 2000, "cache_write_tokens": 5000 }
+      }
+    },
+    "expected": 0.0542,
+    "expectedUsage": { "cache_read_tokens": 2000, "cache_write_tokens": 5000 }
+  },
+  {
+    "name": "google_openai_chat",
+    "provider": "google",
+    "apiFlavor": "chat",
+    "response": {
+      "model": "gemini-3.8-flash",
+      "usage": {
+        "prompt_tokens": 1000,
+        "completion_tokens": 100,
+        "prompt_tokens_details": { "cached_tokens": 200 },
+        "completion_tokens_details": { "reasoning_tokens": 20 }
+      }
+    },
+    "expected": 0.00099,
+    "expectedUsage": { "input_tokens": 1000, "output_tokens": 100, "cache_read_tokens": 200, "output_reasoning_tokens": 20 }
+  },
+  {
+    "name": "anthropic_openai_chat",
+    "provider": "anthropic",
+    "apiFlavor": "openai-chat",
+    "response": {
+      "model": "claude-opus-5-5",
+      "usage": { "prompt_tokens": 1000, "completion_tokens": 200 }
+    },
+    "expected": 0.008,
+    "expectedUsage": { "input_tokens": 1000, "output_tokens": 200 }
+  },
+  {
     "name": "openai_responses",
     "provider": "openai",
     "apiFlavor": "responses",

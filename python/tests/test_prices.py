@@ -316,6 +316,21 @@ def test_all_response_fixtures():
         assert abs(cost["total_usd"] - Decimal(str(f["expected"]))) < Decimal(
             "0.000000001"
         ), f["name"]
+        for key, value in f.get("expectedUsage", {}).items():
+            assert cost["usage"].get(key) == value, f["name"]
+
+
+def test_response_flavor_validation_and_unextracted_usage():
+    p = make()
+    p.load()
+    with pytest.raises(ValueError, match="Unknown apiFlavor"):
+        p.from_response("google", {"model": "gemini-3.8-flash"}, api_flavor="unsupported")
+    cost = p.from_response(
+        "google",
+        {"model": "gemini-3.8-flash", "usage": {"prompt_tokens": 10}},
+        api_flavor="gemini-generate-content",
+    )
+    assert "usage_not_extracted" in cost["warnings"]
 
 
 def test_size_resolution_prices():
