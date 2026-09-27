@@ -46,6 +46,10 @@ it('lists merged capabilities with dated model matching', async () => {
     false,
   );
   expect(p.models({ provider: 'openai' }).some((x: any) => x.id === 'gpt-6-luna')).toBe(true);
+  expect(p.models({ provider: 'openai' }).find((x: any) => x.id === 'gpt-6-luna').mode).toBe(
+    'chat',
+  );
+  expect(p.capabilities({ provider: 'anthropic', model: 'claude-mythos-5' }).mode).toBe('chat');
   expect(p.capabilities({ provider: 'openai', model: 'unknown' })).toBeNull();
 });
 it('prices fast, inferred priority, regional uplift and missing modes', async () => {

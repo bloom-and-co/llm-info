@@ -228,12 +228,13 @@ export function createLlmInfo(options: Options = {}) {
     };
   }
   function capabilities({ provider, model }: { provider: string; model: string }) {
-    return findModel(current().data.models, provider, model)?.capabilities ?? null;
+    const m = findModel(current().data.models, provider, model);
+    return m ? { ...m.capabilities, mode: m.mode } : null;
   }
   function models({ provider }: { provider?: string } = {}) {
     return current()
       .data.models.filter((m) => !provider || m.provider === provider)
-      .map((m) => ({ provider: m.provider, id: m.id, capabilities: m.capabilities }));
+      .map((m) => ({ provider: m.provider, id: m.id, mode: m.mode, capabilities: m.capabilities }));
   }
   function calc({
     provider,

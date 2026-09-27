@@ -29,6 +29,36 @@ const mdKeys = {
   output_image: 'output_image_mtok',
 };
 const clean = (x) => JSON.parse(JSON.stringify(x));
+const API_MODES = new Set([
+  'chat',
+  'embedding',
+  'image_generation',
+  'video_generation',
+  'audio_speech',
+  'audio_transcription',
+  'realtime',
+  'moderation',
+  'rerank',
+  'other',
+]);
+function liteMode(mode) {
+  if (mode === undefined || mode === null || mode === '') return null;
+  const normalized = { responses: 'chat', completion: 'chat' }[mode] ?? mode;
+  return API_MODES.has(normalized) ? normalized : 'other';
+}
+function modelsMode(v, id) {
+  const output = modalities(v.modalities?.output);
+  if (output.length === 1 && output[0] === 'image') return 'image_generation';
+  if (output.includes('video')) return 'video_generation';
+  if (output.length === 1 && output[0] === 'audio') return 'audio_speech';
+  if (output.includes('text')) return 'chat';
+  if (
+    /embedding/i.test(`${id} ${v.family ?? ''}`) &&
+    (output.includes('embedding') || !output.includes('text'))
+  )
+    return 'embedding';
+  return 'other';
+}
 export function normalizeId(id, provider) {
   if (provider === 'google') return id.replace(/^(gemini|vertex_ai[^/]*)\//, '');
   if (provider === 'x-ai') return id.replace(/^xai\//, '');
@@ -150,7 +180,14 @@ function fromLite(v, provider) {
   const region = {};
   put(region, 'us', num(v.regional_processing_uplift_multiplier_us));
   put(region, 'eu', num(v.regional_processing_uplift_multiplier_eu));
-  return { prices, extras, modes, region, capabilities: liteCapabilities(v) };
+  return {
+    prices,
+    extras,
+    modes,
+    region,
+    capabilities: liteCapabilities(v),
+    mode: liteMode(v.mode),
+  };
 }
 function scalePrice(value, factor) {
   return typeof value === 'number'
@@ -315,6 +352,7 @@ export function mergeSources(lite, models) {
   const map = new Map(),
     conflicts = [],
     capability_conflicts = [],
+    mode_conflicts = [],
     imageModels = new Set(),
     skipped = [],
     malformed = new Map();
@@ -324,6 +362,14 @@ export function mergeSources(lite, models) {
     const key = p + '\0' + id;
     const old = map.get(key) ?? { id, prices: {}, x_source: source };
     if (old.x_source !== source) old.x_source = 'both';
+    if (v.mode) {
+      if (old.x_mode && old.x_mode !== v.mode && old.x_mode_source !== source)
+        mode_conflicts.push({ provider: p, model: id, litellm: old.x_mode, models_dev: v.mode });
+      if (!old.x_mode || source === 'litellm') {
+        old.x_mode = v.mode;
+        old.x_mode_source = source;
+      }
+    }
     for (const [field, val] of Object.entries(v.prices)) {
       if (old.prices[field] === undefined) old.prices[field] = val;
       else if (source === 'models_dev')
@@ -522,7 +568,7 @@ export function mergeSources(lite, models) {
         (v.cost?.tiers ?? []).some((tier) => malformedPrice(tier, Object.keys(mdKeys)))
       )
         malformed.set(p + '\0' + normalized, 'invalid_price');
-      add(p, id, fromModels(v, imageOutput), 'models_dev');
+      add(p, id, { ...fromModels(v, imageOutput), mode: modelsMode(v, normalized) }, 'models_dev');
     }
   const modelsOut = [];
   for (const provider of IDS) {
@@ -537,7 +583,7 @@ export function mergeSources(lite, models) {
           ? 'video'
           : m.x_extra_prices?.per_image !== undefined || m.prices.output_image_mtok !== undefined
             ? 'image'
-            : m.id.includes('embedding')
+            : m.x_mode === 'embedding' || m.id.includes('embedding')
               ? 'embedding'
               : 'text';
       const publishable =
@@ -588,6 +634,19 @@ export function mergeSources(lite, models) {
                 : null),
         ]),
       );
+      if (!capabilities.output_modalities.length) {
+        const output = {
+          chat: 'text',
+          embedding: 'embedding',
+          image_generation: 'image',
+          video_generation: 'video',
+          audio_speech: 'audio',
+          audio_transcription: 'text',
+          moderation: 'text',
+          rerank: 'text',
+        }[m.x_mode];
+        if (output) capabilities.output_modalities = [output];
+      }
       const convert = (old) => {
         const out = {},
           tiers = new Map();
@@ -645,6 +704,7 @@ export function mergeSources(lite, models) {
       modelsOut.push({
         provider,
         id: m.id,
+        mode: m.x_mode ?? 'other',
         name: dev?.name ?? m.id,
         aliases: [],
         match: { exact, dated_suffix: true },
@@ -657,10 +717,19 @@ export function mergeSources(lite, models) {
   }
   conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
   capability_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  return { models: modelsOut, skipped, conflicts, capability_conflicts };
+  mode_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
+  return { models: modelsOut, skipped, conflicts, capability_conflicts, mode_conflicts };
 }
 export function validate(doc, previous) {
   if (doc.schema !== 2 || !Array.isArray(doc.models)) throw Error('invalid document');
+  const empty = doc.models.filter(
+    (m) =>
+      !Object.values(m.capabilities ?? {}).some(
+        (v) => v !== null && v !== false && (!Array.isArray(v) || v.length),
+      ),
+  );
+  if (doc.models.length && empty.length / doc.models.length > 0.1)
+    throw Error(`empty capabilities: ${empty.length}/${doc.models.length}`);
   const comparable = doc.models.filter(
     (m) =>
       typeof m.capabilities?.context_window === 'number' &&
@@ -680,6 +749,7 @@ export function validate(doc, previous) {
     if (!rows.length) throw Error('empty provider: ' + provider);
   }
   for (const m of doc.models) {
+    if (!API_MODES.has(m.mode)) throw Error('invalid mode ' + m.id);
     if (!Object.keys(m.prices ?? {}).some((key) => key !== 'tiers'))
       throw Error('model without price ' + m.id);
     const walk = (x) => {

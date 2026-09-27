@@ -7,6 +7,72 @@ it('normalizes provider prefixes', () => {
   expect(normalizeId('gemini/gemini-3.8-flash', 'google')).toBe('gemini-3.8-flash');
   expect(normalizeId('xai/grok-4.7', 'x-ai')).toBe('grok-4.7');
 });
+it('publishes API kinds and keeps capabilities from either source', () => {
+  const d = mergeSources(
+    {
+      'claude-mythos-5': {
+        litellm_provider: 'anthropic',
+        mode: 'responses',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 2e-6,
+        supports_reasoning: true,
+      },
+      'xai/grok-4.20': {
+        litellm_provider: 'xai',
+        mode: 'completion',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 2e-6,
+        supports_function_calling: true,
+      },
+      voice: {
+        litellm_provider: 'gemini',
+        mode: 'realtime',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 2e-6,
+      },
+    },
+    {
+      anthropic: {
+        models: {
+          'claude-mythos-5': {
+            cost: { input: 1, output: 2 },
+            modalities: { output: ['image'] },
+            tool_call: true,
+          },
+        },
+      },
+      google: {
+        models: {
+          speech: { cost: { input: 1, output: 2 }, modalities: { output: ['audio'] } },
+          embed: { cost: { input: 1 }, family: 'embedding', modalities: { output: ['embedding'] } },
+        },
+      },
+    },
+  );
+  expect(row(d, 'anthropic', 'claude-mythos-5')).toMatchObject({
+    mode: 'chat',
+    capabilities: { reasoning: true, tool_call: true, output_modalities: ['image'] },
+  });
+  expect(row(d, 'x-ai', 'grok-4.20')).toMatchObject({
+    mode: 'chat',
+    capabilities: { tool_call: true, output_modalities: ['text'] },
+  });
+  expect(row(d, 'google', 'voice').mode).toBe('realtime');
+  expect(row(d, 'google', 'speech').mode).toBe('audio_speech');
+  expect(row(d, 'google', 'embed').mode).toBe('embedding');
+  expect(d.mode_conflicts).toContainEqual(
+    expect.objectContaining({
+      model: 'claude-mythos-5',
+      litellm: 'chat',
+      models_dev: 'image_generation',
+    }),
+  );
+});
+it('rejects a published table with too many empty capabilities', async () => {
+  const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
+  for (const m of d.models.slice(0, Math.floor(d.models.length * 0.1) + 1)) m.capabilities = {};
+  expect(() => validate(d)).toThrow('empty capabilities');
+});
 it('adopts higher prices, capabilities, modes and uplift', () => {
   const d = mergeSources(
     {

@@ -112,6 +112,11 @@ def test_capabilities_modes_and_region():
     assert p.capabilities("x-ai", "grok-4.7")["web_search"] is True
     assert p.capabilities("anthropic", "claude-opus-5-5")["temperature"] is False
     assert any(row["id"] == "gpt-6-luna" for row in p.models("openai"))
+    assert (
+        next(row for row in p.models("openai") if row["id"] == "gpt-6-luna")["mode"]
+        == "chat"
+    )
+    assert p.capabilities("anthropic", "claude-mythos-5")["mode"] == "chat"
     assert p.capabilities("openai", "unknown") is None
     usage = {"input_tokens": 1000, "output_tokens": 1000}
     assert p.calc("anthropic", "claude-opus-5-5", usage, mode="fast")[

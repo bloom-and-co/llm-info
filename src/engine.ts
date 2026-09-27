@@ -1,6 +1,7 @@
 export type Model = {
   provider: string;
   id: string;
+  mode?: string;
   name?: string;
   aliases?: string[];
   match?: { exact?: string[]; dated_suffix?: boolean };

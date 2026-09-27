@@ -50,13 +50,16 @@ info = LlmInfo()
 info.load()
 cost = info.from_response(provider='anthropic', response=response)
 capabilities = info.capabilities(provider='anthropic', model='claude-opus-5-5')
+models = info.models(provider='anthropic')
 ```
 
 Python money fields are `Decimal`. Its API is synchronous; `auto_refresh` starts a daemon thread for stale cached data. The default cache path is `~/.cache/llm-info/llm-info.json` or `$XDG_CACHE_HOME/llm-info/llm-info.json`; `LLM_INFO_CACHE` overrides it. Both libraries support memory and file stores, fallback URLs, an acceptance hook, and events. The default data URL is `https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json`, with a jsDelivr fallback.
 
 ## Published data and calculation
 
-`data/llm-info.json` has `schema: 2`, a version and timestamp, source fetch metadata with `latest_new_model_at`, a flat `models` array, and `skipped` rows with short reasons. Each model gives `provider`, `id`, `name`, `aliases`, deterministic `match` rules, `prices`, `modes`, `region_uplift`, and `capabilities`. Prices for token buckets are USD per million tokens. `per_image`, `per_video_second`, and `per_web_search` are USD per unit. A tier `{ "above_input_tokens": 272000, "prices": {...} }` applies only when total input is **greater** than 272,000. Exact dated model rows win over aliases and suffix matching. Known provider prefixes are stripped case insensitively. A `null` result means an unknown model; callers must not treat it as free.
+`data/llm-info.json` has `schema: 2`, a version and timestamp, source fetch metadata with `latest_new_model_at`, a flat `models` array, and `skipped` rows with short reasons. Each model gives `provider`, `id`, `name`, `aliases`, deterministic `match` rules, `mode`, `prices`, `modes`, `region_uplift`, and `capabilities`. `mode` is the primary API kind: `chat`, `embedding`, `image_generation`, `video_generation`, `audio_speech`, `audio_transcription`, `realtime`, `moderation`, `rerank`, or `other`. LiteLLM's mode takes precedence over the kind inferred from models.dev output modalities; disagreements are logged during the build. Both JS and Python include `mode` in `models()` rows and `capabilities()` results. `modes` is separate and holds optional pricing tiers such as `fast` and `priority`.
+
+Prices for token buckets are USD per million tokens. `per_image`, `per_video_second`, and `per_web_search` are USD per unit. A tier `{ "above_input_tokens": 272000, "prices": {...} }` applies only when total input is **greater** than 272,000. Exact dated model rows win over aliases and suffix matching. Known provider prefixes are stripped case insensitively. A `null` result means an unknown model; callers must not treat it as free.
 
 Usage totals include their modality and cache subcounts. The engine makes disjoint input and output buckets, and never charges the same reported token twice. When cache and modality counts overlap without a detailed split, it chooses the allocation with the **highest plausible cost**. For example, 1 million input tokens with 600,000 audio and 500,000 cached tokens require at least 100,000 cached audio tokens; the remaining cache allocation follows the most expensive feasible split. Counts that exceed a total are clamped and add `inconsistent_usage`.
 

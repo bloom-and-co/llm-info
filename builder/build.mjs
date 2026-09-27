@@ -76,8 +76,12 @@ if (out !== previous) {
   );
   await fs.writeFile('data/llm-info.json', json + '\n');
 }
-for (const conflict of [...merged.conflicts, ...merged.capability_conflicts])
+for (const conflict of [
+  ...merged.conflicts,
+  ...merged.capability_conflicts,
+  ...merged.mode_conflicts,
+])
   console.log('conflict: ' + JSON.stringify(conflict));
 console.log(
-  `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${['openai', 'anthropic', 'google', 'x-ai'].map((p) => p + '=' + doc.models.filter((m) => m.provider === p).length).join(' ')}; conflicts=${merged.conflicts.length + merged.capability_conflicts.length}; skipped=${doc.skipped.length}`,
+  `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${['openai', 'anthropic', 'google', 'x-ai'].map((p) => p + '=' + doc.models.filter((m) => m.provider === p).length).join(' ')}; conflicts=${merged.conflicts.length + merged.capability_conflicts.length + merged.mode_conflicts.length}; skipped=${doc.skipped.length}`,
 );
