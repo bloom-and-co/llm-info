@@ -8,6 +8,16 @@ const model: any = {
   prices: { input: 1, input_audio: 10, cache_read: 0.1, cache_audio_read: 2, output: 3 },
   capabilities: { output_modalities: ['text'] },
 };
+it('charges one-hour cache writes separately and derives a missing price from input', () => {
+  const opus = { provider: 'anthropic', id: 'opus', prices: { input: 4, output: 20, cache_write: 5, cache_write_1h: 8 } } as any;
+  expect(calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 }).totalUsd).toBe(8);
+  expect(calculate(opus, { input_tokens: 1_000_000, cache_write_tokens: 500_000, cache_write_1h_tokens: 500_000 }).totalUsd).toBe(6.5);
+  delete opus.prices.cache_write_1h;
+  const fallback = calculate(opus, { input_tokens: 1_000_000, cache_write_1h_tokens: 1_000_000 });
+  expect(fallback.totalUsd).toBe(8);
+  expect(fallback.warnings).toContain('fallback_price:cache_write_1h');
+  expect(fallback.warnings).not.toContain('inconsistent_usage');
+});
 it('allocates ambiguous cache overlap at maximum plausible cost', () => {
   const result = calculate(model, {
     input_tokens: 1_000_000,

@@ -185,6 +185,15 @@ def test_response_totals():
         },
     )
     assert ant["total_usd"] == Decimal(".00851")
+    for usage, expected, five_minute, one_hour in [
+        ({"input_tokens": 0, "cache_creation_input_tokens": 1_000_000, "cache_creation": {"ephemeral_5m_input_tokens": 0, "ephemeral_1h_input_tokens": 1_000_000}}, "8", 0, 1_000_000),
+        ({"input_tokens": 0, "cache_creation_input_tokens": 1_000_000, "cache_creation": {"ephemeral_5m_input_tokens": 500_000, "ephemeral_1h_input_tokens": 500_000}}, "6.5", 500_000, 500_000),
+        ({"input_tokens": 0, "cache_creation_input_tokens": 1_000_000}, "5", 1_000_000, 0),
+    ]:
+        cost = p.from_response("anthropic", {"model": "claude-opus-5-5", "usage": usage})
+        assert cost["total_usd"] == Decimal(expected)
+        assert cost["usage"].get("cache_write_tokens", 0) == five_minute
+        assert cost["usage"].get("cache_write_1h_tokens", 0) == one_hour
     gem = p.from_response(
         "google",
         {

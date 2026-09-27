@@ -36,6 +36,25 @@ it('adopts higher prices, capabilities, modes and uplift', () => {
   expect(d.conflicts).toHaveLength(2);
   expect(d.capability_conflicts.some((x: any) => x.field === 'max_input_tokens')).toBe(true);
 });
+it('maps one-hour cache writes with higher source price and tier/mode rates', () => {
+  const d = mergeSources(
+    { opus: { litellm_provider: 'anthropic', input_cost_per_token: 4e-6, output_cost_per_token: 20e-6, cache_creation_input_token_cost_above_1hr: 7e-6, cache_creation_input_token_cost_above_1hr_above_200k_tokens: 9e-6, cache_creation_input_token_cost_above_1hr_priority: 10e-6 } },
+    { anthropic: { models: { opus: { cost: { input: 4, output: 20, cache_write_1h: 8 } } } } },
+  );
+  const m = row(d, 'anthropic', 'opus');
+  expect(m.prices.cache_write_1h).toBe(8);
+  expect(m.prices.tiers[0].prices.cache_write_1h).toBe(9);
+  expect(m.modes.priority.prices.cache_write_1h).toBe(10);
+  expect(d.conflicts).toContainEqual(expect.objectContaining({ field: 'cache_write_1h_mtok', adopted: 8 }));
+});
+it('keeps timestamps and version stable when only fetch metadata changes', async () => {
+  const previous = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
+  const next = structuredClone(previous);
+  next.sources.litellm.fetched_at = '2099-01-01T00:00:00Z';
+  next.sources.litellm.ref = 'new-etag';
+  next.sources.models_dev.etag = 'other-etag';
+  expect(finalize(next, previous, '2099-01-01T00:00:00Z')).toBe(previous);
+});
 it('maps context tiers with strict greater-than boundary', () => {
   const d = mergeSources(
     {},
