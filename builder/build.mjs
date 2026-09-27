@@ -50,5 +50,5 @@ try {
 const out = finalize(doc, previous);
 if (out !== previous) await fs.writeFile('data/prices.json', JSON.stringify(out, null, 2) + '\n');
 console.log(
-  `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${doc.providers.map((p) => p.id + '=' + p.models.length).join(' ')}; conflicts=${doc.conflicts.length}`,
+  `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${doc.providers.map((p) => p.id + '=' + p.models.length).join(' ')}; conflicts=${doc.conflicts.length}; skipped=${doc.skipped.length}`,
 );
