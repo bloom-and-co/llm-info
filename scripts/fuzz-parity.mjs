@@ -17,6 +17,9 @@ const keys = [
   'cache_write_1h_tokens',
   'input_audio_tokens',
   'input_image_tokens',
+  'input_text_tokens',
+  'input_breakdown_present',
+  'cache_breakdown_present',
   'input_video_tokens',
   'cache_audio_read_tokens',
   'cache_image_read_tokens',
@@ -24,6 +27,8 @@ const keys = [
   'output_tokens',
   'output_audio_tokens',
   'output_image_tokens',
+  'output_text_tokens',
+  'output_breakdown_present',
   'output_reasoning_tokens',
   'reasoning_tokens',
   'output_images',
@@ -36,7 +41,9 @@ for (let i = 0; i < 20000; i++) {
   const u = {};
   for (const k of keys)
     if (rnd() < 0.35) {
-      const value = Math.floor(rnd() * pick([10, 1000, 300000, 1e6]));
+      const value = k.endsWith('_breakdown_present')
+        ? 1
+        : Math.floor(rnd() * pick([10, 1000, 300000, 1e6]));
       u[k] = rnd() < 0.2 ? String(value) : value;
     }
   const mode = pick(['standard', 'standard', 'fast', 'priority', 'flex', 'batch']);
@@ -48,6 +55,17 @@ for (let i = 0; i < 20000; i++) {
   const r = calculate(m, u, opt, mode, region);
   cases.push({ p: m.provider, id: m.id, u, mode, region, opt, t: r.totalUsd, w: r.warnings });
   if (r.totalUsd < 0 || !Number.isFinite(r.totalUsd)) console.log('BAD', m.id, u, r);
+}
+for (const id of ['gpt-image-1.5', 'chatgpt-image-latest', 'gemini-3.1-flash-image']) {
+  const m = d.models.find((row) => row.id === id);
+  for (const u of [
+    { input_tokens: 50, cache_read_tokens: 20, output_tokens: 4160, output_images: 1 },
+    { input_tokens: 50, input_text_tokens: 20, output_tokens: 100, output_text_tokens: 50 },
+    { input_tokens: 50, input_breakdown_present: 1, output_tokens: 100, output_breakdown_present: 1, output_image_tokens: 40 },
+  ]) {
+    const r = calculate(m, u);
+    cases.push({ p: m.provider, id: m.id, u, mode: 'standard', region: 'global', opt: {}, t: r.totalUsd, w: r.warnings });
+  }
 }
 fs.writeFileSync(process.argv[2], JSON.stringify(cases));
 console.log('cases', cases.length);

@@ -359,6 +359,29 @@ export function createLlmInfo(options: Options = {}) {
       set('input_tokens', n(u.promptTokenCount) + n(u.toolUsePromptTokenCount));
       set('output_tokens', n(u.candidatesTokenCount) + n(u.thoughtsTokenCount));
       set('cache_read_tokens', u.cachedContentTokenCount);
+      const detailed = (arr: any, total: number) =>
+        Array.isArray(arr) &&
+        (arr.some((x: any) => ['IMAGE', 'AUDIO'].includes(x.modality)) ||
+          arr.reduce((sum: number, x: any) => sum + n(x.tokenCount), 0) >= total);
+      if (detailed(u.promptTokensDetails, n(u.promptTokenCount))) set('input_breakdown_present', 1);
+      if (Array.isArray(u.promptTokensDetails))
+        set(
+          'input_text_tokens',
+          u.promptTokensDetails
+            .filter((x: any) => x.modality === 'TEXT')
+            .reduce((sum: number, x: any) => sum + n(x.tokenCount), 0),
+        );
+      if (detailed(u.candidatesTokensDetails, n(u.candidatesTokenCount)))
+        set('output_breakdown_present', 1);
+      if (Array.isArray(u.candidatesTokensDetails))
+        set(
+          'output_text_tokens',
+          u.candidatesTokensDetails
+            .filter((x: any) => x.modality === 'TEXT')
+            .reduce((sum: number, x: any) => sum + n(x.tokenCount), 0),
+        );
+      if (detailed(u.cacheTokensDetails, n(u.cachedContentTokenCount)))
+        set('cache_breakdown_present', 1);
       if (u.thoughtsTokenCount && model && findModel(rows, provider, model)?.prices?.reasoning)
         set('output_reasoning_tokens', u.thoughtsTokenCount);
       for (const [arr, key, modality] of [
@@ -392,6 +415,18 @@ export function createLlmInfo(options: Options = {}) {
         responsesShape || imageShape ? u.input_tokens_details : u.prompt_tokens_details;
       const outputDetails =
         responsesShape || imageShape ? u.output_tokens_details : u.completion_tokens_details;
+      if (
+        inputDetails &&
+        ['image_tokens', 'audio_tokens', 'text_tokens'].some((k) => inputDetails[k] != null)
+      )
+        set('input_breakdown_present', 1);
+      set('input_text_tokens', inputDetails?.text_tokens);
+      if (
+        outputDetails &&
+        ['image_tokens', 'audio_tokens', 'text_tokens'].some((k) => outputDetails[k] != null)
+      )
+        set('output_breakdown_present', 1);
+      set('output_text_tokens', outputDetails?.text_tokens);
       set('cache_read_tokens', inputDetails?.cached_tokens);
       set('cache_write_tokens', inputDetails?.cache_write_tokens);
       set('input_audio_tokens', inputDetails?.audio_tokens);

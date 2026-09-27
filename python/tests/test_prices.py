@@ -41,40 +41,96 @@ def test_missing_modality_breakdowns_use_expensive_plausible_prices():
     from llm_info._engine import calculate
 
     image = {
-        "provider": "openai", "id": "image", "mode": "image_generation",
-        "prices": {"input": 5, "input_image": 8, "cache_read": 1.25,
-                   "cache_image_read": 2, "output": 10, "output_image": 32},
-        "capabilities": {"input_modalities": ["image", "text"],
-                         "output_modalities": ["image", "text"]},
+        "provider": "openai",
+        "id": "image",
+        "mode": "image_generation",
+        "prices": {
+            "input": 5,
+            "input_image": 8,
+            "cache_read": 1.25,
+            "cache_image_read": 2,
+            "output": 10,
+            "output_image": 32,
+        },
+        "capabilities": {
+            "input_modalities": ["image", "text"],
+            "output_modalities": ["image", "text"],
+        },
     }
-    missing = calculate(image, {"input_tokens": 50, "cache_read_tokens": 20,
-                                "output_tokens": 4160})
+    missing = calculate(
+        image, {"input_tokens": 50, "cache_read_tokens": 20, "output_tokens": 4160}
+    )
     assert missing["input_usd"] == Decimal("0.00028")
     assert missing["output_usd"] == Decimal("0.13312")
-    assert {"output_breakdown_missing", "input_breakdown_missing",
-            "cache_breakdown_missing"} <= set(missing["warnings"])
-    exact = calculate(image, {"input_tokens": 50, "input_breakdown_present": 1,
-                              "input_image_tokens": 10, "cache_read_tokens": 20,
-                              "cache_breakdown_present": 1, "cache_image_read_tokens": 5,
-                              "output_tokens": 100, "output_breakdown_present": 1,
-                              "output_image_tokens": 40})
+    assert {
+        "output_breakdown_missing",
+        "input_breakdown_missing",
+        "cache_breakdown_missing",
+    } <= set(missing["warnings"])
+    exact = calculate(
+        image,
+        {
+            "input_tokens": 50,
+            "input_breakdown_present": 1,
+            "input_image_tokens": 10,
+            "cache_read_tokens": 20,
+            "cache_breakdown_present": 1,
+            "cache_image_read_tokens": 5,
+            "output_tokens": 100,
+            "output_breakdown_present": 1,
+            "output_image_tokens": 40,
+        },
+    )
     assert exact["output_usd"] == Decimal("0.00188")
     assert "output_breakdown_missing" not in exact["warnings"]
-    audio = {**image, "mode": "audio_transcription",
-             "prices": {"input": 1, "input_audio": 10, "output": 2},
-             "capabilities": {"input_modalities": ["audio", "text"],
-                              "output_modalities": ["text"]}}
+    audio = {
+        **image,
+        "mode": "audio_transcription",
+        "prices": {"input": 1, "input_audio": 10, "output": 2},
+        "capabilities": {
+            "input_modalities": ["audio", "text"],
+            "output_modalities": ["text"],
+        },
+    }
     assert calculate(audio, {"input_tokens": 100})["input_usd"] == Decimal("0.001")
 
 
 def test_image_response_without_output_details():
     p = make()
     p.load()
-    result = p.from_response("openai", {"model": "gpt-image-1.5",
-        "usage": {"input_tokens": 50, "output_tokens": 4160}, "data": [{}]},
-        api_flavor="openai-images")
+    result = p.from_response(
+        "openai",
+        {
+            "model": "gpt-image-1.5",
+            "usage": {"input_tokens": 50, "output_tokens": 4160},
+            "data": [{}],
+        },
+        api_flavor="openai-images",
+    )
     assert result["total_usd"] == Decimal("0.13352")
     assert "output_breakdown_missing" in result["warnings"]
+
+
+def test_gemini_partial_and_complete_output_details():
+    p = make()
+    p.load()
+
+    def response(tokens):
+        return {
+            "modelVersion": "gemini-3.1-flash-image",
+            "usageMetadata": {
+                "promptTokenCount": 0,
+                "candidatesTokenCount": 100,
+                "candidatesTokensDetails": [{"modality": "TEXT", "tokenCount": tokens}],
+            },
+        }
+
+    partial = p.from_response("google", response(50))
+    assert partial["output_usd"] == Decimal("0.00315")
+    assert "output_breakdown_missing" in partial["warnings"]
+    complete = p.from_response("google", response(100))
+    assert complete["output_usd"] == Decimal("0.0003")
+    assert "output_breakdown_missing" not in complete["warnings"]
 
 
 def test_one_hour_cache_write_price_fallback():

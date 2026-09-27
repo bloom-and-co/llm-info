@@ -329,6 +329,24 @@ it('bills an OpenAI image response without output details at image token price',
   expect(result.totalUsd).toBeCloseTo(0.13352, 9);
   expect(result.warnings).toContain('output_breakdown_missing');
 });
+it('uses Gemini image pricing for incomplete details and exact text pricing for complete details', async () => {
+  const p = client();
+  await p.load();
+  const response = (tokens: number) => ({
+    modelVersion: 'gemini-3.1-flash-image',
+    usageMetadata: {
+      promptTokenCount: 0,
+      candidatesTokenCount: 100,
+      candidatesTokensDetails: [{ modality: 'TEXT', tokenCount: tokens }],
+    },
+  });
+  const missing = p.fromResponse({ provider: 'google', response: response(50) });
+  expect(missing.outputUsd).toBeCloseTo((50 * 3 + 50 * 60) / 1e6, 10);
+  expect(missing.warnings).toContain('output_breakdown_missing');
+  const exact = p.fromResponse({ provider: 'google', response: response(100) });
+  expect(exact.outputUsd).toBeCloseTo((100 * 3) / 1e6, 10);
+  expect(exact.warnings).not.toContain('output_breakdown_missing');
+});
 
 it('prices Gemini text and image output tokens at separate rates', async () => {
   const p = client();

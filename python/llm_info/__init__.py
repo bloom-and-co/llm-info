@@ -475,6 +475,40 @@ class LlmInfo:
                 + _usage_number(u.get("thoughtsTokenCount")),
             )
             set_("cache_read_tokens", u.get("cachedContentTokenCount"))
+
+            def detailed(items, total):
+                return isinstance(items, list) and (
+                    any(x.get("modality") in ("IMAGE", "AUDIO") for x in items)
+                    or sum(_usage_number(x.get("tokenCount")) for x in items)
+                    >= _usage_number(total)
+                )
+
+            if detailed(u.get("promptTokensDetails"), u.get("promptTokenCount")):
+                set_("input_breakdown_present", 1)
+            if isinstance(u.get("promptTokensDetails"), list):
+                set_(
+                    "input_text_tokens",
+                    sum(
+                        _usage_number(x.get("tokenCount"))
+                        for x in u["promptTokensDetails"]
+                        if x.get("modality") == "TEXT"
+                    ),
+                )
+            if detailed(
+                u.get("candidatesTokensDetails"), u.get("candidatesTokenCount")
+            ):
+                set_("output_breakdown_present", 1)
+            if isinstance(u.get("candidatesTokensDetails"), list):
+                set_(
+                    "output_text_tokens",
+                    sum(
+                        _usage_number(x.get("tokenCount"))
+                        for x in u["candidatesTokensDetails"]
+                        if x.get("modality") == "TEXT"
+                    ),
+                )
+            if detailed(u.get("cacheTokensDetails"), u.get("cachedContentTokenCount")):
+                set_("cache_breakdown_present", 1)
             m = (
                 find_model(self.doc["data"]["models"], provider, model)
                 if model
@@ -532,6 +566,18 @@ class LlmInfo:
             )
             input_details = input_details or {}
             output_details = output_details or {}
+            if any(
+                input_details.get(k) is not None
+                for k in ("image_tokens", "audio_tokens", "text_tokens")
+            ):
+                set_("input_breakdown_present", 1)
+            set_("input_text_tokens", input_details.get("text_tokens"))
+            if any(
+                output_details.get(k) is not None
+                for k in ("image_tokens", "audio_tokens", "text_tokens")
+            ):
+                set_("output_breakdown_present", 1)
+            set_("output_text_tokens", output_details.get("text_tokens"))
             set_("input_tokens", u.get(input_key))
             set_("output_tokens", u.get(output_key))
             set_(

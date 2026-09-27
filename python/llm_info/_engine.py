@@ -180,6 +180,39 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     read, write = count("cache_read_tokens"), count("cache_write_tokens")
     write_1h = count("cache_write_1h_tokens")
     total = max(raw_total, read + write + write_1h, *raw_mods)
+    input_modalities = model.get("capabilities", {}).get("input_modalities") or []
+    input_candidate = (
+        1
+        if model.get("mode") == "image_generation" or input_modalities == ["image"]
+        else 0
+        if model.get("mode") in ("audio_transcription", "realtime")
+        else -1
+    )
+    if (
+        total
+        and input_candidate >= 0
+        and not usage.get("input_breakdown_present")
+        and not any(raw_mods)
+        and rate("input_" + ("audio", "image")[input_candidate], ("input",), False)
+        > rate("input", (), False)
+    ):
+        raw_mods[input_candidate] = max(D(0), total - count("input_text_tokens"))
+        if raw_mods[input_candidate]:
+            warnings.append("input_breakdown_missing")
+    if (
+        read
+        and input_candidate >= 0
+        and not usage.get("cache_breakdown_present")
+        and not count("cache_audio_read_tokens")
+        and not count("cache_image_read_tokens")
+        and rate(
+            "cache_" + ("audio", "image")[input_candidate] + "_read",
+            ("cache_read", "input"),
+            False,
+        )
+        > rate("cache_read", ("input",), False)
+    ):
+        warnings.append("cache_breakdown_missing")
     out_total = max(
         count("output_tokens"),
         count("output_audio_tokens"),
@@ -300,11 +333,25 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
             rate("output_" + kind, ("output",))
         output_cost += take * modal_rate
         left -= take
-    image_only = model.get("capabilities", {}).get("output_modalities") == ["image"]
+    exact_text = min(left, count("output_text_tokens"))
+    if exact_text:
+        output_cost += exact_text * rate("output")
+    left -= exact_text
+    output_modalities = model.get("capabilities", {}).get("output_modalities") or []
+    image_only = output_modalities == ["image"]
+    output_breakdown_missing = (
+        left
+        and (model.get("mode") == "image_generation" or "image" in output_modalities)
+        and not usage.get("output_breakdown_present")
+        and not out_mod[1]
+    )
+    if output_breakdown_missing:
+        warnings.append("output_breakdown_missing")
     if left:
-        output_cost += left * rate(
-            "output_image" if image_only else "output",
-            ("output",) if image_only else (),
+        output_cost += left * (
+            max(rate("output_image", ("output",)), rate("output", (), False))
+            if output_breakdown_missing or image_only
+            else rate("output")
         )
     reasoning = count("reasoning_tokens")
     if reasoning:
@@ -345,7 +392,12 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     ):
         images = D(1)
         warnings.append("missing_param:image_count")
-    if images and not count("output_image_tokens") and not (out_total and image_only):
+    if (
+        images
+        and not count("output_image_tokens")
+        and not output_breakdown_missing
+        and not (out_total and image_only)
+    ):
         extra += images * table("per_image")
     if count("output_video_seconds"):
         extra += count("output_video_seconds") * table("per_video_second")

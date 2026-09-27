@@ -168,6 +168,32 @@ export function calculate(
     cacheWrite = count('cache_write_tokens'),
     cacheWrite1h = count('cache_write_1h_tokens');
   const input = Math.max(rawInput, cacheRead + cacheWrite + cacheWrite1h, ...inputMod);
+  const inputCandidate =
+    model.mode === 'image_generation' || model.capabilities?.input_modalities?.join() === 'image'
+      ? 1
+      : model.mode === 'audio_transcription' || model.mode === 'realtime'
+        ? 0
+        : -1;
+  if (
+    input &&
+    inputCandidate >= 0 &&
+    !usage?.input_breakdown_present &&
+    !inputMod.some(Boolean) &&
+    rate(`input_${buckets[inputCandidate]}`, ['input'], false) > rate('input', [], false)
+  ) {
+    inputMod[inputCandidate] = Math.max(0, input - count('input_text_tokens'));
+    if (inputMod[inputCandidate]) warnings.push('input_breakdown_missing');
+  }
+  if (
+    cacheRead &&
+    inputCandidate >= 0 &&
+    !usage?.cache_breakdown_present &&
+    !count('cache_audio_read_tokens') &&
+    !count('cache_image_read_tokens') &&
+    rate(`cache_${buckets[inputCandidate]}_read`, ['cache_read', 'input'], false) >
+      rate('cache_read', ['input'], false)
+  )
+    warnings.push('cache_breakdown_missing');
   const output = Math.max(
     count('output_tokens'),
     count('output_audio_tokens'),
@@ -264,13 +290,21 @@ export function calculate(
     outputCost += c * entry.rate;
     left -= c;
   }
-  if (
-    left &&
-    model.capabilities?.output_modalities?.length === 1 &&
-    model.capabilities.output_modalities[0] === 'image'
-  )
-    outputCost += left * rate('output_image', ['output']);
-  else if (left) outputCost += left * rate('output', []);
+  const exactText = Math.min(left, count('output_text_tokens'));
+  if (exactText) outputCost += exactText * rate('output', []);
+  left -= exactText;
+  const imageOutputPlausible =
+    model.mode === 'image_generation' || model.capabilities?.output_modalities?.includes('image');
+  const outputBreakdownMissing =
+    left && imageOutputPlausible && !usage?.output_breakdown_present && !outMod[1];
+  if (outputBreakdownMissing) warnings.push('output_breakdown_missing');
+  const imageOnly = model.capabilities?.output_modalities?.join() === 'image';
+  if (left)
+    outputCost +=
+      left *
+      (outputBreakdownMissing || imageOnly
+        ? Math.max(rate('output_image', ['output']), rate('output', [], false))
+        : rate('output', []));
   const reasoning = count('reasoning_tokens');
   if (reasoning) outputCost += reasoning * rate('reasoning', ['output']);
   inputCost = (inputCost * multiplier) / 1e6;
@@ -284,6 +318,7 @@ export function calculate(
   if (
     images &&
     !count('output_image_tokens') &&
+    !outputBreakdownMissing &&
     !(
       output &&
       model.capabilities?.output_modalities?.length === 1 &&
