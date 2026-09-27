@@ -3,11 +3,11 @@
   "sources": {
     "litellm": {
       "ref": "W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"",
-      "fetched_at": "2026-09-27T03:01:07.233Z"
+      "fetched_at": "2026-09-27T03:01:47.243Z"
     },
     "models_dev": {
       "etag": "W/\"d01edbc7b83be1d60b6192f02ae700f7\"",
-      "fetched_at": "2026-09-27T03:01:07.373Z"
+      "fetched_at": "2026-09-27T03:01:47.451Z"
     }
   },
   "providers": [
@@ -303,39 +303,6 @@
               "path": "seconds",
               "dest": "audio_seconds",
               "required": true
-            }
-          ]
-        },
-        {
-          "api_flavor": "images",
-          "root": "usage",
-          "model_path": "model",
-          "mappings": [
-            {
-              "path": "input_tokens",
-              "dest": "input_tokens",
-              "required": false
-            },
-            {
-              "path": "output_tokens",
-              "dest": "output_tokens",
-              "required": false
-            },
-            {
-              "path": [
-                "input_tokens_details",
-                "image_tokens"
-              ],
-              "dest": "input_image_tokens",
-              "required": false
-            },
-            {
-              "path": [
-                "output_tokens_details",
-                "image_tokens"
-              ],
-              "dest": "output_image_tokens",
-              "required": false
             }
           ]
         }
@@ -9945,6 +9912,6 @@
       "adopted": 17.5
     }
   ],
-  "generated_at": "2026-09-27T03:01:07.520Z",
-  "version": "2026-09-27T03:01:07.520Z-c79a8713b437"
+  "generated_at": "2026-09-27T03:01:47.593Z",
+  "version": "2026-09-27T03:01:47.593Z-0925c4e9e7fa"
 }
