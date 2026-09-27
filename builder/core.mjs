@@ -208,7 +208,7 @@ function liteCapabilities(v) {
     temperature: v.supports_sampling_params,
     prompt_caching: v.supports_prompt_caching,
     computer_use: v.supports_computer_use,
-    context_window: v.max_tokens ?? v.max_context_tokens ?? v.context_window,
+    context_window: v.max_context_tokens ?? v.context_window,
     max_input_tokens: v.max_input_tokens,
     max_output_tokens: v.max_output_tokens,
     knowledge_cutoff: v.knowledge_cutoff,
@@ -270,7 +270,9 @@ function mergeCapabilities(old, incoming, source, conflicts, provider, model) {
     else if (field === 'reasoning_efforts')
       values[field] = source === 'models_dev' ? candidate : prior;
     else if (typeof prior === 'boolean') values[field] = prior || candidate;
-    else if (typeof prior === 'number') values[field] = Math.min(prior, candidate);
+    else if (field === 'context_window') {
+      if (source === 'models_dev') values[field] = candidate;
+    } else if (typeof prior === 'number') values[field] = Math.min(prior, candidate);
     else if (source === 'models_dev') values[field] = candidate;
     sources[field] = different ? 'both' : sources[field] === source ? source : 'both';
   }
@@ -623,6 +625,13 @@ export function mergeSources(lite, models) {
         if (target !== 'input_per_image') prices[target] = v;
       }
       if (prices.per_web_search !== undefined) capabilities.web_search = true;
+      if (
+        typeof capabilities.context_window === 'number' &&
+        typeof capabilities.max_output_tokens === 'number' &&
+        capabilities.context_window < capabilities.max_output_tokens &&
+        !capabilities.output_modalities.includes('text')
+      )
+        capabilities.max_output_tokens = null;
       const modes = Object.fromEntries(
         Object.entries(m.x_modes ?? {}).map(([k, v]) => [
           k,
@@ -652,6 +661,16 @@ export function mergeSources(lite, models) {
 }
 export function validate(doc, previous) {
   if (doc.schema !== 2 || !Array.isArray(doc.models)) throw Error('invalid document');
+  const comparable = doc.models.filter(
+    (m) =>
+      typeof m.capabilities?.context_window === 'number' &&
+      typeof m.capabilities?.max_output_tokens === 'number',
+  );
+  const inverted = comparable.filter(
+    (m) => m.capabilities.context_window < m.capabilities.max_output_tokens,
+  );
+  if (comparable.length && inverted.length / comparable.length > 0.05)
+    throw Error(`context_window below max_output_tokens: ${inverted.length}/${comparable.length}`);
   for (const provider of IDS) {
     const rows = doc.models.filter((m) => m.provider === provider);
     const old =

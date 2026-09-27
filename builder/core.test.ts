@@ -266,8 +266,56 @@ it('merges capability booleans and prefers models.dev efforts', () => {
   const cap = row(d, 'openai', 'gx').capabilities;
   expect(cap.web_search).toBe(true);
   expect(cap.reasoning_efforts).toEqual(['high']);
-  expect(cap.context_window).toBe(10000);
+  expect(cap.context_window).toBe(null);
   expect(cap.max_input_tokens).toBe(8000);
+});
+it('uses explicit context limits and prefers models.dev over LiteLLM', () => {
+  const lite = {
+    gx: {
+      litellm_provider: 'openai',
+      input_cost_per_token: 1e-6,
+      output_cost_per_token: 1e-6,
+      max_tokens: 10000,
+      max_context_tokens: 128000,
+      max_input_tokens: 8000,
+      max_output_tokens: 16000,
+    },
+  };
+  const models = {
+    openai: { models: { gx: { cost: { input: 1, output: 1 }, limit: { context: 200000 } } } },
+  };
+  expect(row(mergeSources(lite, {}), 'openai', 'gx').capabilities.context_window).toBe(128000);
+  expect(row(mergeSources(lite, models), 'openai', 'gx').capabilities.context_window).toBe(200000);
+});
+it('keeps audio models when a non-text output limit contradicts context', () => {
+  const d = mergeSources(
+    {},
+    {
+      google: {
+        models: {
+          voice: {
+            cost: { input: 1, output: 2 },
+            modalities: { input: ['text'], output: ['audio'] },
+            limit: { context: 8192, output: 16384 },
+          },
+        },
+      },
+    },
+  );
+  expect(row(d, 'google', 'voice').capabilities).toMatchObject({
+    context_window: 8192,
+    max_output_tokens: null,
+  });
+});
+it('rejects a dataset where over 5% of comparable context limits are below output limits', async () => {
+  const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
+  for (const m of d.models) {
+    m.capabilities.context_window = 1000;
+    m.capabilities.max_output_tokens = 100;
+  }
+  for (const m of d.models.slice(0, Math.floor(d.models.length * 0.05) + 1))
+    m.capabilities.context_window = 10;
+  expect(() => validate(d)).toThrow('context_window below max_output_tokens');
 });
 it('validates missing, NaN, and flagship prices', async () => {
   const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
