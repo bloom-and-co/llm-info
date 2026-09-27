@@ -142,3 +142,31 @@ Python wheel/install smoke: PASS
 ```
 
 生成データは openai 149、anthropic 20、google 90、x-ai 54 モデル。衝突 6 件、スキップ 0 件。npm tarball と Python wheel はそれぞれ一時環境へインストールして、日付付き `gpt-4o-2024-05-13` の $5/M を確認した。GitHub への push と公開は行っていない。
+
+## Task 4
+
+`llm-info` に名称を統一した。GitHub URL、npm パッケージ、Python distribution/import/class、JS factory、公開 JSON、キャッシュのパスと環境変数を更新し、旧名の検索結果は `.work/` を除いて 0 件だった。公開前なので旧 factory/class の alias は残していない。変更は `66ebc99` にコミットした。push・公開はしていない。
+
+各モデルへ `x_capabilities` と field ごとの `sources` を付けた。models.dev の effort リストを優先し、欠ける場合は LiteLLM の明示リスト、さらに明示的に true の effort flag のみを採用する。`supports_reasoning` だけから low/medium/high を推測せず、不明なら null とした。真偽値は true 優先、モダリティは正規化した和集合、制限値は小さい方を採用する。相違点は `capability_conflicts` に保存する。JS/Python に `capabilities` と `models` を追加した。genai-prices 0.1.9 で拡張キー付きデータを activate/calc できることを builder と wrapper テストで確認した。
+
+`x_modes` は models.dev の `experimental.modes.*.cost` と request body/headers、LiteLLM の `provider_specific_entry.fast` 倍率と `*_priority`、`*_flex`、`*_batches` 単価を反映する。`x_region_uplift` は LiteLLM の US/EU 倍率を反映する。`calc` / `fromResponse` は mode/region を受け取り、OpenAI のレスポンス `service_tier` と Anthropic の `usage.speed` から mode を推定する。明示指定が優先される。モード単価のないモデルには既知の最高単価を使い `missing_price:mode:<mode>` を返す。地域倍率が画像・動画単価に適用される範囲をソースが明記していないため、総額全体に適用した。根拠: https://platform.openai.com/docs/api-reference/responses 、https://platform.claude.com/docs/en/build-with-claude/fast-mode 。
+
+生成データ: openai=149、anthropic=20、google=90、x-ai=54（合計 313）。`conflicts=14`、`capability_conflicts=180`、`skipped=0`。`gpt-6-luna` effort は none/low/medium/high/xhigh/max、`gemini-3.8-flash` は low/medium/high、`grok-4.7` web_search は true、`claude-opus-5-5` temperature は false。手計算した 1000 input + 1000 output は Opus fast $0.048、Luna priority $0.0012、Luna US 標準 $0.00066 だった。
+
+最終実行の要約行（原文）:
+
+```text
+All matched files use Prettier code style!
+5 files already formatted
+ Test Files  4 passed (4)
+      Tests  43 passed (43)
+17 passed in 0.86s
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+python SDK validation: 4 providers passed
+builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=14; skipped=0
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+npm pack/install smoke: PASS
+Python wheel/install smoke: PASS
+```
