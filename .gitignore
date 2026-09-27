@@ -4,6 +4,4 @@ dist/
 __pycache__/
 .pytest_cache/
 .venv/
-.work/*.log
 .work/*
-!.work/result.md

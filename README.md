@@ -71,3 +71,7 @@ For Sora responses without a duration, the calculator uses the [Videos API's doc
 xAI Chat Completions reports reasoning outside `completion_tokens`, so the wrapper adds it. The xAI Responses sample reports reasoning within `output_tokens`, so the wrapper does not add it again. See [Chat Completions](https://docs.x.ai/developers/rest-api-reference/inference/chat-completions) and [Responses](https://docs.x.ai/developers/rest-api-reference/inference/responses).
 
 MIT licensed. See [NOTICE](NOTICE) for attribution.
+
+## Development
+
+Run `npm ci --ignore-scripts`, `npm test`, and `uv run --with pytest pytest -q python/tests` before a change. `npm run build:data` refreshes the checked-in price table from LiteLLM and models.dev. The parity fuzz harness lives in `scripts/`; it writes generated cases to a temporary file and leaves source files untouched.
