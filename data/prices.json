@@ -3,11 +3,11 @@
   "sources": {
     "litellm": {
       "ref": "W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"",
-      "fetched_at": "2026-09-27T02:56:15.654Z"
+      "fetched_at": "2026-09-27T03:01:07.233Z"
     },
     "models_dev": {
       "etag": "W/\"d01edbc7b83be1d60b6192f02ae700f7\"",
-      "fetched_at": "2026-09-27T02:56:15.903Z"
+      "fetched_at": "2026-09-27T03:01:07.373Z"
     }
   },
   "providers": [
@@ -5025,36 +5025,6 @@
               ],
               "dest": "input_video_tool_tokens",
               "required": false
-            },
-            {
-              "path": [
-                "promptTokensDetails",
-                {
-                  "field": "modality",
-                  "match": {
-                    "equals": "IMAGE"
-                  },
-                  "type": "array-match"
-                },
-                "tokenCount"
-              ],
-              "dest": "input_image_tokens",
-              "required": false
-            },
-            {
-              "path": [
-                "candidatesTokensDetails",
-                {
-                  "field": "modality",
-                  "match": {
-                    "equals": "IMAGE"
-                  },
-                  "type": "array-match"
-                },
-                "tokenCount"
-              ],
-              "dest": "output_image_tokens",
-              "required": false
             }
           ]
         },
@@ -9975,6 +9945,6 @@
       "adopted": 17.5
     }
   ],
-  "generated_at": "2026-09-27T02:56:16.049Z",
-  "version": "2026-09-27T02:56:16.049Z-85f295a0cf24"
+  "generated_at": "2026-09-27T03:01:07.520Z",
+  "version": "2026-09-27T03:01:07.520Z-c79a8713b437"
 }

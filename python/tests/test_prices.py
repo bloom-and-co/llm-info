@@ -71,3 +71,7 @@ def test_size_resolution_prices():
     assert abs(image['extra_usd']-Decimal('.167'))<Decimal('.000001')
     video=p.calc('google','veo-3.1-lite-generate-preview',{'output_video_seconds':2},options={'resolution':'1080p'})
     assert video['extra_usd']==Decimal('.16')
+def test_sdk_google_image_extractor_once():
+    fixture={'modelVersion':'gemini-3.1-flash-image','usageMetadata':{'promptTokenCount':100,'candidatesTokenCount':100,'candidatesTokensDetails':[{'modality':'IMAGE','tokenCount':50}]}}
+    extracted=snapshot_from_data(DATA).extract_usage(fixture,provider_id='google')
+    assert extracted.usage.output_image_tokens==50

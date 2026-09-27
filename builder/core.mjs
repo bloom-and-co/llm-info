@@ -107,7 +107,10 @@ function makeExtractors(id,existing){
  if(id==='openai'){
   const image={api_flavor:'images',root:'usage',model_path:'model',mappings:[map('input_tokens','input_tokens'),map('output_tokens','output_tokens'),map(['input_tokens_details','image_tokens'],'input_image_tokens'),map(['output_tokens_details','image_tokens'],'output_image_tokens')]};e.push(image);
  }
- if(id==='google')for(const x of e.filter(x=>x.api_flavor==='default')) x.mappings.push(map(['promptTokensDetails',{field:'modality',match:{equals:'IMAGE'},type:'array-match'},'tokenCount'],'input_image_tokens'),map(['candidatesTokensDetails',{field:'modality',match:{equals:'IMAGE'},type:'array-match'},'tokenCount'],'output_image_tokens'));
+ if(id==='google')for(const x of e.filter(x=>x.api_flavor==='default')){
+  if(!x.mappings.some(m=>m.dest==='input_image_tokens'))x.mappings.push(map(['promptTokensDetails',{field:'modality',match:{equals:'IMAGE'},type:'array-match'},'tokenCount'],'input_image_tokens'));
+  if(!x.mappings.some(m=>m.dest==='output_image_tokens'))x.mappings.push(map(['candidatesTokensDetails',{field:'modality',match:{equals:'IMAGE'},type:'array-match'},'tokenCount'],'output_image_tokens'));
+ }
  return e;
 }
 export function validate(doc,previous){

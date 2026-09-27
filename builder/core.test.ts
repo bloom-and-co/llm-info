@@ -8,3 +8,5 @@ it('maps per-pixel image variants and resolution video rates',()=>{const lite={
  'high/100-x-200/gpt-image-test':{litellm_provider:'openai',mode:'image_generation',input_cost_per_pixel:.000001},
  'gemini/veo-test':{litellm_provider:'gemini',mode:'video_generation',output_cost_per_second:.05,output_cost_per_second_1080p:.08}
  };const d=mergeSources(lite,{},gp);expect(d.providers.find(p=>p.id==='openai')!.models.find(m=>m.id==='gpt-image-test')!.x_extra_prices.per_image['100x200/high']).toBeCloseTo(.02);expect(d.providers.find(p=>p.id==='google')!.models.find(m=>m.id==='veo-test')!.x_extra_prices.per_video_second['1080p']).toBe(.08)});
+
+it('does not duplicate existing image extractor mappings',()=>{const d=mergeSources({}, {},gp);const google=d.providers.find(p=>p.id==='google')!;const ex=google.extractors!.find(e=>e.api_flavor==='default')!;expect(ex.mappings.filter(m=>m.dest==='output_image_tokens')).toHaveLength(1)});

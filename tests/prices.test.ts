@@ -1,4 +1,5 @@
 import {beforeEach,describe,it,expect,vi} from 'vitest';
+import {extractUsage as sdkExtract} from '@pydantic/genai-prices';
 import {readFile,mkdtemp,rm,readdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';import {join} from 'node:path';
 const data=JSON.parse(await readFile('data/prices.json','utf8'));
@@ -19,3 +20,5 @@ it('charges images, video, and warns on missing price',async()=>{const p=client(
 it('prices every response fixture',async()=>{const p=client();await p.load();const fixtures=JSON.parse(await readFile('tests/fixtures/responses.json','utf8'));for(const f of fixtures)expect(p.fromResponse(f)?.totalUsd,f.name).toBeCloseTo(f.expected,8)});
 
 it('uses size and resolution variants',async()=>{const p=client();await p.load();const image=p.calc({provider:'openai',model:'gpt-image-1',usage:{output_images:1},options:{size:'1024x1024',quality:'high'}});expect(image.extraUsd).toBeCloseTo(.167,3);const video=p.calc({provider:'google',model:'veo-3.1-lite-generate-preview',usage:{output_video_seconds:2},options:{resolution:'1080p'}});expect(video.extraUsd).toBeCloseTo(.16,8)});
+
+it('SDK extractor counts Google image tokens once',()=>{const provider=data.providers.find((p:any)=>p.id==='google');const fixture={modelVersion:'gemini-3.1-flash-image',usageMetadata:{promptTokenCount:100,candidatesTokenCount:100,candidatesTokensDetails:[{modality:'IMAGE',tokenCount:50}]}};expect(sdkExtract(provider,fixture).usage.output_image_tokens).toBe(50)});
