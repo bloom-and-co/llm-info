@@ -18,7 +18,7 @@ LiteLLM と models.dev のライブデータから、4 プロバイダーの料�
 
 # テスト実行結果
 
-以下は同一結果の再実行も含め、実行順に要約行をそのまま記録したもの。途中の失敗は動画料金の resolution 既定値処理を追加した直後の回帰で、修正後の再実行に成功した。
+以下は同一結果の再実行も含め、実行順に要約行をそのまま記録したもの。途中の失敗は動画料金の resolution 既定値処理を追加した直後の回帰で、修正後の再実行に成功した。また、SDK extractor の追加検証で Google 画像トークンの二重集計を発見し、修正した。
 
 1. JS: `Test Files  2 passed (2)` / `Tests  13 passed (13)`
 2. Python: `9 passed in 0.17s`
@@ -37,6 +37,8 @@ LiteLLM と models.dev のライブデータから、4 プロバイダーの料�
 15. JS: `Test Files  2 passed (2)` / `Tests  16 passed (16)`; Python: `11 passed in 0.48s`
 16. 最終変更後の JS: `Test Files  2 passed (2)` / `Tests  16 passed (16)`; Python: `11 passed in 0.52s`
 17. ファイルストア検証後の JS: `Test Files  2 passed (2)` / `Tests  16 passed (16)`; Python: `11 passed in 0.48s`
+18. Google 画像 extractor 修正後の JS: `Test Files  2 passed (2)` / `Tests  18 passed (18)`; Python: `11 passed in 0.47s`
+19. Python SDK extractor 回帰テスト後: `12 passed in 0.48s`
 
 ビルダー最終実行: `python SDK validation: 4 providers passed` / `builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=47; conflicts=8`
 
