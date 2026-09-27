@@ -1,6 +1,9 @@
-.work/
 node_modules/
 dist/
-__pycache__/
 *.egg-info/
+__pycache__/
+.pytest_cache/
 .venv/
+.work/*.log
+.work/*
+!.work/result.md

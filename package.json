@@ -1,0 +1,41 @@
+{
+  "name": "@bloom-and-co/llm-prices",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./file": {
+      "types": "./dist/file.d.ts",
+      "import": "./dist/file.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "esbuild src/index.ts src/file.ts --outdir=dist --bundle --splitting --format=esm --platform=neutral --target=es2022 --external:@pydantic/genai-prices --external:node:* --out-extension:.js=.js && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "build:data": "node builder/build.mjs",
+    "test": "vitest run",
+    "test:builder": "vitest run builder"
+  },
+  "dependencies": {
+    "@pydantic/genai-prices": "0.1.9"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
