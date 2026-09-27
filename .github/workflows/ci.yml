@@ -22,7 +22,5 @@ jobs:
       - run: uv run --with pytest --with genai-prices==0.1.9 pytest -q python/tests
       - run: npm run build:data
       - run: npm run build
-      - name: Worker-safe entry
-        run: |
-          npx esbuild src/index.ts --bundle --splitting --format=esm --platform=neutral --external:node:* --external:@pydantic/genai-prices --outdir=/tmp/llm-prices-worker
-          if grep -q 'from "node:' /tmp/llm-prices-worker/index.js; then exit 1; fi
+      - name: Worker bundle test
+        run: npm run test:worker

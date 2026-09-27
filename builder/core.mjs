@@ -52,13 +52,26 @@ function num(v) {
 function put(obj, key, value) {
   if (value !== undefined) obj[key] = value;
 }
-function fromLite(v) {
+function fromLite(v, provider) {
   const prices = {};
   const extras = {};
   for (const [k, d] of Object.entries(direct))
     put(prices, d, num(v[k]) === undefined ? undefined : v[k] * 1e6);
   if (v.mode === 'image_generation' || v.output_cost_per_image !== undefined)
     put(extras, 'per_image', num(v.output_cost_per_image));
+  // https://docs.x.ai/developers/pricing: xAI Imagine charges per generated image; LiteLLM stores this as input_cost_per_image.
+  if (provider === 'x-ai' && v.mode === 'image_generation' && extras.per_image === undefined)
+    put(extras, 'per_image', num(v.input_cost_per_image));
+  else put(extras, 'input_per_image', num(v.input_cost_per_image));
+  const searches = v.search_context_cost_per_query;
+  put(
+    extras,
+    'web_search',
+    num(searches) ??
+      (searches && typeof searches === 'object'
+        ? Math.max(...Object.values(searches).filter((x) => num(x) !== undefined))
+        : undefined),
+  );
   if (v.mode === 'video_generation') {
     const video = num(v.output_cost_per_video_per_second ?? v.output_cost_per_second);
     const resolutions = Object.fromEntries(
@@ -150,12 +163,25 @@ function completeSdkPriceKeys(model, providerMetadata) {
     } catch (error) {
       const key = String(error).match(/Missing (?:join|ancestor) price key ([a-z0-9_]+)/)?.[1];
       if (!key) throw error;
+      const prices = model.prices;
       const fallback =
-        key === 'output_mtok' && model.prices.output_image_mtok !== undefined
-          ? 0
-          : key.includes('cache_')
-            ? (model.prices.cache_read_mtok ?? model.prices.cache_write_mtok)
-            : (model.prices.input_mtok ?? model.prices.output_mtok);
+        key === 'output_mtok'
+          ? prices.output_image_mtok
+          : key === 'output_image_reasoning_mtok'
+            ? (prices.output_image_mtok ?? prices.output_reasoning_mtok ?? prices.output_mtok)
+            : key === 'output_audio_reasoning_mtok'
+              ? (prices.output_audio_mtok ?? prices.output_reasoning_mtok ?? prices.output_mtok)
+              : key === 'cache_audio_read_mtok'
+                ? (prices.cache_audio_read_mtok ?? prices.input_audio_mtok)
+                : key === 'cache_audio_write_mtok'
+                  ? (prices.cache_audio_write_mtok ?? prices.input_audio_mtok)
+                  : key === 'cache_image_read_mtok'
+                    ? (prices.cache_image_read_mtok ?? prices.input_image_mtok)
+                    : key.startsWith('output_')
+                      ? (prices.output_mtok ?? prices.output_image_mtok ?? prices.output_audio_mtok)
+                      : key.includes('cache_')
+                        ? (prices.cache_read_mtok ?? prices.cache_write_mtok ?? prices.input_mtok)
+                        : prices.input_mtok;
       if (fallback === undefined || attempt === 11) throw error;
       model.prices[key] = fallback;
     }
@@ -164,23 +190,75 @@ function completeSdkPriceKeys(model, providerMetadata) {
 export function mergeSources(lite, models, gp) {
   const map = new Map(),
     conflicts = [],
-    imageModels = new Set();
-  function add(p, id, v, source) {
+    imageModels = new Set(),
+    skipped = [];
+  function add(p, id, v, source, sourceId = id) {
     id = normalizeId(id, p);
     if (!id || id.includes('/')) return;
     const key = p + '\0' + id;
     const old = map.get(key) ?? { id, prices: {}, x_source: source };
     if (old.x_source !== source) old.x_source = 'both';
-    for (const [field, val] of Object.entries(v.prices))
-      old.prices[field] =
-        source === 'models_dev' && old.prices[field] !== undefined
-          ? mergePrice(old.prices[field], val, { provider: p, model: id, field }, conflicts)
-          : val;
-    if (Object.keys(v.extras).length) old.x_extra_prices = { ...old.x_extra_prices, ...v.extras };
+    for (const [field, val] of Object.entries(v.prices)) {
+      if (old.prices[field] === undefined) old.prices[field] = val;
+      else if (source === 'models_dev')
+        old.prices[field] = mergePrice(
+          old.prices[field],
+          val,
+          { provider: p, model: id, field },
+          conflicts,
+        );
+      else {
+        const prior = base(old.prices[field]),
+          candidate = base(val);
+        if (Math.abs(prior - candidate) / Math.max(prior, candidate, 1e-12) >= 0.005)
+          conflicts.push({
+            provider: p,
+            model: id,
+            field,
+            source_a: old.x_lite_sources?.[field],
+            source_b: 'litellm:' + sourceId,
+            prior,
+            candidate,
+            adopted: Math.max(prior, candidate),
+          });
+        old.prices[field] = mergePrice(
+          old.prices[field],
+          val,
+          { provider: p, model: id, field },
+          [],
+        );
+      }
+      if (source === 'litellm') (old.x_lite_sources ??= {})[field] ??= 'litellm:' + sourceId;
+    }
+    function mergeExtra(target, incoming, prefix) {
+      for (const [name, value] of Object.entries(incoming)) {
+        const path = prefix ? `${prefix}.${name}` : name;
+        const prior = target[name];
+        if (prior === undefined) target[name] = value;
+        else if (typeof prior === 'number' && typeof value === 'number') {
+          if (Math.abs(prior - value) / Math.max(prior, value, 1e-12) >= 0.005)
+            conflicts.push({
+              provider: p,
+              model: id,
+              field: `x_extra_prices.${path}`,
+              source_a: old.x_lite_extra_sources?.[path],
+              source_b: 'litellm:' + sourceId,
+              prior,
+              candidate: value,
+              adopted: Math.max(prior, value),
+            });
+          target[name] = Math.max(prior, value);
+        } else if (prior && value && typeof prior === 'object' && typeof value === 'object')
+          mergeExtra(prior, value, path);
+        else target[name] = value;
+        if (source === 'litellm') (old.x_lite_extra_sources ??= {})[path] ??= 'litellm:' + sourceId;
+      }
+    }
+    if (Object.keys(v.extras).length) mergeExtra((old.x_extra_prices ??= {}), v.extras, '');
     map.set(key, old);
   }
   const sizedImages = [];
-  for (const [id, v] of Object.entries(lite))
+  for (const [id, v] of Object.entries(lite).sort(([a], [b]) => a.localeCompare(b, 'en')))
     if (v && typeof v === 'object') {
       const p = providerOf(v, id);
       if (!p) continue;
@@ -200,7 +278,7 @@ export function mergeSources(lite, models, gp) {
       if (/^(azure|bedrock|vertex_ai)\//.test(n)) continue;
       if (v.mode === 'image_generation' || v.output_cost_per_image_token !== undefined)
         imageModels.add(p + '\0' + n);
-      add(p, id, fromLite(v), 'litellm');
+      add(p, id, fromLite(v, p), 'litellm', id);
     }
   for (const image of sizedImages) {
     const key = image.p + '\0' + normalizeId(image.id, image.p);
@@ -210,13 +288,15 @@ export function mergeSources(lite, models, gp) {
       x_source: 'litellm',
     };
     const pixel = num(image.v.input_cost_per_pixel) ?? num(image.v.output_cost_per_pixel);
-    if (pixel !== undefined) {
+    const fixed =
+      image.p === 'x-ai' ? num(image.v.input_cost_per_image) : num(image.v.output_cost_per_image);
+    if (pixel !== undefined || fixed !== undefined) {
       const size = `${image.width}x${image.height}/${image.quality}`;
       const table =
         typeof model.x_extra_prices?.per_image === 'object' ? model.x_extra_prices.per_image : {};
       model.x_extra_prices = {
         ...model.x_extra_prices,
-        per_image: { ...table, [size]: pixel * image.width * image.height },
+        per_image: { ...table, [size]: fixed ?? pixel * image.width * image.height },
       };
       map.set(key, model);
     }
@@ -246,19 +326,41 @@ export function mergeSources(lite, models, gp) {
       .map(([, m]) => m)
       .filter((m) => Object.keys(m.prices).length || m.x_extra_prices);
     ms.sort((a, b) => a.id.localeCompare(b.id, 'en'));
+    const valid = [];
     for (const m of ms) {
       const dev = models[id === 'x-ai' ? 'xai' : id]?.models?.[m.id];
       if (dev?.name) m.name = dev.name;
       if (dev?.limit?.context) m.context_window = dev.limit.context;
-      completeSdkPriceKeys(m, rest);
+      try {
+        completeSdkPriceKeys(m, rest);
+      } catch (error) {
+        skipped.push({ provider: id, model: m.id, reason: String(error) });
+        console.warn(`skipped ${id}/${m.id}: ${error}`);
+        continue;
+      }
+      delete m.x_lite_sources;
+      delete m.x_lite_extra_sources;
+      const exactChildren = ms
+        .filter(
+          (x) =>
+            x !== m &&
+            new RegExp(`^${escaped(m.id)}-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$`).test(x.id),
+        )
+        .map((x) => x.id);
       m.match = {
-        or: [{ equals: m.id }, { regex: `^${escaped(m.id)}-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$` }],
+        or: [
+          { equals: m.id },
+          {
+            regex: `^${escaped(m.id)}-(?!${exactChildren.map((x) => escaped(x.slice(m.id.length + 1))).join('|') || '(?!)'}$)(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$`,
+          },
+        ],
       };
+      valid.push(m);
     }
-    return { ...rest, extractors: makeExtractors(id, upstream ?? []), models: ms };
+    return { ...rest, extractors: makeExtractors(id, upstream ?? []), models: valid };
   });
   conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  return { providers, conflicts };
+  return { providers, conflicts, skipped };
 }
 function makeExtractors(id, existing) {
   const e = clean(existing);
@@ -339,7 +441,11 @@ export function validate(doc, previous) {
       throw Error('missing flagship ' + id);
 }
 export function stableContent(doc) {
-  return JSON.stringify({ providers: doc.providers, conflicts: doc.conflicts });
+  return JSON.stringify({
+    providers: doc.providers,
+    conflicts: doc.conflicts,
+    skipped: doc.skipped,
+  });
 }
 export function finalize(doc, previous, now = new Date().toISOString()) {
   const content = stableContent(doc);

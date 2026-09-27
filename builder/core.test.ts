@@ -187,24 +187,143 @@ it('records every differing field merged from two sources', () => {
 });
 
 it('sets image-only output parent price and keeps dated matches unique', () => {
- const d=mergeSources({}, {openai:{models:{'gpt-image-only':{modalities:{output:['image']},cost:{output:30}},'gpt-4o':{cost:{input:2.5,output:10}},'gpt-4o-2024-05-13':{cost:{input:5,output:15}}}}},gp);
- const ms=d.providers.find(p=>p.id==='openai')!.models;
- expect(ms.find(m=>m.id==='gpt-image-only')!.prices.output_mtok).toBe(30);
- const id='gpt-4o-2024-05-13';
- expect(ms.filter(m=>m.match.or.some(rule=>rule.equals===id || (rule.regex && new RegExp(rule.regex).test(id))))).toHaveLength(1);
+  const d = mergeSources(
+    {},
+    {
+      openai: {
+        models: {
+          'gpt-image-only': { modalities: { output: ['image'] }, cost: { output: 30 } },
+          'gpt-4o': { cost: { input: 2.5, output: 10 } },
+          'gpt-4o-2024-05-13': { cost: { input: 5, output: 15 } },
+        },
+      },
+    },
+    gp,
+  );
+  const ms = d.providers.find((p) => p.id === 'openai')!.models;
+  expect(ms.find((m) => m.id === 'gpt-image-only')!.prices.output_mtok).toBe(30);
+  const id = 'gpt-4o-2024-05-13';
+  expect(
+    ms.filter((m) =>
+      m.match.or.some(
+        (rule) => rule.equals === id || (rule.regex && new RegExp(rule.regex).test(id)),
+      ),
+    ),
+  ).toHaveLength(1);
 });
 
 it('merges duplicate LiteLLM ids by higher price independent of order', () => {
- const entries=[['gemini/a',{litellm_provider:'gemini',input_cost_per_token:1e-6}],['vertex_ai/a',{litellm_provider:'vertex_ai',input_cost_per_token:2e-6}]] as const;
- const a=mergeSources(Object.fromEntries(entries),{},gp);
- const b=mergeSources(Object.fromEntries([...entries].reverse()),{},gp);
- expect(a.providers.find(p=>p.id==='google')!.models).toEqual(b.providers.find(p=>p.id==='google')!.models);
- expect(a.conflicts).toEqual(b.conflicts);
- expect(a.conflicts.length).toBe(1);
+  const entries = [
+    ['gemini/gemini-a', { litellm_provider: 'gemini', input_cost_per_token: 1e-6 }],
+    ['vertex_ai/gemini-a', { litellm_provider: 'vertex_ai', input_cost_per_token: 2e-6 }],
+  ] as const;
+  const a = mergeSources(Object.fromEntries(entries), {}, gp);
+  const b = mergeSources(Object.fromEntries([...entries].reverse()), {}, gp);
+  expect(a.providers.find((p) => p.id === 'google')!.models).toEqual(
+    b.providers.find((p) => p.id === 'google')!.models,
+  );
+  expect(a.conflicts).toEqual(b.conflicts);
+  expect(a.conflicts.length).toBe(1);
 });
 
 it('skips one malformed model and includes flat image prices', () => {
- const d=mergeSources({'gpt-bad':{litellm_provider:'openai',cache_read_input_token_cost:1e-6},'grok-imagine-image':{litellm_provider:'xai',mode:'image_generation',output_cost_per_image:.02}}, {}, gp);
- expect(d.skipped).toEqual([expect.objectContaining({model:'gpt-bad'})]);
- expect(d.providers.find(p=>p.id==='x-ai')!.models.find(m=>m.id==='grok-imagine-image')?.x_extra_prices?.per_image).toBe(.02);
+  const d = mergeSources(
+    {
+      'gpt-bad': { litellm_provider: 'openai', cache_read_input_token_cost: 1e-6 },
+      'grok-imagine-image': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        output_cost_per_image: 0.02,
+      },
+    },
+    {},
+    gp,
+  );
+  expect(d.skipped).toEqual([expect.objectContaining({ model: 'gpt-bad' })]);
+  expect(
+    d.providers.find((p) => p.id === 'x-ai')!.models.find((m) => m.id === 'grok-imagine-image')
+      ?.x_extra_prices?.per_image,
+  ).toBe(0.02);
+});
+
+it('takes the higher duplicate per-image price and records its source', () => {
+  const d = mergeSources(
+    {
+      'xai/grok-imagine-image': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        output_cost_per_image: 0.02,
+      },
+      'grok-imagine-image': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        output_cost_per_image: 0.03,
+      },
+    },
+    {},
+    gp,
+  );
+  const m = d.providers
+    .find((p) => p.id === 'x-ai')!
+    .models.find((m) => m.id === 'grok-imagine-image')!;
+  expect(m.x_extra_prices.per_image).toBe(0.03);
+  expect(d.conflicts).toContainEqual(
+    expect.objectContaining({ field: 'x_extra_prices.per_image', adopted: 0.03 }),
+  );
+});
+
+it('never matches a published request ID to differently priced rows', async () => {
+  const d = JSON.parse(await readFile('data/prices.json', 'utf8'));
+  for (const p of d.providers) {
+    const ids = p.models.flatMap((m) => [m.id, `${m.id}-20260927`]);
+    for (const id of ids) {
+      const matches = p.models.filter((m) =>
+        m.match.or.some(
+          (rule) => rule.equals === id || (rule.regex && new RegExp(rule.regex).test(id)),
+        ),
+      );
+      expect(matches.length, `${p.id}/${id}: ${matches.map((m) => m.id)}`).toBeLessThanOrEqual(1);
+    }
+  }
+});
+
+it('fills image reasoning and audio cache from their own modalities', () => {
+  const d = mergeSources(
+    {},
+    {
+      google: {
+        models: {
+          'gemini-image-test': {
+            modalities: { output: ['text', 'image'] },
+            cost: { input: 1, input_audio: 5, cache_read: 0.1, output: 30, reasoning: 3 },
+          },
+        },
+      },
+    },
+    gp,
+  );
+  const m = d.providers
+    .find((p) => p.id === 'google')!
+    .models.find((m) => m.id === 'gemini-image-test')!;
+  expect(m.prices.output_image_reasoning_mtok).toBe(30);
+  expect(m.prices.cache_audio_read_mtok).toBe(5);
+});
+
+it('interprets xAI image-only flat prices as generated-image charges', () => {
+  const d = mergeSources(
+    {
+      'xai/grok-imagine-image': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        input_cost_per_image: 0.02,
+      },
+    },
+    {},
+    gp,
+  );
+  const m = d.providers
+    .find((p) => p.id === 'x-ai')!
+    .models.find((m) => m.id === 'grok-imagine-image')!;
+  expect(m.x_extra_prices.per_image).toBe(0.02);
+  expect(m.x_extra_prices.input_per_image).toBeUndefined();
 });

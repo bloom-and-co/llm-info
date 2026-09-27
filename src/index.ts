@@ -1,4 +1,4 @@
-import { calcPrice, extractUsage as sdkExtract, type Provider } from '@pydantic/genai-prices';
+import { calcPrice, type Provider } from '@pydantic/genai-prices';
 export const DEFAULT_URL =
   'https://raw.githubusercontent.com/bloom-and-co/llm-prices/main/data/prices.json';
 export const FALLBACK_URL =
@@ -15,6 +15,7 @@ export type PriceData = {
   generated_at: string;
   providers: Provider[];
   conflicts?: unknown[];
+  skipped?: unknown[];
 };
 export type CacheDoc = {
   cache_schema: 1;
@@ -132,6 +133,25 @@ function pick(table: any, opt: any, warnings: string[], tag: string) {
   }
   return n;
 }
+function videoSeconds(r: any, request: any, model: string | null) {
+  const raw =
+    r.seconds ??
+    r.duration ??
+    request?.duration ??
+    request?.durationSeconds ??
+    request?.parameters?.durationSeconds;
+  const seconds = typeof raw === 'string' && raw.trim() ? Number(raw) : raw;
+  // https://ai.google.dev/gemini-api/docs/veo: Veo 3.1 generates 8-second videos by default.
+  const duration = number(seconds) ?? (model?.startsWith('veo-') ? 8 : undefined);
+  if (duration === undefined) return undefined;
+  const count =
+    r.generatedVideos?.length ??
+    r.generated_videos?.length ??
+    request?.parameters?.sampleCount ??
+    request?.sampleCount ??
+    1;
+  return duration * count;
+}
 export function createLlmPrices(options: Options = {}) {
   if (created) throw Error('Only one createLlmPrices instance is allowed per process');
   created = true;
@@ -148,13 +168,11 @@ export function createLlmPrices(options: Options = {}) {
   };
   const stale = () => !doc || Date.now() - Date.parse(doc.fetched_at) > ttl;
   async function getStore() {
-    if (store) return store;
-    if (typeof process !== 'undefined' && process.versions?.node) {
-      const f = await import('./file.js');
-      store = f.fileStore();
-      return store;
-    }
-    throw Error('A PriceStore is required outside Node.js');
+    if (!store)
+      throw Error(
+        'A PriceStore is required; pass memoryStore() or import fileStore from the /file entry',
+      );
+    return store;
   }
   async function persist(next: CacheDoc) {
     const s = await getStore();
@@ -279,7 +297,21 @@ export function createLlmPrices(options: Options = {}) {
     const clean = { ...usage };
     delete clean.output_images;
     delete clean.output_video_seconds;
-    const result = calcPrice(clean, m.id, { provider: p, timestamp: at });
+    delete clean.web_searches;
+    let result;
+    for (let attempt = 0; attempt < 16; attempt++) {
+      try {
+        result = calcPrice(clean, m.id, {
+          provider: { ...p, models: [{ ...m, match: { equals: m.id } }] },
+          timestamp: at,
+        });
+        break;
+      } catch (error) {
+        const key = String(error).match(/Missing usage value for ([a-z_]+_tokens)/)?.[1];
+        if (!key || key in clean) throw error;
+        clean[key] = 0; // Unknown overlap: zero is the conservative billable split.
+      }
+    }
     if (!result) return null;
     const warnings: string[] = [];
     if (stale()) warnings.push('stale_data');
@@ -290,6 +322,12 @@ export function createLlmPrices(options: Options = {}) {
     if (usage.output_video_seconds)
       extra +=
         pick(x.per_video_second, opts, warnings, 'per_video_second') * usage.output_video_seconds;
+    if (usage.web_searches) {
+      if (typeof x.web_search === 'number') extra += x.web_search * usage.web_searches;
+      else warnings.push('missing_price:web_search');
+    }
+    if (x.per_video_second !== undefined && !usage.output_video_seconds)
+      warnings.push('missing_param:duration');
     if (opts.service_tier && opts.service_tier !== 'default') warnings.push('service_tier_ignored');
     return {
       totalUsd: result.total_price + extra,
@@ -325,25 +363,29 @@ export function createLlmPrices(options: Options = {}) {
       set('output_tokens', u.output_tokens);
       set('cache_read_tokens', u.cache_read_input_tokens);
       set('cache_write_tokens', u.cache_creation_input_tokens);
+      set('web_searches', u.server_tool_use?.web_search_requests);
     } else if (provider === 'google') {
-      set('input_tokens', u.promptTokenCount);
+      set('input_tokens', (u.promptTokenCount ?? 0) + (u.toolUsePromptTokenCount ?? 0));
       set('output_tokens', (u.candidatesTokenCount ?? 0) + (u.thoughtsTokenCount ?? 0));
       set('cache_read_tokens', u.cachedContentTokenCount);
       if (u.thoughtsTokenCount && model && matchModel(p, model)?.prices?.output_reasoning_mtok)
         set('output_reasoning_tokens', u.thoughtsTokenCount);
-      for (const [arr, key] of [
-        [u.promptTokensDetails, 'input_image_tokens'],
-        [u.candidatesTokensDetails, 'output_image_tokens'],
+      for (const [arr, key, modality] of [
+        [u.promptTokensDetails, 'input_image_tokens', 'IMAGE'],
+        [u.candidatesTokensDetails, 'output_image_tokens', 'IMAGE'],
+        [u.promptTokensDetails, 'input_audio_tokens', 'AUDIO'],
+        [u.toolUsePromptTokensDetails, 'input_audio_tokens', 'AUDIO'],
+        [u.cacheTokensDetails, 'cache_audio_read_tokens', 'AUDIO'],
+        [u.candidatesTokensDetails, 'output_audio_tokens', 'AUDIO'],
       ] as const)
         if (Array.isArray(arr))
-          set(
-            key,
+          usage[key] =
+            (usage[key] ?? 0) +
             arr
-              .filter((x: any) => x.modality === 'IMAGE')
-              .reduce((a: number, x: any) => a + (x.tokenCount ?? 0), 0),
-          );
+              .filter((x: any) => x.modality === modality)
+              .reduce((a: number, x: any) => a + (x.tokenCount ?? 0), 0);
       set('output_images', r.generatedImages?.length ?? r.predictions?.length);
-      set('output_video_seconds', r.duration ?? request?.duration ?? request?.durationSeconds);
+      set('output_video_seconds', videoSeconds(r, request, model));
     } else {
       const a = u.prompt_tokens ?? u.input_tokens,
         b = u.completion_tokens ?? u.output_tokens;
@@ -369,11 +411,19 @@ export function createLlmPrices(options: Options = {}) {
           u.completion_tokens_details?.reasoning_tokens ??
             u.output_tokens_details?.reasoning_tokens,
         );
+      if (provider === 'x-ai') {
+        // https://docs.x.ai/developers/tools/tool-usage-details: completion_tokens is final text; reasoning_tokens is separate.
+        const reasoning =
+          u.completion_tokens_details?.reasoning_tokens ??
+          u.output_tokens_details?.reasoning_tokens;
+        if (number(reasoning) !== undefined)
+          usage.output_tokens = (usage.output_tokens ?? 0) + reasoning;
+      }
       if (apiFlavor === 'images' || r.data?.length) {
         set('output_images', r.data?.length ?? request?.n ?? 1);
         model = model ?? request?.model;
       }
-      set('output_video_seconds', r.duration ?? request?.duration ?? request?.durationSeconds);
+      set('output_video_seconds', videoSeconds(r, request, model));
     }
     return { model, usage };
   }

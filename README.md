@@ -13,13 +13,14 @@ pip install "git+https://github.com/bloom-and-co/llm-prices#subdirectory=python"
 
 ```js
 import { createLlmPrices } from '@bloom-and-co/llm-prices';
-const prices = createLlmPrices();
+import { fileStore } from '@bloom-and-co/llm-prices/file';
+const prices = createLlmPrices({ store: fileStore() });
 await prices.load();
 const cost = prices.fromResponse({ provider: 'openai', apiFlavor: 'responses', response });
 // Or: prices.calc({ provider: 'openai', model: 'gpt-6-luna', usage: { input_tokens: 1000, output_tokens: 500 } });
 ```
 
-`load()` fetches on an empty cache. A stale cache is immediately usable while a background refresh runs. Call `refresh({force:true})` to wait for a refresh. The JS main entry works in Workers and browsers when given a `PriceStore`; the default Node store is available at `@bloom-and-co/llm-prices/file`.
+`load()` fetches on an empty cache. A stale cache is immediately usable while a background refresh runs. Call `refresh({force:true})` to wait for a refresh. The JS main entry works in Workers and browsers when given a `PriceStore`; the Node file store is available at `@bloom-and-co/llm-prices/file`.
 
 ```js
 import { createLlmPrices } from '@bloom-and-co/llm-prices';

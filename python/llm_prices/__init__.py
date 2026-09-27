@@ -121,6 +121,41 @@ def _match(provider, model):
     return None
 
 
+def _video_seconds(response, request, model):
+    raw = next(
+        (
+            v
+            for v in [
+                response.get("seconds"),
+                response.get("duration"),
+                request.get("duration"),
+                request.get("durationSeconds"),
+                (request.get("parameters") or {}).get("durationSeconds"),
+            ]
+            if v is not None
+        ),
+        None,
+    )
+    try:
+        duration = float(raw) if raw is not None else None
+    except (ValueError, TypeError):
+        duration = None
+    # https://ai.google.dev/gemini-api/docs/veo: Veo 3.1 defaults to 8 seconds.
+    if duration is None and model and model.startswith("veo-"):
+        duration = 8
+    if duration is None:
+        return None
+    videos = response.get("generatedVideos") or response.get("generated_videos")
+    count = (
+        len(videos)
+        if isinstance(videos, list)
+        else (request.get("parameters") or {}).get(
+            "sampleCount", request.get("sampleCount", 1)
+        )
+    )
+    return duration * count
+
+
 class LlmPrices:
     def __init__(
         self,
@@ -301,8 +336,25 @@ class LlmPrices:
             for k, v in usage.items()
             if k not in ("output_images", "output_video_seconds")
         }
+        clean.pop("web_searches", None)
         try:
-            result = self.snapshot.calc(Usage(**clean), m["id"], provider, None, at)
+            # Restrict SDK matching to the selected row; alias regexes can precede dated IDs.
+            selected = snapshot_from_data(
+                {"providers": [{**p, "models": [{**m, "match": {"equals": m["id"]}}]}]}
+            )
+            for _ in range(16):
+                try:
+                    result = selected.calc(Usage(**clean), m["id"], provider, None, at)
+                    break
+                except ValueError as error:
+                    import re
+
+                    match = re.search(r"Missing usage for ([a-z_]+_tokens)", str(error))
+                    if not match or match.group(1) in clean:
+                        raise
+                    clean[match.group(1)] = (
+                        0  # Unknown overlap: conservative billable split.
+                    )
         except LookupError:
             return None
         d = Decimal
@@ -341,6 +393,15 @@ class LlmPrices:
                 warnings.append("missing_price:" + tag)
                 continue
             extra += d(str(rate)) * d(str(usage[field]))
+        if usage.get("web_searches"):
+            if x.get("web_search") is not None:
+                extra += d(str(x["web_search"])) * d(str(usage["web_searches"]))
+            else:
+                warnings.append("missing_price:web_search")
+        if x.get("per_video_second") is not None and not usage.get(
+            "output_video_seconds"
+        ):
+            warnings.append("missing_param:duration")
         if options.get("service_tier") not in (None, "default"):
             warnings.append("service_tier_ignored")
         return {
@@ -383,11 +444,20 @@ class LlmPrices:
             set_("output_tokens", u.get("output_tokens"))
             set_("cache_read_tokens", u.get("cache_read_input_tokens"))
             set_("cache_write_tokens", u.get("cache_creation_input_tokens"))
+            set_(
+                "web_searches",
+                (u.get("server_tool_use") or {}).get("web_search_requests"),
+            )
         elif provider == "google":
-            set_("input_tokens", u.get("promptTokenCount"))
+            set_(
+                "input_tokens",
+                (u.get("promptTokenCount") or 0)
+                + (u.get("toolUsePromptTokenCount") or 0),
+            )
             set_(
                 "output_tokens",
-                u.get("candidatesTokenCount", 0) + u.get("thoughtsTokenCount", 0),
+                (u.get("candidatesTokenCount") or 0)
+                + (u.get("thoughtsTokenCount") or 0),
             )
             set_("cache_read_tokens", u.get("cachedContentTokenCount"))
             p = next(
@@ -396,43 +466,45 @@ class LlmPrices:
             m = _match(p, model) if p and model else None
             if m and m["prices"].get("output_reasoning_mtok"):
                 set_("output_reasoning_tokens", u.get("thoughtsTokenCount"))
-            for source, dest in [
-                ("promptTokensDetails", "input_image_tokens"),
-                ("candidatesTokensDetails", "output_image_tokens"),
+            for source, dest, modality in [
+                ("promptTokensDetails", "input_image_tokens", "IMAGE"),
+                ("candidatesTokensDetails", "output_image_tokens", "IMAGE"),
+                ("promptTokensDetails", "input_audio_tokens", "AUDIO"),
+                ("toolUsePromptTokensDetails", "input_audio_tokens", "AUDIO"),
+                ("cacheTokensDetails", "cache_audio_read_tokens", "AUDIO"),
+                ("candidatesTokensDetails", "output_audio_tokens", "AUDIO"),
             ]:
-                if source in u:
-                    set_(
-                        dest,
-                        sum(
-                            x.get("tokenCount", 0)
-                            for x in u[source]
-                            if x.get("modality") == "IMAGE"
-                        ),
+                if isinstance(u.get(source), list):
+                    out[dest] = out.get(dest, 0) + sum(
+                        x.get("tokenCount", 0)
+                        for x in u[source]
+                        if x.get("modality") == modality
                     )
-            if "generatedImages" in response:
-                set_("output_images", len(response["generatedImages"]))
+            images = response.get("generatedImages") or response.get("predictions")
+            if isinstance(images, list):
+                set_("output_images", len(images))
             set_(
                 "output_video_seconds",
-                response.get(
-                    "duration", request.get("duration", request.get("durationSeconds"))
-                ),
+                _video_seconds(response, request, model),
             )
         else:
             set_("input_tokens", u.get("prompt_tokens", u.get("input_tokens")))
             set_("output_tokens", u.get("completion_tokens", u.get("output_tokens")))
             set_(
                 "cache_read_tokens",
-                u.get("prompt_tokens_details", u.get("input_tokens_details", {})).get(
-                    "cached_tokens"
-                ),
+                (
+                    u.get("prompt_tokens_details")
+                    or u.get("input_tokens_details")
+                    or {}
+                ).get("cached_tokens"),
             )
             set_(
                 "input_image_tokens",
-                u.get("input_tokens_details", {}).get("image_tokens"),
+                (u.get("input_tokens_details") or {}).get("image_tokens"),
             )
             set_(
                 "output_image_tokens",
-                u.get("output_tokens_details", {}).get("image_tokens"),
+                (u.get("output_tokens_details") or {}).get("image_tokens"),
             )
             p = next(
                 (p for p in self.doc["data"]["providers"] if p["id"] == provider), None
@@ -441,22 +513,37 @@ class LlmPrices:
             if m and m["prices"].get("output_reasoning_mtok"):
                 set_(
                     "output_reasoning_tokens",
-                    u.get(
-                        "completion_tokens_details", u.get("output_tokens_details", {})
+                    (
+                        u.get("completion_tokens_details")
+                        or u.get("output_tokens_details")
+                        or {}
                     ).get("reasoning_tokens"),
                 )
             set_(
                 "input_audio_tokens",
-                u.get("prompt_tokens_details", u.get("input_tokens_details", {})).get(
-                    "audio_tokens"
-                ),
+                (
+                    u.get("prompt_tokens_details")
+                    or u.get("input_tokens_details")
+                    or {}
+                ).get("audio_tokens"),
             )
             set_(
                 "output_audio_tokens",
-                u.get(
-                    "completion_tokens_details", u.get("output_tokens_details", {})
+                (
+                    u.get("completion_tokens_details")
+                    or u.get("output_tokens_details")
+                    or {}
                 ).get("audio_tokens"),
             )
+            if provider == "x-ai":
+                # https://docs.x.ai/developers/tools/tool-usage-details: completion is final text, reasoning separate.
+                reasoning = (
+                    u.get("completion_tokens_details")
+                    or u.get("output_tokens_details")
+                    or {}
+                ).get("reasoning_tokens")
+                if isinstance(reasoning, (int, float)):
+                    out["output_tokens"] = out.get("output_tokens", 0) + reasoning
             if api_flavor == "images" or "data" in response:
                 set_(
                     "output_images",
@@ -466,9 +553,7 @@ class LlmPrices:
                 )
             set_(
                 "output_video_seconds",
-                response.get(
-                    "duration", request.get("duration", request.get("durationSeconds"))
-                ),
+                _video_seconds(response, request, model),
             )
         return {"model": model, "usage": out}
 

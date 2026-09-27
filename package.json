@@ -26,7 +26,8 @@
     "test": "vitest run",
     "test:builder": "vitest run builder",
     "format": "prettier --write \"{builder,src,tests}/**/*.{mjs,ts}\"",
-    "format:check": "prettier --check \"{builder,src,tests}/**/*.{mjs,ts}\""
+    "format:check": "prettier --check \"{builder,src,tests}/**/*.{mjs,ts}\"",
+    "test:worker": "vitest run tests/worker-bundle.test.ts"
   },
   "dependencies": {
     "@pydantic/genai-prices": "0.1.9"
