@@ -87,3 +87,58 @@ Worker main entry smoke: PASS
 ```
 
 生成データの最終変更を含む再ビルドでは `builder: updated; models openai=149 anthropic=20 google=90 x-ai=47; conflicts=2`、直後の再実行では上記の `unchanged` となった。GitHub への push とレジストリへの公開は行っていない。
+
+## Follow-up 3
+
+予算超過を防ぐため、料金表の親単価、SDK に渡すモデル行、レスポンスの使用量抽出を修正した。先に回帰テストをコミット（`ee253c2`）して実行した時点の要約は `Test Files  2 failed (2)` / `Tests  7 failed | 23 passed (30)`、Python は `1 failed, 13 passed in 0.58s` だった。項目 9 の旧 Worker エントリを別途 browser 向けに bundle した結果は `baseline worker bundle: FAIL`、`Could not resolve "node:fs/promises"`、`Could not resolve "node:path"`、`Could not resolve "node:os"` だった。
+
+| 項目 | テスト名 | 修正前（原文） | 修正後（原文） | 原因と修正 |
+|---|---|---|---|---|
+| 0 | `charges exact dated rows and image-only output tokens` | `FAIL  tests/prices.test.ts > charges exact dated rows and image-only output tokens` | `Tests  37 passed (37)` | 画像出力専用モデルで SDK の親 `output_mtok` を 0 にしていた。画像出力単価で補完した。 |
+| 1 | 同上、`never matches a published request ID to differently priced rows` | `FAIL  tests/prices.test.ts > charges exact dated rows and image-only output tokens` | `Tests  37 passed (37)` | wrapper が日付付き行を選んだ後、SDK が alias に再一致した。選んだ 1 行だけを SDK に渡し、builder の alias 正規表現から既存の日付付き ID を除外した。 |
+| 2 | `accounts for Gemini audio, tool input, and image reasoning` | `FAIL  tests/prices.test.ts > accounts for Gemini audio, tool input, and image reasoning` | `Tests  37 passed (37)` | 独自 extractor が AUDIO を読まなかった。入力、キャッシュ、出力、ツール入力の AUDIO 内訳を復元した。 |
+| 3 | 同上 | `FAIL  tests/prices.test.ts > accounts for Gemini audio, tool input, and image reasoning` | `Tests  37 passed (37)` | `toolUsePromptTokenCount` を入力合計に加えていなかった。 |
+| 4 | `charges video counts and warns when duration is unknown` | `FAIL  tests/prices.test.ts > charges video counts and warns when duration is unknown` | `Tests  37 passed (37)` | Sora の文字列秒数と Veo の `parameters.durationSeconds`、生成本数を無視していた。Veo の既定 8 秒は [Google の文書](https://ai.google.dev/gemini-api/docs/veo) に従い、秒数不明の動画には `missing_param:duration` を付ける。 |
+| 5 | `accounts for Gemini audio, tool input, and image reasoning`、`fills image reasoning and audio cache from their own modalities` | `FAIL  tests/prices.test.ts > accounts for Gemini audio, tool input, and image reasoning` | `Tests  37 passed (37)` | 画像思考出力を入力単価から、音声キャッシュをテキストキャッシュから補っていた。各出力単価、音声入力単価へ修正し、SDK が要求する交差使用量を保守的な 0 で明示した。 |
+| 6 | `charges xAI reasoning and Anthropic web searches` | `FAIL  tests/prices.test.ts > charges xAI reasoning and Anthropic web searches` | `Tests  37 passed (37)` | xAI の `completion_tokens` は最終テキスト、`reasoning_tokens` は別計上という [公式説明](https://docs.x.ai/developers/tools/tool-usage-details) に従い、後者を出力トークンに加えた。 |
+| 7 | `survives null usage fields and counts Vertex predictions`、`test_dated_image_audio_video_null_and_tools` | `1 failed, 13 passed in 0.58s` | `15 passed in 0.61s` | Python の `None.get` と `None` の加算を避け、JS にも同じ null fixture を追加した。 |
+| 8 | 同上、`matches Python totals and warnings for every fixture` | `1 failed, 13 passed in 0.58s` | `15 passed in 0.61s` | Python の Imagen `predictions` を数えていなかった。全 fixture と追加 null/predictions ケースで JS/Python の合計と警告を比較した。 |
+| 9 | `bundles and imports a memory-store Worker without Node modules` | `baseline worker bundle: FAIL` | `Tests  1 passed (1)` | main entry の動的 import が Node のファイルモジュールを bundle に取り込んだ。`/file` を明示 import する構成にし、browser platform の実 bundle と import 実行で検証した。環境に workerd / miniflare はなかった。 |
+| 10 | `skips one malformed model and includes flat image prices` | `FAIL  builder/core.test.ts > skips one malformed model and includes flat image prices` | `Tests  16 passed (16)` | 単一モデルの SDK キー補完失敗で全体が中断した。理由付きで `skipped` に記録し、そのモデルだけ除外する。20% 減少ガードは維持した。 |
+| 11 | `merges duplicate LiteLLM ids by higher price independent of order`、`takes the higher duplicate per-image price and records its source` | `FAIL  builder/core.test.ts > merges duplicate LiteLLM ids by higher price independent of order` | `Tests  16 passed (16)` | 正規化後の重複行が後勝ちだった。単価ごとに高い方を選び、元の LiteLLM ID を衝突記録に残す。入力順を変えても同じ結果を確認した。 |
+| 12 | `interprets xAI image-only flat prices as generated-image charges`、`charges xAI reasoning and Anthropic web searches`、`warns on unpriced web searches` | `FAIL  tests/prices.test.ts > charges xAI reasoning and Anthropic web searches` | `Tests  37 passed (37)` | LiteLLM の xAI `input_cost_per_image` は [xAI の料金表](https://docs.x.ai/developers/pricing) では生成画像単価なので `per_image` に変換した。Anthropic 検索回数はソースの検索単価があれば加算し、なければ警告する。更新 workflow は concurrency、credential 非永続化、別 push step を追加した。 |
+
+旧データで `output_mtok: 0` を合成していた画像モデルの修正前→修正後（USD / 100 万トークン）:
+
+| モデル | 前 | 後 |
+|---|---:|---:|
+| gpt-image-1 | 0 | 40 |
+| gpt-image-1-mini | 0 | 8 |
+| gpt-image-2 | 0 | 30 |
+| gpt-image-2-2026-04-21 | 0 | 30 |
+| gpt-image-2.5-flare | 0 | 30 |
+| gpt-image-2.5-flare-2026-09-08 | 0 | 30 |
+| gpt-image-2.5-sunburst | 0 | 30 |
+| gpt-image-2.5-sunburst-2026-09-08 | 0 | 30 |
+
+models.dev のライブ `modalities.output` は `gpt-image-1` と `gpt-image-2` が `['image']`、`gpt-image-1-mini` は `['text','image']`、flare / sunburst は掲載なしだった。後者も LiteLLM の画像出力料金があり、テキスト出力単価がない場合は親単価に画像料金を使用した。
+
+最終再実行の要約行（原文）:
+
+```text
+All matched files use Prettier code style!
+5 files already formatted
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+ Test Files  4 passed (4)
+      Tests  37 passed (37)
+15 passed in 0.61s
+python SDK validation: 4 providers passed
+builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=6; skipped=0
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+npm pack/install smoke: PASS
+Python wheel/install smoke: PASS
+```
+
+生成データは openai 149、anthropic 20、google 90、x-ai 54 モデル。衝突 6 件、スキップ 0 件。npm tarball と Python wheel はそれぞれ一時環境へインストールして、日付付き `gpt-4o-2024-05-13` の $5/M を確認した。GitHub への push と公開は行っていない。
