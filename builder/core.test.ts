@@ -125,8 +125,14 @@ it('keeps text and image output prices separate', () => {
 });
 it('merges duplicate LiteLLM ids independently of input order', () => {
   const entries = [
-    ['gemini/gemini-a', { litellm_provider: 'gemini', input_cost_per_token: 1e-6 }],
-    ['vertex_ai/gemini-a', { litellm_provider: 'vertex_ai', input_cost_per_token: 2e-6 }],
+    [
+      'gemini/gemini-a',
+      { litellm_provider: 'gemini', input_cost_per_token: 1e-6, output_cost_per_token: 1e-6 },
+    ],
+    [
+      'vertex_ai/gemini-a',
+      { litellm_provider: 'vertex_ai', input_cost_per_token: 2e-6, output_cost_per_token: 1e-6 },
+    ],
   ] as const;
   const a = mergeSources(Object.fromEntries(entries), {}),
     b = mergeSources(Object.fromEntries([...entries].reverse()), {});
@@ -162,4 +168,166 @@ it('publishes exact rows before dated suffix matches', async () => {
   expect(base.match.dated_suffix).toBe(true);
   expect(dated.prices.input).toBe(5);
   expect(base.prices.input).not.toBe(5);
+});
+it('keeps the highest duplicate image, tier, and region prices', () => {
+  const d = mergeSources(
+    {
+      'gemini/gemini-gx': {
+        litellm_provider: 'gemini',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 1e-6,
+        input_cost_per_token_above_200k_tokens: 3e-6,
+        regional_processing_uplift_multiplier_us: 1.1,
+      },
+      'vertex_ai/gemini-gx': {
+        litellm_provider: 'vertex_ai',
+        input_cost_per_token: 2e-6,
+        output_cost_per_token: 2e-6,
+        input_cost_per_token_above_200k_tokens: 4e-6,
+        regional_processing_uplift_multiplier_us: 1.3,
+      },
+      'xai/grok-image': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        input_cost_per_image: 0.06,
+      },
+      'grok-image': {
+        litellm_provider: 'xai',
+        mode: 'image_generation',
+        input_cost_per_image: 0.08,
+      },
+    },
+    {},
+  );
+  const gx = row(d, 'google', 'gemini-gx');
+  expect(gx.prices.tiers[0].prices.input).toBe(4);
+  expect(gx.region_uplift.us).toBe(1.3);
+  expect(row(d, 'x-ai', 'grok-image').prices.per_image).toBe(0.08);
+  expect(d.conflicts.some((x: any) => x.field === 'input_mtok@200000')).toBe(true);
+});
+it('merges capability booleans and prefers models.dev efforts', () => {
+  const d = mergeSources(
+    {
+      gx: {
+        litellm_provider: 'openai',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 1e-6,
+        supports_web_search: false,
+        reasoning_effort_levels: ['low'],
+        max_tokens: 10000,
+        max_input_tokens: 8000,
+      },
+    },
+    {
+      openai: {
+        models: {
+          gx: {
+            cost: { input: 1, output: 1 },
+            web_search: true,
+            reasoning_options: [{ type: 'effort', values: ['high'] }],
+          },
+        },
+      },
+    },
+  );
+  const cap = row(d, 'openai', 'gx').capabilities;
+  expect(cap.web_search).toBe(true);
+  expect(cap.reasoning_efforts).toEqual(['high']);
+  expect(cap.context_window).toBe(10000);
+  expect(cap.max_input_tokens).toBe(8000);
+});
+it('validates missing, NaN, and flagship prices', async () => {
+  const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
+  const noPrice = structuredClone(d);
+  noPrice.models[0].prices = {};
+  expect(() => validate(noPrice)).toThrow('model without price');
+  const nan = structuredClone(d);
+  nan.models[0].prices.input = NaN;
+  expect(() => validate(nan)).toThrow('invalid price');
+  const noFlagship = structuredClone(d);
+  noFlagship.models = noFlagship.models.filter((m: any) => m.id !== 'gpt-6-luna');
+  expect(() => validate(noFlagship)).toThrow('missing flagship');
+});
+it('scales fast prices and preserves explicit mode tiers', () => {
+  const d = mergeSources(
+    {
+      gx: {
+        litellm_provider: 'openai',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 2e-6,
+        provider_specific_entry: { fast: 2 },
+        input_cost_per_token_priority: 3e-6,
+        input_cost_per_token_above_200k_tokens_priority: 5e-6,
+      },
+    },
+    {},
+  );
+  const m = row(d, 'openai', 'gx');
+  expect(m.modes.fast.prices.input).toBe(2);
+  expect(m.modes.priority.prices.tiers[0].prices.input).toBe(5);
+});
+it('keeps a default video price beside resolution prices', () => {
+  const d = mergeSources(
+    {
+      video: {
+        litellm_provider: 'openai',
+        mode: 'video_generation',
+        output_cost_per_second: 0.1,
+        output_cost_per_second_1080p: 0.2,
+      },
+    },
+    {},
+  );
+  expect(row(d, 'openai', 'video').prices.per_video_second).toEqual({ default: 0.1, '1080p': 0.2 });
+});
+it('logs mode price conflicts and sorts the log deterministically', () => {
+  const d = mergeSources(
+    {
+      gx: {
+        litellm_provider: 'openai',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 2e-6,
+        input_cost_per_token_priority: 3e-6,
+      },
+    },
+    {
+      openai: {
+        models: {
+          gx: {
+            cost: { input: 2, output: 4 },
+            experimental: { modes: { priority: { cost: { input: 4, output: 6 } } } },
+          },
+        },
+      },
+    },
+  );
+  expect(d.conflicts.some((c: any) => c.field === 'x_modes.priority.input_mtok')).toBe(true);
+  expect(d.conflicts.map(JSON.stringify)).toEqual(
+    [...d.conflicts.map(JSON.stringify)].sort((a, b) => a.localeCompare(b, 'en')),
+  );
+});
+it('sorts conflicts across providers independently of discovery order', () => {
+  const d = mergeSources(
+    {
+      'xai/grok-z': {
+        litellm_provider: 'xai',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 1e-6,
+      },
+      'grok-z': {
+        litellm_provider: 'xai',
+        input_cost_per_token: 2e-6,
+        output_cost_per_token: 2e-6,
+      },
+      'openai/gpt-a': {
+        litellm_provider: 'openai',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 1e-6,
+      },
+    },
+    { openai: { models: { 'gpt-a': { cost: { input: 2, output: 2 } } } } },
+  );
+  const serialized = d.conflicts.map(JSON.stringify);
+  expect(serialized.length).toBeGreaterThan(2);
+  expect(serialized).toEqual([...serialized].sort((a, b) => a.localeCompare(b, 'en')));
 });

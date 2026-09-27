@@ -48,6 +48,14 @@ export function providerOf(v, id) {
 function num(v) {
   return typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : undefined;
 }
+function malformedPrice(v, fields) {
+  return Object.entries(v).some(
+    ([key, value]) =>
+      fields.some((field) => key === field || key.startsWith(field + '_')) &&
+      value !== undefined &&
+      num(value) === undefined,
+  );
+}
 const mtok = (value) => Number((value * 1e6).toPrecision(12));
 function put(obj, key, value) {
   if (value !== undefined) obj[key] = value;
@@ -198,7 +206,7 @@ function liteCapabilities(v) {
     temperature: v.supports_sampling_params,
     prompt_caching: v.supports_prompt_caching,
     computer_use: v.supports_computer_use,
-    context_window: v.max_input_tokens,
+    context_window: v.max_tokens ?? v.max_context_tokens ?? v.context_window,
     max_input_tokens: v.max_input_tokens,
     max_output_tokens: v.max_output_tokens,
     knowledge_cutoff: v.knowledge_cutoff,
@@ -293,7 +301,7 @@ function mergePrice(a, b, meta, conflicts) {
   }
   const tiers = [...tierMap]
     .sort((x, y) => x[0] - y[0])
-    .map(([start, price]) => ({ start, price }));
+    .map(([start, price]) => ({ start, price: Math.max(adopted, price) }));
   return tiers.length ? { base: adopted, tiers } : adopted;
 }
 function escaped(s) {
@@ -304,7 +312,8 @@ export function mergeSources(lite, models) {
     conflicts = [],
     capability_conflicts = [],
     imageModels = new Set(),
-    skipped = [];
+    skipped = [],
+    malformed = new Map();
   function add(p, id, v, source, sourceId = id) {
     id = normalizeId(id, p);
     if (!id || id.includes('/')) return;
@@ -447,6 +456,16 @@ export function mergeSources(lite, models) {
       }
       const n = normalizeId(id, p);
       if (/^(azure|bedrock|vertex_ai)\//.test(n)) continue;
+      if (
+        malformedPrice(v, [
+          ...Object.keys(direct),
+          'output_cost_per_image',
+          'input_cost_per_image',
+          'output_cost_per_second',
+          'output_cost_per_video_per_second',
+        ])
+      )
+        malformed.set(p + '\0' + n, 'invalid_price');
       if (v.mode === 'image_generation' || v.output_cost_per_image_token !== undefined)
         imageModels.add(p + '\0' + n);
       add(p, id, fromLite(v, p), 'litellm', id);
@@ -472,7 +491,10 @@ export function mergeSources(lite, models) {
             : {};
       model.x_extra_prices = {
         ...model.x_extra_prices,
-        per_image: { ...table, [size]: fixed ?? pixel * image.width * image.height },
+        per_image: {
+          ...table,
+          [size]: Math.max(table[size] ?? 0, fixed ?? pixel * image.width * image.height),
+        },
       };
       map.set(key, model);
     }
@@ -491,6 +513,11 @@ export function mergeSources(lite, models) {
         imageModels.has(p + '\0' + normalized) ||
         liteModel?.prices.output_image_mtok !== undefined ||
         liteModel?.x_extra_prices?.per_image !== undefined;
+      if (
+        malformedPrice(v.cost ?? {}, Object.keys(mdKeys)) ||
+        (v.cost?.tiers ?? []).some((tier) => malformedPrice(tier, Object.keys(mdKeys)))
+      )
+        malformed.set(p + '\0' + normalized, 'invalid_price');
       add(p, id, fromModels(v, imageOutput), 'models_dev');
     }
   const modelsOut = [];
@@ -498,9 +525,33 @@ export function mergeSources(lite, models) {
     const ms = [...map.entries()]
       .filter(([key]) => key.startsWith(provider + '\0'))
       .map(([, m]) => m)
-      .filter((m) => Object.keys(m.prices).length || m.x_extra_prices)
       .sort((a, b) => a.id.localeCompare(b.id, 'en'));
     for (const m of ms) {
+      const key = provider + '\0' + m.id;
+      const required =
+        m.x_extra_prices?.per_video_second !== undefined
+          ? 'video'
+          : m.x_extra_prices?.per_image !== undefined || m.prices.output_image_mtok !== undefined
+            ? 'image'
+            : m.id.includes('embedding')
+              ? 'embedding'
+              : 'text';
+      const publishable =
+        required === 'video'
+          ? m.x_extra_prices?.per_video_second !== undefined
+          : required === 'image'
+            ? m.x_extra_prices?.per_image !== undefined || m.prices.output_image_mtok !== undefined
+            : required === 'embedding'
+              ? m.prices.input_mtok !== undefined
+              : m.prices.input_mtok !== undefined && m.prices.output_mtok !== undefined;
+      if (malformed.has(key) || !publishable) {
+        skipped.push({
+          provider,
+          model: m.id,
+          reason: malformed.get(key) ?? 'missing_required_price',
+        });
+        continue;
+      }
       const dev = models[provider === 'x-ai' ? 'xai' : provider]?.models?.[m.id];
       const cap = m._cap ?? { values: {}, sources: {} };
       const capabilities = Object.fromEntries(
@@ -533,7 +584,6 @@ export function mergeSources(lite, models) {
                 : null),
         ]),
       );
-      capabilities.sources = cap.sources;
       const convert = (old) => {
         const out = {},
           tiers = new Map();
@@ -549,10 +599,20 @@ export function mergeSources(lite, models) {
             }
           }
         }
-        if (tiers.size)
-          out.tiers = [...tiers]
+        if (tiers.size) {
+          const rows = [...tiers]
             .sort((a, b) => a[0] - b[0])
-            .map(([threshold, prices]) => ({ above_input_tokens: threshold + 1, prices }));
+            .map(([threshold, prices]) => ({
+              above_input_tokens: threshold + 1,
+              prices: Object.fromEntries(
+                Object.entries(prices)
+                  .filter(([, price]) => price > 0)
+                  .map(([key, price]) => [key, Math.max(price, out[key] ?? 0)]),
+              ),
+            }))
+            .filter((tier) => Object.keys(tier.prices).length);
+          if (rows.length) out.tiers = rows;
+        }
         return out;
       };
       const prices = { ...convert(m.prices) };
@@ -560,6 +620,7 @@ export function mergeSources(lite, models) {
         const target = k === 'web_search' ? 'per_web_search' : k;
         if (target !== 'input_per_image') prices[target] = v;
       }
+      if (prices.per_web_search !== undefined) capabilities.web_search = true;
       const modes = Object.fromEntries(
         Object.entries(m.x_modes ?? {}).map(([k, v]) => [
           k,
@@ -576,7 +637,6 @@ export function mergeSources(lite, models) {
         name: dev?.name ?? m.id,
         aliases: [],
         match: { exact, dated_suffix: true },
-        source: m.x_source,
         prices,
         modes,
         region_uplift: m.x_region_uplift ?? {},
@@ -586,7 +646,7 @@ export function mergeSources(lite, models) {
   }
   conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
   capability_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  return { models: modelsOut, conflicts, capability_conflicts, skipped };
+  return { models: modelsOut, skipped, conflicts, capability_conflicts };
 }
 export function validate(doc, previous) {
   if (doc.schema !== 2 || !Array.isArray(doc.models)) throw Error('invalid document');
@@ -629,9 +689,8 @@ export function validate(doc, previous) {
 export function stableContent(doc) {
   return JSON.stringify({
     models: doc.models,
-    conflicts: doc.conflicts,
-    capability_conflicts: doc.capability_conflicts,
     skipped: doc.skipped,
+    sources: doc.sources,
   });
 }
 export function finalize(doc, previous, now = new Date().toISOString()) {

@@ -16,10 +16,10 @@ jobs:
       - uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
       - run: npm ci
       - run: npm run format:check
-      - run: uvx --from ruff==0.13.2 ruff format --check python builder/validate.py
+      - run: uvx --from ruff==0.13.2 ruff format --check python
       - run: npm test
       - run: npm run test:builder
-      - run: uv run --with pytest --with genai-prices==0.1.9 pytest -q python/tests
+      - run: uv run --with pytest pytest -q python/tests
       - run: npm run build:data
       - run: npm run build
       - name: Worker bundle test

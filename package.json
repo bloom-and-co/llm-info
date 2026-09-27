@@ -23,11 +23,11 @@
     "prepare": "npm run build",
     "build": "esbuild src/index.ts src/file.ts --outdir=dist --bundle --splitting --format=esm --platform=neutral --target=es2022 --external:node:* --out-extension:.js=.js && tsc --emitDeclarationOnly --declaration --outDir dist",
     "build:data": "node builder/build.mjs",
-    "test": "vitest run",
-    "test:builder": "vitest run builder",
+    "test": "vitest run --exclude '.work/**'",
+    "test:builder": "vitest run builder/core.test.ts --exclude '.work/**'",
     "format": "prettier --write \"{builder,src,tests}/**/*.{mjs,ts}\"",
     "format:check": "prettier --check \"{builder,src,tests}/**/*.{mjs,ts}\"",
-    "test:worker": "vitest run tests/worker-bundle.test.ts"
+    "test:worker": "vitest run tests/worker-bundle.test.ts --exclude '.work/**'"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",

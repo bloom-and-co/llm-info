@@ -465,7 +465,7 @@ it('handles overlapping cache and modality totals conservatively', async () => {
     },
   });
   expect(cost?.totalUsd).toBeGreaterThan(0);
-  expect(cost?.warnings).toContain('inconsistent_usage');
+  expect(cost?.warnings).not.toContain('inconsistent_usage');
 });
 
 it('counts Veo SDK and Vertex video response shapes', async () => {

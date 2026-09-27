@@ -16,7 +16,6 @@ export type PriceData = {
   models: Model[];
   conflicts?: unknown[];
   skipped?: unknown[];
-  capability_conflicts?: unknown[];
 };
 export type CacheDoc = {
   cache_schema: 1;
@@ -58,7 +57,6 @@ export type Cost = {
   requestedModel: string;
   usage: Record<string, number>;
   dataVersion: string;
-  source: string;
   warnings: string[];
 };
 type Options = {
@@ -97,7 +95,9 @@ function videoSeconds(r: any, request: any, model: string | null) {
     request?.parameters?.durationSeconds;
   const seconds = typeof raw === 'string' && raw.trim() ? Number(raw) : raw;
   // https://ai.google.dev/gemini-api/docs/veo: Veo 3.1 generates 8-second videos by default.
-  const duration = number(seconds) ?? (model?.startsWith('veo-') ? 8 : undefined);
+  // https://platform.openai.com/docs/api-reference/videos: Sora default is four seconds.
+  const duration =
+    number(seconds) ?? (model?.startsWith('veo-') ? 8 : model?.startsWith('sora-') ? 4 : undefined);
   if (duration === undefined) return undefined;
   const count =
     result.generatedVideos?.length ??
@@ -251,7 +251,28 @@ export function createLlmInfo(options: Options = {}) {
     const m = findModel(d.models, provider, model);
     if (!m) return null;
     const selectedMode = mode ?? opts.mode ?? 'standard';
-    const result = calculate(m, usage, opts, selectedMode, region ?? 'global');
+    const providerModeMultiplier = d.models
+      .filter((row) => row.provider === m.provider)
+      .reduce((highest, row) => {
+        for (const entry of Object.values(row.modes ?? {}) as any[]) {
+          highest = Math.max(highest, entry.multiplier ?? 1);
+          for (const [key, value] of Object.entries(entry.prices ?? {}))
+            if (
+              typeof value === 'number' &&
+              typeof row.prices[key] === 'number' &&
+              row.prices[key] > 0
+            )
+              highest = Math.max(highest, value / row.prices[key]);
+        }
+        return highest;
+      }, 0);
+    const result = calculate(
+      m,
+      usage,
+      { ...opts, providerModeMultiplier },
+      selectedMode,
+      region ?? 'global',
+    );
     if (stale()) result.warnings.push('stale_data');
     return {
       ...result,
@@ -260,10 +281,10 @@ export function createLlmInfo(options: Options = {}) {
       requestedModel: model,
       usage,
       dataVersion: d.version,
-      source: m.source ?? 'unknown',
     };
   }
   function extractUsage({ provider, apiFlavor, response, request }: any) {
+    provider = provider.toLowerCase();
     const rows = current().data.models.filter((x) => x.provider === provider);
     if (!rows.length) throw Error('Unknown provider ' + provider);
     const r = response ?? {},
@@ -304,7 +325,13 @@ export function createLlmInfo(options: Options = {}) {
             arr
               .filter((x: any) => x.modality === modality)
               .reduce((a: number, x: any) => a + (x.tokenCount ?? 0), 0);
-      set('output_images', r.generatedImages?.length ?? r.predictions?.length);
+      set(
+        'output_images',
+        r.generatedImages?.length ??
+          r.predictions?.length ??
+          request?.parameters?.sampleCount ??
+          request?.config?.numberOfImages,
+      );
       set('output_video_seconds', videoSeconds(r, request, model));
     } else {
       const a = u.prompt_tokens ?? u.input_tokens,
@@ -358,7 +385,7 @@ export function createLlmInfo(options: Options = {}) {
         : args.response?.usage?.speed === 'fast' || args.response?.speed === 'fast'
           ? 'fast'
           : undefined;
-    return calc({
+    const result = calc({
       provider: args.provider,
       model,
       usage,
@@ -367,6 +394,16 @@ export function createLlmInfo(options: Options = {}) {
       region: args.region,
       options: { ...args.request, ...args.response, service_tier: args.response?.service_tier },
     });
+    if (
+      result &&
+      model.startsWith('sora-') &&
+      args.response?.seconds == null &&
+      args.response?.duration == null &&
+      args.request?.duration == null &&
+      args.request?.durationSeconds == null
+    )
+      result.warnings.push('missing_param:duration');
+    return result;
   }
   return { load, refresh, info, capabilities, models, calc, extractUsage, fromResponse };
 }

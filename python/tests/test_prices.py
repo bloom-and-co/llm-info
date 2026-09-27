@@ -345,6 +345,7 @@ def test_dated_image_audio_video_null_and_tools():
         p.from_response("openai", {"seconds": "5"}, {"model": "sora-2"})["extra_usd"]
         > 0
     )
+    assert p.from_response("openai", {}, {"model": "sora-2"})["extra_usd"] > 0
     assert (
         "missing_param:duration"
         in p.from_response("openai", {}, {"model": "sora-2"})["warnings"]
@@ -452,7 +453,7 @@ def test_conservative_cache_overlap_and_fallback():
     }
     result = calculate(model, usage)
     assert result["input_usd"] == Decimal("5.24")
-    assert "inconsistent_usage" in result["warnings"]
+    assert "inconsistent_usage" not in result["warnings"]
     del model["prices"]["cache_audio_read"]
     fallback = calculate(model, usage)
     assert fallback["input_usd"] == Decimal("6.4")
@@ -494,3 +495,37 @@ def test_included_reasoning_uses_disjoint_output_bucket():
         {"output_tokens": 100, "output_reasoning_tokens": 20},
     )
     assert result["output_usd"] == Decimal("0.00034")
+
+
+def test_task6_long_context_invalid_usage_and_matching():
+    from llm_info._engine import calculate, find_model
+
+    data = json.loads(Path("data/llm-info.json").read_text())
+    rows = data["models"]
+
+    def model(provider, name):
+        return next(m for m in rows if m["provider"] == provider and m["id"] == name)
+
+    usage = {"input_tokens": 400000, "output_tokens": 10000}
+    assert calculate(model("openai", "gpt-5.4"), usage, mode="priority")[
+        "total_usd"
+    ] == Decimal("4.45")
+    assert calculate(model("openai", "gpt-6-luna"), usage, mode="fast")[
+        "total_usd"
+    ] == Decimal("0.175")
+    assert calculate(model("google", "gemini-2.5-pro"), usage, mode="batch")[
+        "total_usd"
+    ] == Decimal("0.575")
+    m = model("openai", "gpt-4o")
+    assert calculate(m, {"input_tokens": "1000000"})["input_usd"] > 0
+    bad = calculate(m, {"input_tokens": True, "output_tokens": "oops"}, region="JP")
+    assert {
+        "invalid_usage:input_tokens",
+        "invalid_usage:output_tokens",
+        "unknown_region:JP",
+    } <= set(bad["warnings"])
+    assert find_model(rows, "GOOGLE", "gemini-2.5-pro-001")["id"] == "gemini-2.5-pro"
+    assert (
+        find_model(rows, "anthropic", "anthropic.claude-opus-5-5")["id"]
+        == "claude-opus-5-5"
+    )

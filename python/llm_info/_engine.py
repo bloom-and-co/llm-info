@@ -11,7 +11,21 @@ def find_model(models, provider, name):
         name,
         flags=re.IGNORECASE,
     ).lower()
-    rows = [m for m in models if m["provider"] == provider]
+    rows = [m for m in models if m["provider"].lower() == provider.lower()]
+    direct = next((m for m in rows if m["id"].lower() == name), None)
+    if direct:
+        return direct
+    bedrock = provider.lower() == "anthropic" and name.startswith("anthropic.")
+    if bedrock:
+        name = name[len("anthropic.") :]
+        matches = [
+            m
+            for m in rows
+            if m["id"].lower() == name
+            or name in [a.lower() for a in m.get("aliases", [])]
+        ]
+        if len(matches) != 1:
+            return None
     for m in rows:
         if m["id"].lower() == name:
             return m
@@ -21,12 +35,15 @@ def find_model(models, provider, name):
             for a in m.get("aliases", []) + m.get("match", {}).get("exact", [])
         ]:
             return m
-    if re.search(r"-(?:20\d{6}|20\d{2}-\d{2}-\d{2})$", name):
+    if re.search(r"(?:-(?:20\d{6}|20\d{2}-\d{2}-\d{2})|@20\d{6}|-00[12])$", name):
         matches = [
             m
             for m in rows
             if m.get("match", {}).get("dated_suffix")
-            and name.startswith(m["id"].lower() + "-")
+            and (
+                name.startswith(m["id"].lower() + "-")
+                or name.startswith(m["id"].lower() + "@")
+            )
         ]
         return max(matches, key=lambda m: len(m["id"])) if matches else None
     return None
@@ -41,8 +58,20 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     warnings = []
 
     def count(key):
-        value = usage.get(key)
-        return max(D(0), D(value)) if isinstance(value, (int, float)) else D(0)
+        value = usage.get(key) if isinstance(usage, dict) else None
+        if value is None:
+            return D(0)
+        if isinstance(value, bool):
+            warnings.append("invalid_usage:" + key)
+            return D(0)
+        try:
+            parsed = D(value)
+            if parsed.is_finite() and parsed >= 0:
+                return parsed
+        except (ValueError, TypeError, ArithmeticError):
+            pass
+        warnings.append("invalid_usage:" + key)
+        return D(0)
 
     def tiered(source):
         active = dict(source)
@@ -58,31 +87,66 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     if mode != "standard":
         selected = modes.get(mode)
         if selected:
-            prices.update(tiered(selected.get("prices", {})))
+            mode_prices = selected.get("prices", {})
+            prices.update(tiered(mode_prices))
+            own_tiers = {
+                key
+                for tier in mode_prices.get("tiers", [])
+                if count("input_tokens") > D(tier["above_input_tokens"])
+                for key in tier["prices"]
+            }
+            active_base = tiered(model["prices"])
+            for key, value in mode_prices.items():
+                raw = model["prices"].get(key)
+                if (
+                    key != "tiers"
+                    and key not in own_tiers
+                    and isinstance(value, (int, float, Decimal))
+                    and isinstance(raw, (int, float, Decimal))
+                    and raw > 0
+                    and isinstance(active_base.get(key), (int, float, Decimal))
+                ):
+                    prices[key] = D(value) * D(active_base[key]) / D(raw)
             multiplier = D(selected.get("multiplier", 1))
         else:
             warnings.append("missing_price:mode:" + mode)
-            for entry in modes.values():
-                for key, value in tiered(entry.get("prices", {})).items():
-                    if isinstance(value, (int, float)):
-                        prices[key] = max(prices.get(key, 0), value)
+            if mode in ("priority", "fast"):
+                own = D(0)
+                for entry in modes.values():
+                    own = max(own, D(entry.get("multiplier", 1)))
+                    for key, value in entry.get("prices", {}).items():
+                        raw = model["prices"].get(key)
+                        if (
+                            isinstance(value, (int, float, Decimal))
+                            and isinstance(raw, (int, float, Decimal))
+                            and raw > 0
+                        ):
+                            own = max(own, D(value) / D(raw))
+                multiplier = D(options.get("providerModeMultiplier", 0)) or own or D(2)
 
     highest = max(
         [
             D(v)
             for k, v in prices.items()
-            if k != "tiers" and not k.startswith("per_") and isinstance(v, (int, float))
+            if k != "tiers"
+            and not k.startswith("per_")
+            and isinstance(v, (int, float, Decimal))
         ]
         or [D(0)]
     )
 
-    def rate(key, fallbacks=()):
-        if isinstance(prices.get(key), (int, float)):
+    def rate(key, fallbacks=(), warn=True):
+        if isinstance(prices.get(key), (int, float, Decimal)):
             return D(prices[key])
         candidates = [
-            D(prices[k]) for k in fallbacks if isinstance(prices.get(k), (int, float))
+            D(prices[k])
+            for k in fallbacks
+            if isinstance(prices.get(k), (int, float, Decimal))
         ]
-        warnings.append(("fallback_price:" if candidates else "missing_price:") + key)
+        if warn:
+            warnings.append(
+                ("fallback_price:" if candidates else "missing_price:") + key
+            )
         return max(candidates) if candidates else highest
 
     raw_total = count("input_tokens")
@@ -104,12 +168,17 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     if (
         total != raw_total
         or out_total != count("output_tokens")
-        or sum(raw_mods) + read + write > raw_total
+        or sum(raw_mods) > total
+        or read + write > total
+        or count("cache_audio_read_tokens") + count("cache_image_read_tokens") > read
+        or count("cache_audio_write_tokens") + count("cache_image_write_tokens") > write
     ):
         warnings.append("inconsistent_usage")
     mods = [min(total, v) for v in raw_mods]
     keys = ["input", "input_audio", "input_image", "input_video"]
-    modal_rates = [rate(keys[i + 1], ("input",)) if mods[i] else D(0) for i in range(3)]
+    modal_rates = [
+        rate(keys[i + 1], ("input",), False) if mods[i] else D(0) for i in range(3)
+    ]
     overflow = max(D(0), sum(mods) - total)
     for i in sorted(range(3), key=lambda i: modal_rates[i]):
         cut = min(overflow, mods[i])
@@ -117,6 +186,9 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         overflow -= cut
     capacity = [total - sum(mods)] + mods
     base = [rate("input") if capacity[0] else D(0)] + modal_rates
+    for i in range(3):
+        if capacity[i + 1]:
+            rate(keys[i + 1], ("input",))
     input_cost = sum(capacity[i] * base[i] for i in range(4))
     remaining = capacity[:]
 
@@ -137,7 +209,7 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
                 left -= fixed
         choices = []
         for i in range(4):
-            if remaining[i]:
+            if left and remaining[i]:
                 key = (
                     prefix
                     if i == 0
@@ -154,9 +226,15 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
                         "input",
                     )
                 )
-                choices.append((rate(key, fallback) - base[i], i, rate(key, fallback)))
-        for _, i, r in sorted(choices, reverse=True):
+                r = rate(key, fallback, False)
+                choices.append((r - base[i], i, r, key, fallback))
+        for _, i, r, key, fallback in sorted(
+            choices, key=lambda item: (-item[0], item[1])
+        ):
             take = min(left, remaining[i])
+            if not take:
+                continue
+            rate(key, fallback)
             input_cost += take * (r - base[i])
             remaining[i] -= take
             left -= take
@@ -183,14 +261,20 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
     )
     output_modal = sorted(
         [
-            (out_mod[i], rate("output_" + k, ("output",)) if out_mod[i] else D(0))
+            (
+                k,
+                out_mod[i],
+                rate("output_" + k, ("output",), False) if out_mod[i] else D(0),
+            )
             for i, k in enumerate(("audio", "image"))
         ],
-        key=lambda item: item[1],
+        key=lambda item: item[2],
         reverse=True,
     )
-    for amount, modal_rate in output_modal:
+    for kind, amount, modal_rate in output_modal:
         take = min(left, amount)
+        if take:
+            rate("output_" + kind, ("output",))
         output_cost += take * modal_rate
         left -= take
     image_only = model.get("capabilities", {}).get("output_modalities") == ["image"]
@@ -207,7 +291,7 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
 
     def table(key):
         value = prices.get(key)
-        if isinstance(value, (int, float)):
+        if isinstance(value, (int, float, Decimal)):
             return D(value)
         if not isinstance(value, dict):
             warnings.append("missing_price:" + key)
@@ -229,12 +313,17 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         return max(map(D, value.values()))
 
     extra = D(0)
+    images = count("output_images")
     if (
-        count("output_images")
+        not images
+        and "per_image" in prices
+        and not out_total
         and not count("output_image_tokens")
-        and not (out_total and image_only)
     ):
-        extra += count("output_images") * table("per_image")
+        images = D(1)
+        warnings.append("missing_param:image_count")
+    if images and not count("output_image_tokens") and not (out_total and image_only):
+        extra += images * table("per_image")
     if count("output_video_seconds"):
         extra += count("output_video_seconds") * table("per_video_second")
     elif "per_video_second" in prices:
@@ -244,8 +333,17 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
             extra += count("web_searches") * D(prices["per_web_search"])
         else:
             warnings.append("missing_price:web_search")
+    normalized_region = str(region).lower()
+    if normalized_region not in ("global", "us", "eu"):
+        warnings.append("unknown_region:" + str(region))
+    elif normalized_region != "global" and normalized_region not in model.get(
+        "region_uplift", {}
+    ):
+        warnings.append("missing_region_uplift")
     uplift = (
-        D(model.get("region_uplift", {}).get(region, 1)) if region != "global" else D(1)
+        D(model.get("region_uplift", {}).get(normalized_region, 1))
+        if normalized_region != "global"
+        else D(1)
     )
     return {
         "input_usd": input_cost * uplift,

@@ -1,4 +1,4 @@
-"""Cached, source-attributed LLM price estimates."""
+"""Cached LLM price estimates."""
 
 from __future__ import annotations
 
@@ -143,6 +143,9 @@ def _video_seconds(response, request, model):
     # https://ai.google.dev/gemini-api/docs/veo: Veo 3.1 defaults to 8 seconds.
     if duration is None and model and model.startswith("veo-"):
         duration = 8
+    # https://platform.openai.com/docs/api-reference/videos: Sora default is four seconds.
+    if duration is None and model and model.startswith("sora-"):
+        duration = 4
     if duration is None:
         return None
     videos = (
@@ -327,10 +330,28 @@ class LlmInfo:
         m = find_model(self.doc["data"]["models"], provider, model)
         if not m:
             return None
+        provider_mode_multiplier = 0
+        for row in self.doc["data"]["models"]:
+            if row["provider"] != m["provider"]:
+                continue
+            for entry in row.get("modes", {}).values():
+                provider_mode_multiplier = max(
+                    provider_mode_multiplier, entry.get("multiplier", 1)
+                )
+                for key, value in entry.get("prices", {}).items():
+                    raw = row["prices"].get(key)
+                    if (
+                        isinstance(value, (int, float))
+                        and isinstance(raw, (int, float))
+                        and raw > 0
+                    ):
+                        provider_mode_multiplier = max(
+                            provider_mode_multiplier, value / raw
+                        )
         result = calculate(
             m,
             usage,
-            options,
+            {**(options or {}), "providerModeMultiplier": provider_mode_multiplier},
             mode or (options or {}).get("mode") or "standard",
             region or "global",
         )
@@ -343,13 +364,13 @@ class LlmInfo:
             "requested_model": model,
             "usage": usage,
             "data_version": self.doc["data"]["version"],
-            "source": m.get("source", "unknown"),
         }
 
     def extract_usage(self, provider, response, request=None, api_flavor=None):
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
         request = request or {}
+        provider = provider.lower()
         u = response.get("usage") or response.get("usageMetadata") or {}
         model = (
             response.get("model")
@@ -412,6 +433,14 @@ class LlmInfo:
             images = response.get("generatedImages") or response.get("predictions")
             if isinstance(images, list):
                 set_("output_images", len(images))
+            else:
+                set_(
+                    "output_images",
+                    (request.get("parameters") or {}).get(
+                        "sampleCount",
+                        (request.get("config") or {}).get("numberOfImages"),
+                    ),
+                )
             set_(
                 "output_video_seconds",
                 _video_seconds(response, request, model),
@@ -516,7 +545,7 @@ class LlmInfo:
                 else None
             )
         )
-        return self.calc(
+        result = self.calc(
             provider,
             extracted["model"],
             extracted["usage"],
@@ -529,3 +558,13 @@ class LlmInfo:
             mode=mode or inferred_mode,
             region=region,
         )
+        if (
+            result
+            and extracted["model"].startswith("sora-")
+            and response.get("seconds") is None
+            and response.get("duration") is None
+            and (request or {}).get("duration") is None
+            and (request or {}).get("durationSeconds") is None
+        ):
+            result["warnings"].append("missing_param:duration")
+        return result

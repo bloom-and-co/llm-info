@@ -4,19 +4,27 @@ export type Model = {
   name?: string;
   aliases?: string[];
   match?: { exact?: string[]; dated_suffix?: boolean };
-  source?: string;
   prices: Record<string, any>;
   modes?: Record<string, any>;
   region_uplift?: Record<string, number>;
   capabilities?: Record<string, any>;
 };
-const n = (x: any) => (typeof x === 'number' && Number.isFinite(x) && x > 0 ? x : 0);
-const dated = /-(?:20\d{6}|20\d{2}-\d{2}-\d{2})$/i;
+const dated = /(?:-(?:20\d{6}|20\d{2}-\d{2}-\d{2})|@20\d{6}|-00[12])$/i;
 export function findModel(models: Model[], provider: string, name: string): Model | undefined {
-  const id = name
+  const raw = name
     .replace(/^(?:openai|anthropic|gemini|models|google|xai|x-ai)\//i, '')
     .toLowerCase();
-  const rows = models.filter((m) => m.provider === provider);
+  const rows = models.filter((m) => m.provider.toLowerCase() === provider.toLowerCase());
+  const direct = rows.find((m) => m.id.toLowerCase() === raw);
+  if (direct) return direct;
+  const bedrock = provider.toLowerCase() === 'anthropic' && raw.startsWith('anthropic.');
+  const id = bedrock ? raw.slice('anthropic.'.length) : raw;
+  if (
+    bedrock &&
+    rows.filter((m) => m.id.toLowerCase() === id || m.aliases?.some((a) => a.toLowerCase() === id))
+      .length !== 1
+  )
+    return undefined;
   return (
     rows.find((m) => m.id.toLowerCase() === id) ??
     rows.find(
@@ -26,7 +34,11 @@ export function findModel(models: Model[], provider: string, name: string): Mode
     ) ??
     (dated.test(id)
       ? rows
-          .filter((m) => m.match?.dated_suffix && id.startsWith(m.id.toLowerCase() + '-'))
+          .filter(
+            (m) =>
+              m.match?.dated_suffix &&
+              (id.startsWith(m.id.toLowerCase() + '-') || id.startsWith(m.id.toLowerCase() + '@')),
+          )
           .sort((a, b) => b.id.length - a.id.length)[0]
       : undefined)
   );
@@ -65,7 +77,17 @@ export function calculate(
   region = 'global',
 ) {
   const warnings: string[] = [];
-  const inputCount = n(usage.input_tokens);
+  const count = (key: string) => {
+    const value: any = usage?.[key];
+    if (value === undefined || value === null) return 0;
+    const parsed = typeof value === 'string' && value.trim() ? Number(value) : value;
+    if (typeof parsed !== 'number' || !Number.isFinite(parsed) || parsed < 0) {
+      warnings.push(`invalid_usage:${key}`);
+      return 0;
+    }
+    return parsed;
+  };
+  const inputCount = count('input_tokens');
   const tiered = (p: Record<string, any>) => {
     const active = { ...p };
     for (const tier of p.tiers ?? [])
@@ -78,25 +100,47 @@ export function calculate(
   if (mode !== 'standard') {
     const selected = model.modes?.[mode];
     if (selected) {
-      Object.assign(prices, tiered(selected.prices ?? {}));
+      const modePrices = selected.prices ?? {};
+      Object.assign(prices, tiered(modePrices));
+      const ownTierKeys = new Set(
+        (modePrices.tiers ?? [])
+          .filter((t: any) => inputCount > t.above_input_tokens)
+          .flatMap((t: any) => Object.keys(t.prices)),
+      );
+      for (const [key, value] of Object.entries(modePrices)) {
+        if (key === 'tiers' || ownTierKeys.has(key) || typeof value !== 'number') continue;
+        const raw = model.prices[key];
+        const active = tiered(model.prices)[key];
+        if (typeof raw === 'number' && raw > 0 && typeof active === 'number')
+          prices[key] = (value * active) / raw;
+      }
       multiplier = selected.multiplier ?? 1;
     } else {
       warnings.push(`missing_price:mode:${mode}`);
-      for (const entry of Object.values(model.modes ?? {}))
-        for (const [k, v] of Object.entries(tiered((entry as any).prices ?? {})))
-          if (typeof v === 'number') prices[k] = Math.max(prices[k] ?? 0, v);
+      if (mode === 'priority' || mode === 'fast') {
+        const own = Object.values(model.modes ?? {}).reduce((max: number, entry: any) => {
+          for (const [key, value] of Object.entries(entry.prices ?? {}))
+            if (
+              typeof value === 'number' &&
+              typeof model.prices[key] === 'number' &&
+              model.prices[key] > 0
+            )
+              max = Math.max(max, value / model.prices[key]);
+          return Math.max(max, entry.multiplier ?? 1);
+        }, 0);
+        multiplier = options.providerModeMultiplier || own || 2;
+      }
     }
   }
   const highest = maxRate(prices);
-  const rate = (key: string, fallbacks: string[]) => {
+  const rate = (key: string, fallbacks: string[], warn = true) => {
     if (typeof prices[key] === 'number') return prices[key];
     const candidates = fallbacks
       .map((k) => prices[k])
       .filter((v): v is number => typeof v === 'number');
-    warnings.push((candidates.length ? 'fallback_price:' : 'missing_price:') + key);
+    if (warn) warnings.push((candidates.length ? 'fallback_price:' : 'missing_price:') + key);
     return candidates.length ? Math.max(...candidates) : highest;
   };
-  const count = (key: string) => n(usage[key]);
   const rawInput = count('input_tokens');
   const buckets = ['audio', 'image', 'video'];
   const inputMod = buckets.map((k) =>
@@ -116,7 +160,10 @@ export function calculate(
   if (
     input !== rawInput ||
     output !== count('output_tokens') ||
-    inputMod.reduce((a, b) => a + b, 0) + cacheRead + cacheWrite > rawInput
+    inputMod.reduce((a, b) => a + b, 0) > input ||
+    cacheRead + cacheWrite > input ||
+    count('cache_audio_read_tokens') + count('cache_image_read_tokens') > cacheRead ||
+    count('cache_audio_write_tokens') + count('cache_image_write_tokens') > cacheWrite
   )
     warnings.push('inconsistent_usage');
   // Allocate unknown cache overlap to the modality with the greatest resulting charge.
@@ -124,7 +171,7 @@ export function calculate(
   // the remaining 400k goes to whichever modality yields the higher total.
   const mod = inputMod.map((v) => Math.min(v, input));
   const baseKeys = ['input', 'input_audio', 'input_image', 'input_video'];
-  const modalRates = mod.map((v, i) => (v ? rate(baseKeys[i + 1], ['input']) : 0));
+  const modalRates = mod.map((v, i) => (v ? rate(baseKeys[i + 1], ['input'], false) : 0));
   let sum = mod.reduce((a, b) => a + b, 0);
   if (sum > input) {
     for (const i of [0, 1, 2].sort((a, b) => modalRates[a] - modalRates[b])) {
@@ -135,6 +182,7 @@ export function calculate(
   }
   const capacity = [Math.max(0, input - sum), ...mod];
   const baseRates = [capacity[0] ? rate('input', []) : 0, ...modalRates];
+  for (let i = 0; i < mod.length; i++) if (capacity[i + 1]) rate(baseKeys[i + 1], ['input']);
   let inputCost = capacity.reduce((a, c, i) => a + c * baseRates[i], 0);
   let remaining = capacity.slice();
   const allocate = (total: number, prefix: string, explicit: number[]) => {
@@ -159,16 +207,24 @@ export function calculate(
         !left || !cap
           ? baseRates[i]
           : i === 0
-            ? rate(prefix, ['input'])
-            : rate(`cache_${buckets[i - 1]}_${prefix === 'cache_read' ? 'read' : 'write'}`, [
-                `input_${buckets[i - 1]}`,
-                prefix,
-                'input',
-              ]),
+            ? rate(prefix, ['input'], false)
+            : rate(
+                `cache_${buckets[i - 1]}_${prefix === 'cache_read' ? 'read' : 'write'}`,
+                [`input_${buckets[i - 1]}`, prefix, 'input'],
+                false,
+              ),
     }));
-    choices.sort((a, b) => b.r - baseRates[b.i] - (a.r - baseRates[a.i]));
+    choices.sort((a, b) => b.r - baseRates[b.i] - (a.r - baseRates[a.i]) || a.i - b.i);
     for (const c of choices) {
       const take = Math.min(left, remaining[c.i]);
+      if (!take) continue;
+      if (c.i === 0) rate(prefix, ['input']);
+      else
+        rate(`cache_${buckets[c.i - 1]}_${prefix === 'cache_read' ? 'read' : 'write'}`, [
+          `input_${buckets[c.i - 1]}`,
+          prefix,
+          'input',
+        ]);
       inputCost += take * (c.r - baseRates[c.i]);
       remaining[c.i] -= take;
       left -= take;
@@ -191,11 +247,12 @@ export function calculate(
     .map((kind, i) => ({
       kind,
       count: outMod[i],
-      rate: outMod[i] ? rate(`output_${kind}`, ['output']) : 0,
+      rate: outMod[i] ? rate(`output_${kind}`, ['output'], false) : 0,
     }))
     .sort((a, b) => b.rate - a.rate);
   for (const entry of outputModal) {
     const c = Math.min(left, entry.count);
+    if (c) rate(`output_${entry.kind}`, ['output']);
     outputCost += c * entry.rate;
     left -= c;
   }
@@ -211,7 +268,11 @@ export function calculate(
   inputCost = (inputCost * multiplier) / 1e6;
   outputCost = (outputCost * multiplier) / 1e6;
   let extra = 0;
-  const images = count('output_images');
+  const images =
+    count('output_images') ||
+    (prices.per_image !== undefined && !output && !count('output_image_tokens')
+      ? (warnings.push('missing_param:image_count'), 1)
+      : 0);
   if (
     images &&
     !count('output_image_tokens') &&
@@ -231,7 +292,11 @@ export function calculate(
     if (prices.per_web_search !== undefined) extra += count('web_searches') * prices.per_web_search;
     else warnings.push('missing_price:web_search');
   }
-  const uplift = region === 'global' ? 1 : (model.region_uplift?.[region] ?? 1);
+  const normalizedRegion = String(region).toLowerCase();
+  if (!['global', 'us', 'eu'].includes(normalizedRegion)) warnings.push(`unknown_region:${region}`);
+  else if (normalizedRegion !== 'global' && model.region_uplift?.[normalizedRegion] === undefined)
+    warnings.push('missing_region_uplift');
+  const uplift = normalizedRegion === 'global' ? 1 : (model.region_uplift?.[normalizedRegion] ?? 1);
   const money = (value: number) => Math.round(value * 1e10) / 1e10;
   return {
     inputUsd: money(inputCost * uplift),

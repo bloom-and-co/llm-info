@@ -197,3 +197,45 @@ builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=
 npm pack/install smoke: PASS
 Python wheel/install smoke: PASS
 ```
+
+## Task 6
+
+予算計算での過少請求を優先して修正した。Major の再現テストを先に追加し、`8f509ab` にコミットした。その時点の原文要約は `Tests  5 failed (5)`。公開 JSON からモデル別の `source`、capability の `sources`、価格と capability の `conflicts` を除いた。builder は高い価格を採用し、衝突の詳細を `conflict: {...}` としてログに出す。`sources` はソースごとに一行で `fetched_at`、`ref`/`etag`、`latest_new_model_at` を持つ。前回公開モデル ID に新 ID がない場合、最後の時刻を維持する。
+
+| 項目 | 修正前 | 修正後 |
+|---|---|---|
+| A. 公開情報と1時間キャッシュ | モデルと Cost に `source`、capability に `sources`、公開 JSON に衝突配列があった。 | 公開 JSON は `schema,sources,models,skipped,generated_at,version` のみ。1時間 cache write は5分単価のままとし、最大37.5%の過少推計を README の Known limitations に明記した。 |
+| 1. CI | 削除済み `builder/validate.py` と旧依存を指定していた。 | 両 workflow の Python コマンドを修正。`.work/` 以外の `rg --hidden -i genai` は0件。CI の `run:` コマンドを順にローカル実行し成功。更新 workflow のテストまで実行し、指示により commit/push step は実行していない。 |
+| 2. mode tier | 40万 input / 1万 output の `gpt-5.4 priority` は $2.30、`gpt-6-luna fast` は $0.09、`gemini-2.5-pro batch` は $0.30。 | 基本 tier の倍率を mode 単価へ適用し、それぞれ $4.45、$0.175、$0.575。mode 自身の tier がある場合はその明示単価を使う。 |
+| 4. mutation coverage | 初回は builder 14件、engine 9件が生存。旧コード位置の5件は probe が `NOTFOUND`。 | probe の対象文字列とテスト経路を現行コードに合わせ、builder 19件、engine 20件を全て kill。最後の実行では `SURVIVED` と `NOTFOUND` は0件。 |
+| 5. publishability / skipped | `skipped=[]` で、入力・出力単価が欠けた text 行も公開された。 | 必須価格と非数値価格を検査して理由付きで skip。ライブビルドでは13行を `missing_required_price` で skip、313行を公開。 |
+| 6. tier 下限 | base $3/M に tier $2/M を重ねると長文側が $2/M だった。 | tier は各キーで `max(tier, merged base)`。0または空の tier は削除。 |
+| 7. 欠けた mode | 既知 mode の価格を一律に上乗せした。 | `flex`/`batch` は標準単価、`priority`/`fast` は provider の既知の最高倍率、モデルの既知倍率、2倍の順で選び、警告する。 |
+| 8. 不正入力と region | JS は数値文字列を0扱いし、Python は bool/文字列で例外になり得た。地域の大文字を認識しなかった。 | 数値文字列を数値化し、それ以外は0と `invalid_usage:<field>`。地域は大文字小文字を同一視し、未知の地域と倍率未設定を警告。 |
+| 9. JS/Python parity | cache と modality の通常の重なりを `inconsistent_usage` とした。allocation の警告に差が出た。 | 真に合計を超える subcount のみ警告し、割当後に使われた bucket のみ価格警告を出す。tie は同じ順序で解決。20,000ケースの差は金額0件、警告0件。 |
+| 10. 画像・動画数 | Imagen の request 件数を無視し、Sora の秒数欠落は0円だった。 | `parameters.sampleCount` / `config.numberOfImages` を採用。枚数不明の per-image は1枚を加算して警告。Sora は[OpenAI Videos API](https://platform.openai.com/docs/api-reference/videos) に記載された既定4秒で計算し警告。 |
+| 11. capabilities | `context_window` に `max_input_tokens` を代入し、検索単価があっても `web_search` が false の場合があった。 | LiteLLM の context 系フィールドまたは models.dev の `limit.context` を使用。`max_input_tokens` は別に保持。`per_web_search` があれば `web_search=true`。 |
+| 12. matching | Vertex `-001/-002`、Anthropic `@YYYYMMDD` と `anthropic.`、provider 大文字が一致しなかった。 | 既存の完全一致を優先し、各形式を追加。Bedrock prefix は一致先が一意の場合だけ採用。README に `null` は「未知のモデルであり無料扱いしない」と明記。 |
+
+最終確認の原文要約:
+
+```text
+All matched files use Prettier code style!
+4 files already formatted
+All checks passed!
+ Test Files  6 passed (6)
+      Tests  66 passed (66)
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+22 passed in 0.07s
+builder: updated; models openai=149 anthropic=20 google=90 x-ai=54; conflicts=265; skipped=13
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+KILLED  model-without-price guard off
+KILLED  input clamp removed
+total diffs 0 warning diffs 0 of 20000
+npm pack/install smoke: PASS
+Python wheel/install smoke: PASS
+```
+
+`npm ci`、`npm ci --ignore-scripts`、`npm run build`、`npm run test:worker` も成功。Worker は `dist` を browser platform で bundle/import して確認した。`det.mjs` は両データセットで `det true`、逆順ソースで `order-indep true`。生成データの `eq committed false` は取得時刻を更新する `sources` フィールドが異なるため。GitHub repo 作成・push・公開はしていない。

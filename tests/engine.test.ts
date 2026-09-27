@@ -15,7 +15,7 @@ it('allocates ambiguous cache overlap at maximum plausible cost', () => {
     cache_read_tokens: 500_000,
   });
   expect(result.inputUsd).toBeCloseTo(5.24, 9);
-  expect(result.warnings).toContain('inconsistent_usage');
+  expect(result.warnings).not.toContain('inconsistent_usage');
 });
 it('uses modality price when cache modality price is missing', () => {
   const copy = structuredClone(model);
@@ -42,4 +42,56 @@ it('bills included reasoning as a disjoint output bucket', () => {
   copy.prices.reasoning = 5;
   const result = calculate(copy, { output_tokens: 100, output_reasoning_tokens: 20 });
   expect(result.outputUsd).toBeCloseTo((80 * 3 + 20 * 5) / 1e6, 10);
+});
+it('charges missing token rates using the highest available rate', () => {
+  const copy = { ...model, prices: { output: 4 } };
+  const result = calculate(copy, { input_tokens: 1_000_000 });
+  expect(result.inputUsd).toBe(4);
+  expect(result.warnings).toContain('missing_price:input');
+});
+it('keeps the expensive modality when details exceed input totals', () => {
+  const copy = { ...model, prices: { input: 1, input_audio: 10, input_image: 2, output: 1 } };
+  expect(
+    calculate(copy, { input_tokens: 100, input_audio_tokens: 100, input_image_tokens: 100 })
+      .inputUsd,
+  ).toBeCloseTo(0.001, 10);
+});
+it('applies mode multipliers and separately billed reasoning', () => {
+  const copy = {
+    ...model,
+    modes: { fast: { multiplier: 3, prices: {} } },
+    prices: { input: 1, output: 2, reasoning: 5 },
+  };
+  expect(
+    calculate(copy, { input_tokens: 1_000_000, reasoning_tokens: 100_000 }, {}, 'fast').totalUsd,
+  ).toBeCloseTo(4.5, 9);
+});
+it('allocates output modalities to the higher price and avoids image double charges', () => {
+  const copy = {
+    ...model,
+    prices: { input: 1, output: 1, output_audio: 10, output_image: 2, per_image: 0.5 },
+  };
+  expect(
+    calculate(copy, { output_tokens: 100, output_audio_tokens: 100, output_image_tokens: 100 })
+      .outputUsd,
+  ).toBeCloseTo(0.001, 10);
+  expect(calculate(copy, { output_image_tokens: 100, output_images: 1 }).extraUsd).toBe(0);
+});
+it('honors explicit cache modality and clamps missing input totals', () => {
+  const copy = {
+    ...model,
+    prices: { input: 1, input_audio: 10, cache_read: 0.1, cache_audio_read: 2, output: 1 },
+  };
+  const usage = {
+    input_tokens: 100,
+    input_audio_tokens: 50,
+    cache_read_tokens: 50,
+    cache_audio_read_tokens: 50,
+  };
+  expect(calculate(copy, usage).inputUsd).toBeCloseTo((50 + 100) / 1e6, 10);
+  expect(calculate(copy, { input_tokens: 0, cache_read_tokens: 100 }).inputUsd).toBeGreaterThan(0);
+});
+it('matches aliases regardless of case', () => {
+  const copy = { ...model, aliases: ['Model-Latest'] };
+  expect(findModel([copy], 'GOOGLE', 'model-latest')).toBe(copy);
 });
