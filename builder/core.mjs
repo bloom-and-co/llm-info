@@ -140,6 +140,27 @@ function mergePrice(a, b, meta, conflicts) {
 function escaped(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+function completeSdkPriceKeys(model, providerMetadata) {
+  for (let attempt = 0; attempt < 12; attempt++) {
+    try {
+      calcPrice({ input_tokens: 1 }, model.id, {
+        provider: { ...providerMetadata, models: [{ ...model, match: { equals: model.id } }] },
+      });
+      return;
+    } catch (error) {
+      const key = String(error).match(/Missing (?:join|ancestor) price key ([a-z0-9_]+)/)?.[1];
+      if (!key) throw error;
+      const fallback =
+        key === 'output_mtok' && model.prices.output_image_mtok !== undefined
+          ? 0
+          : key.includes('cache_')
+            ? (model.prices.cache_read_mtok ?? model.prices.cache_write_mtok)
+            : (model.prices.input_mtok ?? model.prices.output_mtok);
+      if (fallback === undefined || attempt === 11) throw error;
+      model.prices[key] = fallback;
+    }
+  }
+}
 export function mergeSources(lite, models, gp) {
   const map = new Map(),
     conflicts = [],
@@ -229,27 +250,7 @@ export function mergeSources(lite, models, gp) {
       const dev = models[id === 'x-ai' ? 'xai' : id]?.models?.[m.id];
       if (dev?.name) m.name = dev.name;
       if (dev?.limit?.context) m.context_window = dev.limit.context;
-      for (let attempt = 0; attempt < 12; attempt++) {
-        try {
-          calcPrice({ input_tokens: 1 }, m.id, {
-            provider: { ...rest, models: [{ ...m, match: { equals: m.id } }] },
-          });
-          break;
-        } catch (e) {
-          const msg = String(e);
-          const key = msg.match(/Missing (?:join|ancestor) price key ([a-z0-9_]+)/)?.[1];
-          if (!key) throw e;
-          const fallback =
-            key === 'output_mtok' && m.prices.output_image_mtok !== undefined
-              ? 0
-              : key.includes('cache_')
-                ? (m.prices.cache_read_mtok ?? m.prices.cache_write_mtok)
-                : (m.prices.input_mtok ?? m.prices.output_mtok);
-          if (fallback === undefined) throw e;
-          m.prices[key] = fallback;
-          if (attempt === 11) throw e;
-        }
-      }
+      completeSdkPriceKeys(m, rest);
       m.match = {
         or: [{ equals: m.id }, { regex: `^${escaped(m.id)}-(?:20\\d{6}|20\\d{2}-\\d{2}-\\d{2})$` }],
       };
