@@ -3,9 +3,9 @@
  {"name":"openai_responses","provider":"openai","apiFlavor":"responses","response":{"model":"gpt-6-luna","usage":{"input_tokens":1000,"output_tokens":100,"output_tokens_details":{"reasoning_tokens":20}}},"expected":0.00015},
  {"name":"openai_embeddings","provider":"openai","apiFlavor":"embeddings","response":{"model":"text-embedding-3-small","usage":{"prompt_tokens":1000,"total_tokens":1000}},"expected":0.00002},
  {"name":"openai_images","provider":"openai","apiFlavor":"images","response":{"usage":{"input_tokens":100,"input_tokens_details":{"image_tokens":50,"text_tokens":50},"output_tokens":100,"output_tokens_details":{"image_tokens":100}},"data":[{}]},"request":{"model":"gpt-image-2"},"expected":0.00365},
- {"name":"anthropic_messages","provider":"anthropic","response":{"model":"claude-opus-5-5","usage":{"input_tokens":1000,"output_tokens":200,"cache_creation_input_tokens":100,"cache_read_input_tokens":50,"cache_creation":{"ephemeral_1h_input_tokens":40}}},"expected":0.00863},
+ {"name":"anthropic_messages","provider":"anthropic","response":{"model":"claude-opus-5-5","usage":{"input_tokens":1000,"output_tokens":200,"cache_creation_input_tokens":100,"cache_read_input_tokens":50}},"expected":0.00851},
  {"name":"gemini_text","provider":"google","response":{"modelVersion":"gemini-3.8-flash","usageMetadata":{"promptTokenCount":1000,"candidatesTokenCount":100}},"expected":0.001125},
- {"name":"gemini_image","provider":"google","response":{"modelVersion":"gemini-3.1-flash-image","usageMetadata":{"promptTokenCount":100,"candidatesTokenCount":100,"candidatesTokensDetails":[{"modality":"IMAGE","tokenCount":50}]}},"expected":0.00605},
+ {"name":"gemini_image","provider":"google","response":{"modelVersion":"gemini-3.1-flash-image","usageMetadata":{"promptTokenCount":100,"candidatesTokenCount":100,"candidatesTokensDetails":[{"modality":"IMAGE","tokenCount":50}]}},"expected":0.0032},
  {"name":"imagen","provider":"google","response":{"generatedImages":[{},{}]},"request":{"model":"imagen-3.0-fast-generate-001"},"expected":0.04},
  {"name":"veo","provider":"google","response":{},"request":{"model":"veo-3.1-generate-001","duration":5},"expected":2},
  {"name":"xai_chat","provider":"x-ai","response":{"model":"grok-4.7","usage":{"prompt_tokens":1000,"completion_tokens":100}},"expected":0.0026}

@@ -24,7 +24,9 @@
     "build": "esbuild src/index.ts src/file.ts --outdir=dist --bundle --splitting --format=esm --platform=neutral --target=es2022 --external:@pydantic/genai-prices --external:node:* --out-extension:.js=.js && tsc --emitDeclarationOnly --declaration --outDir dist",
     "build:data": "node builder/build.mjs",
     "test": "vitest run",
-    "test:builder": "vitest run builder"
+    "test:builder": "vitest run builder",
+    "format": "prettier --write \"{builder,src,tests}/**/*.{mjs,ts}\"",
+    "format:check": "prettier --check \"{builder,src,tests}/**/*.{mjs,ts}\""
   },
   "dependencies": {
     "@pydantic/genai-prices": "0.1.9"
@@ -32,6 +34,7 @@
   "devDependencies": {
     "@types/node": "^26.6.3",
     "esbuild": "^0.25.0",
+    "prettier": "^3.9.9",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
