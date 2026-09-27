@@ -432,3 +432,34 @@ it('uses the conservative default for xAI generated images without size metadata
   expect(cost.extraUsd).toBe(0.06);
   expect(cost.warnings).not.toContain('missing_param:size');
 });
+
+it('charges image-only token output once', async () => {
+  const p = client();
+  await p.load();
+  const cost = p.fromResponse({ provider: 'openai', apiFlavor: 'images', response: {
+    usage: { input_tokens: 50, output_tokens: 4160 }, data: [{}],
+  }, request: { model: 'gpt-image-1', size: '1024x1024', quality: 'high' } });
+  expect(cost?.extraUsd).toBe(0);
+});
+
+it('handles overlapping cache and modality totals conservatively', async () => {
+  const p = client();
+  await p.load();
+  const cost = p.fromResponse({ provider: 'google', response: {
+    modelVersion: 'gemini-3.8-flash', usageMetadata: {
+      promptTokenCount: 1_000_000, cachedContentTokenCount: 500_000,
+      promptTokensDetails: [{ modality: 'AUDIO', tokenCount: 600_000 }],
+    },
+  } });
+  expect(cost?.totalUsd).toBeGreaterThan(0);
+  expect(cost?.warnings).toContain('inconsistent_usage');
+});
+
+it('counts Veo SDK and Vertex video response shapes', async () => {
+  const p = client();
+  await p.load();
+  const request = { model: 'veo-3.1-generate-001', config: { durationSeconds: 5, numberOfVideos: 2 } };
+  expect(p.fromResponse({ provider: 'google', response: {}, request })?.extraUsd).toBe(4);
+  expect(p.fromResponse({ provider: 'google', response: { videos: [{}, {}, {}] }, request })?.extraUsd).toBe(6);
+  expect(p.fromResponse({ provider: 'google', response: { generateVideoResponse: { generatedSamples: [{}, {}] } }, request })?.extraUsd).toBe(4);
+});
