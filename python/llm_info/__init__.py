@@ -380,7 +380,9 @@ class LlmInfo:
             "data_version": self.doc["data"]["version"],
         }
 
-    def extract_usage(self, provider, response, request=None, api_flavor=None):
+    def extract_usage(
+        self, provider, response, request=None, api_flavor=None, model=None
+    ):
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
         request = request or {}
@@ -423,11 +425,13 @@ class LlmInfo:
         image_shape = shape in ("openai-images", "xai-images")
         u = response.get("usage") or response.get("usageMetadata") or {}
         model = (
-            response.get("model")
+            model
+            or response.get("model")
             or response.get("modelVersion")
             or request.get("model")
         )
         out = {}
+        warnings = []
 
         def set_(key, val):
             if val is not None:
@@ -618,6 +622,15 @@ class LlmInfo:
                     out["output_tokens"] = _usage_number(
                         out.get("output_tokens")
                     ) + _usage_number(reasoning)
+            if (
+                not image_shape
+                and u.get("total_tokens") is not None
+                and u.get(input_key) is not None
+            ):
+                gap = _usage_number(u["total_tokens"]) - _usage_number(u[input_key])
+                if gap.is_finite() and gap > _usage_number(out.get("output_tokens")):
+                    out["output_tokens"] = gap
+                    warnings.append("output_from_total")
             if image_shape:
                 set_(
                     "output_images",
@@ -629,7 +642,7 @@ class LlmInfo:
                 "output_video_seconds",
                 _video_seconds(response, request, model),
             )
-        return {"model": model, "usage": out}
+        return {"model": model, "usage": out, "warnings": warnings}
 
     def from_response(
         self,
@@ -640,8 +653,9 @@ class LlmInfo:
         at=None,
         mode=None,
         region=None,
+        model=None,
     ):
-        extracted = self.extract_usage(provider, response, request, api_flavor)
+        extracted = self.extract_usage(provider, response, request, api_flavor, model)
         if not extracted["model"]:
             return None
         # https://platform.openai.com/docs/api-reference/responses: service_tier is the actual tier.
@@ -669,6 +683,8 @@ class LlmInfo:
             mode=mode or inferred_mode,
             region=region,
         )
+        if result:
+            result["warnings"].extend(extracted["warnings"])
         reported_usage = response.get("usage") or response.get("usageMetadata")
         if (
             result

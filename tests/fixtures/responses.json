@@ -267,6 +267,32 @@
     "expected": 0.0002
   },
   {
+    "name": "gemini_openai_chat_total_gap",
+    "provider": "google",
+    "apiFlavor": "openai-chat",
+    "response": { "model": "gemini-3.5-flash", "usage": { "prompt_tokens": 2000, "completion_tokens": 600, "total_tokens": 3000 } },
+    "expectedUsage": { "output_tokens": 1000 },
+    "expectedWarnings": ["output_from_total"],
+    "expected": 0.012
+  },
+  {
+    "name": "xai_chat_total_only",
+    "provider": "x-ai",
+    "apiFlavor": "xai-chat",
+    "response": { "model": "grok-4.7", "usage": { "prompt_tokens": 100, "total_tokens": 150 } },
+    "expectedUsage": { "output_tokens": 50 },
+    "expectedWarnings": ["output_from_total"],
+    "expected": 0.0005
+  },
+  {
+    "name": "gemini_requested_model_override",
+    "provider": "google",
+    "model": "gemini-robotics-er-2-preview",
+    "response": { "modelVersion": "unknown-response-model", "usageMetadata": { "promptTokenCount": 100, "candidatesTokenCount": 10, "thoughtsTokenCount": 20 } },
+    "expectedUsage": { "output_reasoning_tokens": 20 },
+    "expected": 0.00035
+  },
+  {
     "name": "xai_image_default",
     "provider": "x-ai",
     "apiFlavor": "images",

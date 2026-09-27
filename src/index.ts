@@ -289,7 +289,7 @@ export function createLlmInfo(options: Options = {}) {
       dataVersion: d.version,
     };
   }
-  function extractUsage({ provider, apiFlavor, response, request }: any) {
+  function extractUsage({ provider, apiFlavor, response, request, model: requestedModel }: any) {
     provider = provider.toLowerCase();
     const rows = current().data.models.filter((x) => x.provider === provider);
     if (!rows.length) throw Error('Unknown provider ' + provider);
@@ -335,7 +335,8 @@ export function createLlmInfo(options: Options = {}) {
     const imageShape = shape === 'openai-images' || shape === 'xai-images';
     const u = r.usage ?? r.usageMetadata ?? {},
       usage: Record<string, number> = {};
-    let model = r.model ?? r.modelVersion ?? request?.model ?? null;
+    let model = requestedModel ?? r.model ?? r.modelVersion ?? request?.model ?? null;
+    const warnings: string[] = [];
     const set = (k: string, v: any) => {
       if (v !== undefined && v !== null) usage[k] = v;
     };
@@ -441,16 +442,26 @@ export function createLlmInfo(options: Options = {}) {
         if (reasoning !== undefined && reasoning !== null)
           usage.output_tokens = n(usage.output_tokens) + n(reasoning);
       }
+      if (!imageShape) {
+        const total = u.total_tokens;
+        if (total != null && a != null) {
+          const gap = n(total) - n(a);
+          if (Number.isFinite(gap) && gap > n(usage.output_tokens)) {
+            usage.output_tokens = gap;
+            warnings.push('output_from_total');
+          }
+        }
+      }
       if (imageShape) {
         set('output_images', r.data?.length ?? request?.n ?? 1);
         model = model ?? request?.model;
       }
       set('output_video_seconds', videoSeconds(r, request, model));
     }
-    return { model, usage };
+    return { model, usage, warnings };
   }
   function fromResponse(args: any) {
-    const { model, usage } = extractUsage(args);
+    const { model, usage, warnings } = extractUsage(args);
     if (!model) return null;
     // https://platform.openai.com/docs/api-reference/responses: service_tier reports the tier actually used.
     // https://platform.claude.com/docs/en/build-with-claude/fast-mode: usage.speed reports fast processing.
@@ -469,6 +480,7 @@ export function createLlmInfo(options: Options = {}) {
       region: args.region,
       options: { ...args.request, ...args.response, service_tier: args.response?.service_tier },
     });
+    if (result) result.warnings.push(...warnings);
     const reportedUsage = args.response?.usage ?? args.response?.usageMetadata;
     if (
       result &&

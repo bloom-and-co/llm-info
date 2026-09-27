@@ -259,6 +259,10 @@ it('prices every response fixture', async () => {
   for (const f of fixtures) expect(p.fromResponse(f)?.totalUsd, f.name).toBeCloseTo(f.expected, 8);
   for (const f of fixtures)
     if (f.expectedUsage) expect(p.fromResponse(f)?.usage, f.name).toMatchObject(f.expectedUsage);
+  for (const f of fixtures)
+    if (f.expectedWarnings)
+      for (const warning of f.expectedWarnings)
+        expect(p.fromResponse(f)?.warnings, f.name).toContain(warning);
 });
 
 it('rejects unknown response flavors and warns when usage was not extracted', async () => {
@@ -608,18 +612,77 @@ it('recovers OpenAI-compatible output from reported totals without double counti
   const p = client();
   await p.load();
   for (const [provider, apiFlavor, model, usage, output] of [
-    ['google', 'openai-chat', 'gemini-3.5-flash', { prompt_tokens: 2000, completion_tokens: 600, total_tokens: 3000 }, 1000],
-    ['x-ai', 'xai-chat', 'grok-4.7', { prompt_tokens: 100, completion_tokens: 10, total_tokens: 150, completion_tokens_details: { reasoning_tokens: 20 } }, 50],
-    ['x-ai', 'xai-chat', 'grok-4.7', { prompt_tokens: 100, completion_tokens: 10, total_tokens: 130, completion_tokens_details: { reasoning_tokens: 20 } }, 30],
-    ['openai', 'openai-chat', 'gpt-6-luna', { prompt_tokens: 100, completion_tokens: 30, total_tokens: 130, completion_tokens_details: { reasoning_tokens: 20 } }, 30],
-    ['google', 'openai-responses', 'gemini-3.5-flash', { input_tokens: 2000, output_tokens: 600, total_tokens: 3000 }, 1000],
-    ['x-ai', 'xai-responses', 'grok-4.7', { input_tokens: 100, output_tokens: 30, total_tokens: 150, output_tokens_details: { reasoning_tokens: 20 } }, 50],
+    [
+      'google',
+      'openai-chat',
+      'gemini-3.5-flash',
+      { prompt_tokens: 2000, completion_tokens: 600, total_tokens: 3000 },
+      1000,
+    ],
+    [
+      'x-ai',
+      'xai-chat',
+      'grok-4.7',
+      {
+        prompt_tokens: 100,
+        completion_tokens: 10,
+        total_tokens: 150,
+        completion_tokens_details: { reasoning_tokens: 20 },
+      },
+      50,
+    ],
+    [
+      'x-ai',
+      'xai-chat',
+      'grok-4.7',
+      {
+        prompt_tokens: 100,
+        completion_tokens: 10,
+        total_tokens: 130,
+        completion_tokens_details: { reasoning_tokens: 20 },
+      },
+      30,
+    ],
+    [
+      'openai',
+      'openai-chat',
+      'gpt-6-luna',
+      {
+        prompt_tokens: 100,
+        completion_tokens: 30,
+        total_tokens: 130,
+        completion_tokens_details: { reasoning_tokens: 20 },
+      },
+      30,
+    ],
+    [
+      'google',
+      'openai-responses',
+      'gemini-3.5-flash',
+      { input_tokens: 2000, output_tokens: 600, total_tokens: 3000 },
+      1000,
+    ],
+    [
+      'x-ai',
+      'xai-responses',
+      'grok-4.7',
+      {
+        input_tokens: 100,
+        output_tokens: 30,
+        total_tokens: 150,
+        output_tokens_details: { reasoning_tokens: 20 },
+      },
+      50,
+    ],
   ] as const) {
     const args = { provider, apiFlavor, model, response: { model, usage } };
     expect(p.extractUsage(args).usage.output_tokens).toBe(output);
     const cost = p.fromResponse(args);
     expect(cost?.usage.output_tokens).toBe(output);
-    expect(cost?.warnings.includes('output_from_total')).toBe(output > (usage.completion_tokens ?? usage.output_tokens ?? 0) + (apiFlavor === 'xai-chat' ? 20 : 0));
+    expect(cost?.warnings.includes('output_from_total')).toBe(
+      output >
+        (usage.completion_tokens ?? usage.output_tokens ?? 0) + (apiFlavor === 'xai-chat' ? 20 : 0),
+    );
   }
 });
 
@@ -628,13 +691,21 @@ it('uses the requested model override for extraction and pricing', async () => {
   await p.load();
   for (const model of ['gemini-robotics-er-2-preview', 'gemini-omni-flash-preview']) {
     for (const modelVersion of [undefined, 'unknown-response-model']) {
-      const response = { modelVersion, usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 10, thoughtsTokenCount: 20 } };
+      const response = {
+        modelVersion,
+        usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 10, thoughtsTokenCount: 20 },
+      };
       const args = { provider: 'google', model, response };
       expect(p.extractUsage(args)).toMatchObject({ model, usage: { output_reasoning_tokens: 20 } });
       const cost = p.fromResponse(args);
       expect(cost?.requestedModel).toBe(model);
       expect(cost?.usage.output_reasoning_tokens).toBe(20);
-      expect(cost?.outputUsd).toBeCloseTo((10 * data.models.find((m: any) => m.id === model).prices.output + 20 * data.models.find((m: any) => m.id === model).prices.reasoning) / 1e6, 9);
+      expect(cost?.outputUsd).toBeCloseTo(
+        (10 * data.models.find((m: any) => m.id === model).prices.output +
+          20 * data.models.find((m: any) => m.id === model).prices.reasoning) /
+          1e6,
+        9,
+      );
     }
   }
 });

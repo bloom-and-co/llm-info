@@ -41,7 +41,11 @@ p.load()
 out = []
 for f in fixtures:
     cost = p.from_response(
-        f["provider"], f["response"], f.get("request"), f.get("apiFlavor")
+        f["provider"],
+        f["response"],
+        f.get("request"),
+        f.get("apiFlavor"),
+        model=f.get("model"),
     )
     out.append(
         {
