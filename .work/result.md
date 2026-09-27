@@ -60,3 +60,30 @@ Worker main entry smoke: PASS
 - OpenAI Images の `data` 件数、Gemini/Imagen の `generatedImages` 件数、Veo/Sora の request の `duration`/`resolution` を画像・動画出力に対応させた。fixture の形は各社 API 文書を参照し、`tests/fixtures/README.md` に URL を記載した。
 - 画像出力トークン数があるレスポンスでは、同じ出力への画像1枚単価を重ねないようにした。サービスティア別料金は採用せず警告する。
 - GitHub リポジトリの作成・push・公開は指示どおり行っていない。そのため GitHub からの直接インストールと Actions の本番実行は未実施。npm tarball と Python wheel を一時環境へインストールして検証した。
+
+## Follow-up 2
+
+1 時間キャッシュ書き込み料金の生成・抽出・加算を削除した。Anthropic のキャッシュ書き込みは通常のキャッシュ書き込み料金で計算する。genai-prices 由来の extractor に残っていた 1 時間用の対応も全プロバイダーから除去した。
+
+画像出力モデルでは models.dev の `cost.output` を `output_image_mtok` に統合し、LiteLLM のテキスト出力料金を `output_mtok` に保持するよう修正した。両ソースの画像出力料金が 0.5% 以上異なれば高い方を採用して `conflicts` に記録する。以前の `gpt-image-2` で衝突記録がなかった理由は、当時のビルドで LiteLLM のテキスト出力料金が欠けており、models.dev の画像料金が別フィールドの `output_mtok` に入ったためである。今回のライブ LiteLLM データも `gpt-image-2` のテキスト出力料金を含まないため、SDK が必要とする親フィールド `output_mtok` は構造上の 0 とした。LiteLLM がテキスト料金を提供する場合に値が保持されることはビルダーテストで確認した。
+
+Prettier を開発依存に追加し、JS/TS を整形した。Python は Ruff で整形した。CI に両フォーマット検査と明示的なビルダーテストを追加した。生成データのモデル数は `openai=149 anthropic=20 google=90 x-ai=47`、`conflicts=2`。
+
+最終実行の要約行（原文）:
+
+```text
+All matched files use Prettier code style!
+4 files already formatted
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+ Test Files  2 passed (2)
+      Tests  22 passed (22)
+13 passed in 0.52s
+python SDK validation: 4 providers passed
+builder: unchanged; models openai=149 anthropic=20 google=90 x-ai=47; conflicts=2
+npm pack/install smoke: PASS
+Python wheel/install smoke: PASS
+Worker main entry smoke: PASS
+```
+
+生成データの最終変更を含む再ビルドでは `builder: updated; models openai=149 anthropic=20 google=90 x-ai=47; conflicts=2`、直後の再実行では上記の `unchanged` となった。GitHub への push とレジストリへの公開は行っていない。
