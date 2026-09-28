@@ -723,9 +723,8 @@ export function mergeSources(lite, models) {
   for (const rule of providerRules) {
     for (const model of modelsOut) {
       if (model.provider !== rule.provider || !rule.model_selector.ids.includes(model.id)) continue;
-      // Supplements can only add missing multipliers or raise existing ones.
-      // Base/mode prices and source objects are never overwritten by a rule.
-      for (const [region, factor] of Object.entries(rule.effect.region_uplift)) {
+      // Regional supplements can only add missing multipliers or raise existing ones.
+      for (const [region, factor] of Object.entries(rule.effect.region_uplift ?? {})) {
         if (!Number.isFinite(factor) || factor < 1)
           throw Error('invalid provider rule uplift: ' + rule.id);
         const previous = model.region_uplift[region];
@@ -737,6 +736,51 @@ export function mergeSources(lite, models) {
           provider: model.provider,
           model: model.id,
           field: `region_uplift.${region}`,
+          previous: previous ?? null,
+          adopted,
+          source_url: rule.source_url,
+          checked_at: rule.checked_at,
+        });
+      }
+      for (const [mode, factor] of Object.entries(rule.effect.mode_token_multiplier ?? {})) {
+        if (!Number.isFinite(factor) || factor <= 1)
+          throw Error('invalid provider rule mode multiplier: ' + rule.id);
+        // Official token pricing supersedes feed mode prices for these reviewed IDs.
+        // Materialize tiers, leaving their thresholds and non-token charges unchanged.
+        const scaleTokens = (prices) =>
+          Object.fromEntries(
+            Object.entries(prices).flatMap(([key, value]) => {
+              if (key === 'tiers')
+                return [
+                  [
+                    key,
+                    value.map((tier) => ({
+                      ...tier,
+                      prices: scaleTokens(tier.prices),
+                    })),
+                  ],
+                ];
+              return typeof value === 'number' && !key.startsWith('per_')
+                ? [[key, value * factor]]
+                : [];
+            }),
+          );
+        const previous = model.modes[mode];
+        const adopted = {
+          prices: {
+            ...Object.fromEntries(
+              Object.entries(previous?.prices ?? {}).filter(([key]) => key.startsWith('per_')),
+            ),
+            ...scaleTokens(model.prices),
+          },
+        };
+        if (JSON.stringify(previous) === JSON.stringify(adopted)) continue;
+        model.modes[mode] = adopted;
+        applied_rules.push({
+          rule: rule.id,
+          provider: model.provider,
+          model: model.id,
+          field: `modes.${mode}`,
           previous: previous ?? null,
           adopted,
           source_url: rule.source_url,

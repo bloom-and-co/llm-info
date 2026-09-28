@@ -12,7 +12,7 @@ bad = 0
 warning_diffs = 0
 for case in cases:
     result = calculate(
-        models[(case["p"], case["id"])],
+        case["model"] if "model" in case else models[(case["p"], case["id"])],
         case["u"],
         case["opt"],
         case["mode"],

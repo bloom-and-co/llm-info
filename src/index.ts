@@ -1,4 +1,4 @@
-import { calculate, findModel, type Model } from './engine.js';
+import { calculate, findModel, surchargeMultiplier, type Model } from './engine.js';
 export const DEFAULT_URL =
   'https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json';
 export const FALLBACK_URL =
@@ -259,19 +259,7 @@ export function createLlmInfo(options: Options = {}) {
     const selectedMode = mode ?? opts.mode ?? 'standard';
     const providerModeMultiplier = d.models
       .filter((row) => row.provider === m.provider)
-      .reduce((highest, row) => {
-        for (const entry of Object.values(row.modes ?? {}) as any[]) {
-          highest = Math.max(highest, entry.multiplier ?? 1);
-          for (const [key, value] of Object.entries(entry.prices ?? {}))
-            if (
-              typeof value === 'number' &&
-              typeof row.prices[key] === 'number' &&
-              row.prices[key] > 0
-            )
-              highest = Math.max(highest, value / row.prices[key]);
-        }
-        return highest;
-      }, 0);
+      .reduce((highest, row) => Math.max(highest, surchargeMultiplier(row)), 0);
     const result = calculate(
       m,
       usage,
@@ -458,25 +446,32 @@ export function createLlmInfo(options: Options = {}) {
       }
       set('output_video_seconds', videoSeconds(r, request, model));
     }
-    return { model, usage, warnings };
-  }
-  function fromResponse(args: any) {
-    const { model, usage, warnings } = extractUsage(args);
-    if (!model) return null;
     // https://platform.openai.com/docs/api-reference/responses: service_tier reports the tier actually used.
     // https://platform.claude.com/docs/en/build-with-claude/fast-mode: usage.speed reports fast processing.
-    const inferredMode =
-      args.response?.service_tier === 'priority' || args.response?.service_tier === 'flex'
-        ? args.response.service_tier
-        : args.response?.usage?.speed === 'fast' || args.response?.speed === 'fast'
+    // Gemini reports the served tier in usageMetadata (request tier may be downgraded).
+    // https://ai.google.dev/api/generate-content#UsageMetadata
+    // xAI also reports the actual tier: https://docs.x.ai/developers/advanced-api-usage/priority-processing
+    const servedTier =
+      provider.toLowerCase() === 'google'
+        ? (r?.usageMetadata?.serviceTier ?? r?.service_tier)
+        : r?.service_tier;
+    const mode =
+      servedTier === 'priority' || servedTier === 'flex'
+        ? servedTier
+        : r?.usage?.speed === 'fast' || r?.speed === 'fast'
           ? 'fast'
-          : undefined;
+          : 'standard';
+    return { model, usage, warnings, mode };
+  }
+  function fromResponse(args: any) {
+    const { model, usage, warnings, mode } = extractUsage(args);
+    if (!model) return null;
     const result = calc({
       provider: args.provider,
       model,
       usage,
       at: args.at,
-      mode: args.mode ?? inferredMode,
+      mode: args.mode ?? mode,
       region: args.region,
       options: { ...args.request, ...args.response, service_tier: args.response?.service_tier },
     });

@@ -10,6 +10,21 @@ export type Model = {
   region_uplift?: Record<string, number>;
   capabilities?: Record<string, any>;
 };
+// Discount modes cannot establish a surcharge fallback, even if their data is inconsistent.
+export function surchargeMultiplier(model: Model): number {
+  let highest = 0;
+  for (const mode of ['priority', 'fast']) {
+    const entry = model.modes?.[mode];
+    if (!entry) continue;
+    if (entry.multiplier > 1) highest = Math.max(highest, entry.multiplier);
+    for (const [key, value] of Object.entries(entry.prices ?? {})) {
+      const base = model.prices[key];
+      if (typeof value === 'number' && typeof base === 'number' && base > 0 && value / base > 1)
+        highest = Math.max(highest, value / base);
+    }
+  }
+  return highest;
+}
 const dated = /(?:-(?:20\d{6}|20\d{2}-\d{2}-\d{2})|@20\d{6}|-00[12])$/i;
 export function findModel(models: Model[], provider: string, name: string): Model | undefined {
   const raw = name
@@ -128,17 +143,11 @@ export function calculate(
     } else {
       warnings.push(`missing_price:mode:${mode}`);
       if (mode === 'priority' || mode === 'fast') {
-        const own = Object.values(model.modes ?? {}).reduce((max: number, entry: any) => {
-          for (const [key, value] of Object.entries(entry.prices ?? {}))
-            if (
-              typeof value === 'number' &&
-              typeof model.prices[key] === 'number' &&
-              model.prices[key] > 0
-            )
-              max = Math.max(max, value / model.prices[key]);
-          return Math.max(max, entry.multiplier ?? 1);
-        }, 0);
-        multiplier = options.providerModeMultiplier || own || 2;
+        const known = Math.max(
+          options.providerModeMultiplier > 1 ? options.providerModeMultiplier : 0,
+          surchargeMultiplier(model),
+        );
+        multiplier = known || 2;
       }
     }
   }

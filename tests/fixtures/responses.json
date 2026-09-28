@@ -56,7 +56,12 @@
       }
     },
     "expected": 0.00099,
-    "expectedUsage": { "input_tokens": 1000, "output_tokens": 100, "cache_read_tokens": 200, "output_reasoning_tokens": 20 }
+    "expectedUsage": {
+      "input_tokens": 1000,
+      "output_tokens": 100,
+      "cache_read_tokens": 200,
+      "output_reasoning_tokens": 20
+    }
   },
   {
     "name": "anthropic_openai_chat",
@@ -96,7 +101,7 @@
         "total_tokens": 1000
       }
     },
-    "expected": 2e-05
+    "expected": 2e-5
   },
   {
     "name": "openai_images",
@@ -114,9 +119,7 @@
           "image_tokens": 100
         }
       },
-      "data": [
-        {}
-      ]
+      "data": [{}]
     },
     "request": {
       "model": "gpt-image-2"
@@ -187,10 +190,7 @@
     "name": "imagen",
     "provider": "google",
     "response": {
-      "generatedImages": [
-        {},
-        {}
-      ]
+      "generatedImages": [{}, {}]
     },
     "request": {
       "model": "imagen-3.0-fast-generate-001"
@@ -253,7 +253,11 @@
     "provider": "x-ai",
     "response": {
       "model": "grok-4.7",
-      "usage": { "prompt_tokens": "1000", "completion_tokens": "100", "completion_tokens_details": { "reasoning_tokens": "20" } }
+      "usage": {
+        "prompt_tokens": "1000",
+        "completion_tokens": "100",
+        "completion_tokens_details": { "reasoning_tokens": "20" }
+      }
     },
     "expected": 0.00272
   },
@@ -270,7 +274,10 @@
     "name": "gemini_openai_chat_total_gap",
     "provider": "google",
     "apiFlavor": "openai-chat",
-    "response": { "model": "gemini-3.5-flash", "usage": { "prompt_tokens": 2000, "completion_tokens": 600, "total_tokens": 3000 } },
+    "response": {
+      "model": "gemini-3.5-flash",
+      "usage": { "prompt_tokens": 2000, "completion_tokens": 600, "total_tokens": 3000 }
+    },
     "expectedUsage": { "output_tokens": 1000 },
     "expectedWarnings": ["output_from_total"],
     "expected": 0.012
@@ -288,7 +295,14 @@
     "name": "gemini_requested_model_override",
     "provider": "google",
     "model": "gemini-robotics-er-2-preview",
-    "response": { "modelVersion": "unknown-response-model", "usageMetadata": { "promptTokenCount": 100, "candidatesTokenCount": 10, "thoughtsTokenCount": 20 } },
+    "response": {
+      "modelVersion": "unknown-response-model",
+      "usageMetadata": {
+        "promptTokenCount": 100,
+        "candidatesTokenCount": 10,
+        "thoughtsTokenCount": 20
+      }
+    },
     "expectedUsage": { "output_reasoning_tokens": 20 },
     "expected": 0.00035
   },
@@ -297,13 +311,177 @@
     "provider": "x-ai",
     "apiFlavor": "images",
     "response": {
-      "data": [
-        {}
-      ]
+      "data": [{}]
     },
     "request": {
       "model": "grok-imagine-image-2.0"
     },
     "expected": 0.06
+  },
+  {
+    "name": "xai-chat_priority_tier",
+    "provider": "x-ai",
+    "apiFlavor": "xai-chat",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "model": "grok-4.7",
+      "service_tier": "priority",
+      "usage": {
+        "prompt_tokens": 1000,
+        "completion_tokens": 1000
+      }
+    },
+    "expected": 0.016
+  },
+  {
+    "name": "xai-chat_default_tier",
+    "provider": "x-ai",
+    "apiFlavor": "xai-chat",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "model": "grok-4.7",
+      "service_tier": "default",
+      "usage": {
+        "prompt_tokens": 1000,
+        "completion_tokens": 1000
+      }
+    },
+    "expected": 0.008
+  },
+  {
+    "name": "xai-chat_None_tier",
+    "provider": "x-ai",
+    "apiFlavor": "xai-chat",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "model": "grok-4.7",
+      "service_tier": null,
+      "usage": {
+        "prompt_tokens": 1000,
+        "completion_tokens": 1000
+      }
+    },
+    "expected": 0.008
+  },
+  {
+    "name": "xai-responses_priority_tier",
+    "provider": "x-ai",
+    "apiFlavor": "xai-responses",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "model": "grok-4.7",
+      "service_tier": "priority",
+      "usage": {
+        "input_tokens": 1000,
+        "output_tokens": 1000
+      }
+    },
+    "expected": 0.016
+  },
+  {
+    "name": "xai-responses_default_tier",
+    "provider": "x-ai",
+    "apiFlavor": "xai-responses",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "model": "grok-4.7",
+      "service_tier": "default",
+      "usage": {
+        "input_tokens": 1000,
+        "output_tokens": 1000
+      }
+    },
+    "expected": 0.008
+  },
+  {
+    "name": "xai-responses_None_tier",
+    "provider": "x-ai",
+    "apiFlavor": "xai-responses",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "model": "grok-4.7",
+      "service_tier": null,
+      "usage": {
+        "input_tokens": 1000,
+        "output_tokens": 1000
+      }
+    },
+    "expected": 0.008
+  },
+  {
+    "name": "gemini_priority_tier",
+    "provider": "google",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "modelVersion": "gemini-3.8-flash",
+      "usageMetadata": {
+        "promptTokenCount": 1000,
+        "candidatesTokenCount": 1000,
+        "serviceTier": "priority"
+      }
+    },
+    "expected": 0.0081
+  },
+  {
+    "name": "gemini_flex_tier",
+    "provider": "google",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "modelVersion": "gemini-3.8-flash",
+      "usageMetadata": {
+        "promptTokenCount": 1000,
+        "candidatesTokenCount": 1000,
+        "serviceTier": "flex"
+      }
+    },
+    "expected": 0.00225
+  },
+  {
+    "name": "gemini_standard_tier",
+    "provider": "google",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "modelVersion": "gemini-3.8-flash",
+      "usageMetadata": {
+        "promptTokenCount": 1000,
+        "candidatesTokenCount": 1000,
+        "serviceTier": "standard"
+      }
+    },
+    "expected": 0.0045
+  },
+  {
+    "name": "gemini_None_tier",
+    "provider": "google",
+    "request": {
+      "service_tier": "priority"
+    },
+    "response": {
+      "modelVersion": "gemini-3.8-flash",
+      "usageMetadata": {
+        "promptTokenCount": 1000,
+        "candidatesTokenCount": 1000,
+        "serviceTier": null
+      }
+    },
+    "expected": 0.0045
   }
 ]

@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-09-28T03:41:47.831Z","ref":"W/\"a1d26ee78a9d2ea1d9ad5f5a121eda02172f7691192021972fa288e4f5b370be\"","latest_new_model_at":"2026-09-27T04:48:27.265Z"},
-    "models_dev": {"fetched_at":"2026-09-28T03:41:48.017Z","etag":"W/\"6e6acdfcd2de9d76e1a647f4acaebb49\"","latest_new_model_at":"2026-09-27T04:48:27.417Z"}
+    "litellm": {"fetched_at":"2026-09-28T03:59:41.813Z","ref":"W/\"a1d26ee78a9d2ea1d9ad5f5a121eda02172f7691192021972fa288e4f5b370be\"","latest_new_model_at":"2026-09-27T04:48:27.265Z"},
+    "models_dev": {"fetched_at":"2026-09-28T03:59:42.085Z","etag":"W/\"6e6acdfcd2de9d76e1a647f4acaebb49\"","latest_new_model_at":"2026-09-27T04:48:27.417Z"}
   },
   "models": [
     {
@@ -15927,6 +15927,24 @@
               }
             ]
           }
+        },
+        "priority": {
+          "prices": {
+            "input": 2.5,
+            "output": 5,
+            "cache_read": 0.4,
+            "input_image": 2.5,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 5,
+                  "output": 10,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
         }
       },
       "region_uplift": {},
@@ -15998,6 +16016,24 @@
                   "input": 2,
                   "output": 4,
                   "cache_read": 0.32
+                }
+              }
+            ]
+          }
+        },
+        "priority": {
+          "prices": {
+            "input": 2.5,
+            "output": 5,
+            "cache_read": 0.4,
+            "input_image": 2.5,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 5,
+                  "output": 10,
+                  "cache_read": 0.8
                 }
               }
             ]
@@ -16945,6 +16981,24 @@
               }
             ]
           }
+        },
+        "priority": {
+          "prices": {
+            "input": 2.5,
+            "output": 5,
+            "cache_read": 0.4,
+            "input_image": 2.5,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 5,
+                  "output": 10,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
         }
       },
       "region_uplift": {},
@@ -17710,6 +17764,24 @@
               }
             ]
           }
+        },
+        "priority": {
+          "prices": {
+            "input": 2.5,
+            "output": 5,
+            "cache_read": 0.4,
+            "input_image": 2.5,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 5,
+                  "output": 10,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
         }
       },
       "region_uplift": {},
@@ -17844,7 +17916,26 @@
           }
         ]
       },
-      "modes": {},
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 4,
+            "output": 12,
+            "cache_read": 0.6,
+            "input_image": 4,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 8,
+                  "output": 24,
+                  "cache_read": 1.2
+                }
+              }
+            ]
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": true,
@@ -17958,7 +18049,26 @@
           }
         ]
       },
-      "modes": {},
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 4,
+            "output": 12,
+            "cache_read": 1,
+            "input_image": 4,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 8,
+                  "output": 24,
+                  "cache_read": 2
+                }
+              }
+            ]
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": true,
@@ -18020,7 +18130,26 @@
           }
         ]
       },
-      "modes": {},
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 4,
+            "output": 12,
+            "cache_read": 1,
+            "input_image": 4,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 8,
+                  "output": 24,
+                  "cache_read": 2
+                }
+              }
+            ]
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": true,
@@ -18082,7 +18211,26 @@
           }
         ]
       },
-      "modes": {},
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 2,
+            "output": 4,
+            "cache_read": 0.4,
+            "input_image": 2,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 4,
+                  "output": 8,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": true,
@@ -18910,6 +19058,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-09-28T03:41:48.061Z",
-  "version": "2026-09-28T03:41:48.061Z-32fac7d6803a"
+  "generated_at": "2026-09-28T03:59:42.127Z",
+  "version": "2026-09-28T03:59:42.127Z-9c58092e5c9e"
 }

@@ -106,5 +106,60 @@ for (const m of d.models.filter((model) => model.provider === 'anthropic')) {
     });
   }
 }
+// Exercise every xAI ID, including excluded aliases, at the tier boundary.
+for (const m of d.models.filter((model) => model.provider === 'x-ai')) {
+  for (const mode of ['priority', 'fast', 'batch']) {
+    for (const count of [1000, 200000, 200001]) {
+      const u = {
+        input_tokens: count,
+        output_tokens: 1000,
+        cache_read_tokens: 500,
+        reasoning_tokens: 200,
+      };
+      const r = calculate(m, u, {}, mode);
+      cases.push({
+        p: m.provider,
+        id: m.id,
+        u,
+        mode,
+        region: 'global',
+        opt: {},
+        t: r.totalUsd,
+        w: r.warnings,
+      });
+    }
+  }
+}
+// Missing surcharge fallback with discount-only and invalid surcharge factors.
+for (const mode of ['priority', 'fast']) {
+  for (const factor of [0, 0.5, 1, 1.5, 3]) {
+    const model = {
+      provider: 'x-ai',
+      id: 'synthetic',
+      prices: { input: 2, output: 6 },
+      modes: {
+        batch: { prices: { input: 1, output: 3 } },
+        flex: { multiplier: 9 },
+        [mode === 'priority' ? 'fast' : 'priority']: { multiplier: factor },
+      },
+    };
+    for (const providerModeMultiplier of [0, 0.5, 1, 1.5, 3]) {
+      const u = { input_tokens: 1000, output_tokens: 1000 };
+      const opt = { providerModeMultiplier };
+      const r = calculate(model, u, opt, mode);
+      cases.push({
+        model,
+        p: model.provider,
+        id: model.id,
+        u,
+        mode,
+        region: 'global',
+        opt,
+        t: r.totalUsd,
+        w: r.warnings,
+      });
+    }
+  }
+}
 fs.writeFileSync(process.argv[2], JSON.stringify(cases));
 console.log('cases', cases.length);

@@ -4,6 +4,28 @@ import re
 from decimal import Decimal
 
 
+def surcharge_multiplier(model):
+    """Use only surcharge modes and ratios strictly greater than one."""
+    highest = D(0)
+    for mode in ("priority", "fast"):
+        entry = model.get("modes", {}).get(mode)
+        if not entry:
+            continue
+        factor = D(entry.get("multiplier", 0))
+        if factor > 1:
+            highest = max(highest, factor)
+        for key, value in entry.get("prices", {}).items():
+            base = model["prices"].get(key)
+            if (
+                isinstance(value, (int, float, Decimal))
+                and isinstance(base, (int, float, Decimal))
+                and base > 0
+                and D(value) / D(base) > 1
+            ):
+                highest = max(highest, D(value) / D(base))
+    return highest
+
+
 def find_model(models, provider, name):
     name = re.sub(
         r"^(openai|anthropic|gemini|models|google|xai|x-ai)/",
@@ -121,18 +143,11 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         else:
             warnings.append("missing_price:mode:" + mode)
             if mode in ("priority", "fast"):
-                own = D(0)
-                for entry in modes.values():
-                    own = max(own, D(entry.get("multiplier", 1)))
-                    for key, value in entry.get("prices", {}).items():
-                        raw = model["prices"].get(key)
-                        if (
-                            isinstance(value, (int, float, Decimal))
-                            and isinstance(raw, (int, float, Decimal))
-                            and raw > 0
-                        ):
-                            own = max(own, D(value) / D(raw))
-                multiplier = D(options.get("providerModeMultiplier", 0)) or own or D(2)
+                provider_factor = D(options.get("providerModeMultiplier", 0))
+                multiplier = max(
+                    provider_factor if provider_factor > 1 else D(0),
+                    surcharge_multiplier(model),
+                ) or D(2)
 
     highest = max(
         [

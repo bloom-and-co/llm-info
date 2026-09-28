@@ -14,7 +14,7 @@ from typing import Protocol
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
-from ._engine import calculate, find_model
+from ._engine import calculate, find_model, surcharge_multiplier
 
 DEFAULT_URL = (
     "https://raw.githubusercontent.com/bloom-and-co/llm-info/main/data/llm-info.json"
@@ -344,24 +344,14 @@ class LlmInfo:
         m = find_model(self.doc["data"]["models"], provider, model)
         if not m:
             return None
-        provider_mode_multiplier = 0
-        for row in self.doc["data"]["models"]:
-            if row["provider"] != m["provider"]:
-                continue
-            for entry in row.get("modes", {}).values():
-                provider_mode_multiplier = max(
-                    provider_mode_multiplier, entry.get("multiplier", 1)
-                )
-                for key, value in entry.get("prices", {}).items():
-                    raw = row["prices"].get(key)
-                    if (
-                        isinstance(value, (int, float))
-                        and isinstance(raw, (int, float))
-                        and raw > 0
-                    ):
-                        provider_mode_multiplier = max(
-                            provider_mode_multiplier, value / raw
-                        )
+        provider_mode_multiplier = max(
+            (
+                surcharge_multiplier(row)
+                for row in self.doc["data"]["models"]
+                if row["provider"] == m["provider"]
+            ),
+            default=0,
+        )
         result = calculate(
             m,
             usage,
@@ -642,7 +632,32 @@ class LlmInfo:
                 "output_video_seconds",
                 _video_seconds(response, request, model),
             )
-        return {"model": model, "usage": out, "warnings": warnings}
+        # https://platform.openai.com/docs/api-reference/responses: service_tier is the actual tier.
+        # https://platform.claude.com/docs/en/build-with-claude/fast-mode: usage.speed marks fast processing.
+        # Gemini returns the served tier in usageMetadata; never use the requested tier.
+        # https://ai.google.dev/api/generate-content#UsageMetadata
+        # xAI: https://docs.x.ai/developers/advanced-api-usage/priority-processing
+        served_tier = response.get("service_tier")
+        if provider.lower() == "google":
+            served_tier = (response.get("usageMetadata") or {}).get(
+                "serviceTier"
+            ) or served_tier
+        inferred_mode = (
+            served_tier
+            if served_tier in ("priority", "flex")
+            else (
+                "fast"
+                if response.get("speed") == "fast"
+                or (response.get("usage") or {}).get("speed") == "fast"
+                else "standard"
+            )
+        )
+        return {
+            "model": model,
+            "usage": out,
+            "warnings": warnings,
+            "mode": inferred_mode,
+        }
 
     def from_response(
         self,
@@ -658,18 +673,6 @@ class LlmInfo:
         extracted = self.extract_usage(provider, response, request, api_flavor, model)
         if not extracted["model"]:
             return None
-        # https://platform.openai.com/docs/api-reference/responses: service_tier is the actual tier.
-        # https://platform.claude.com/docs/en/build-with-claude/fast-mode: usage.speed marks fast processing.
-        inferred_mode = (
-            response.get("service_tier")
-            if response.get("service_tier") in ("priority", "flex")
-            else (
-                "fast"
-                if response.get("speed") == "fast"
-                or (response.get("usage") or {}).get("speed") == "fast"
-                else None
-            )
-        )
         result = self.calc(
             provider,
             extracted["model"],
@@ -680,7 +683,7 @@ class LlmInfo:
                 **response,
                 "service_tier": response.get("service_tier"),
             },
-            mode=mode or inferred_mode,
+            mode=mode or extracted["mode"],
             region=region,
         )
         if result:

@@ -1,6 +1,28 @@
 // Reviewed supplements to upstream data. Add IDs only after checking official docs.
-// Exact IDs intentionally exclude unverified dated variants and Mythos Preview.
+// Exact IDs intentionally exclude unverified aliases and dated variants.
 export const providerRules = [
+  {
+    id: 'xai-priority-processing',
+    provider: 'x-ai',
+    model_selector: {
+      description: 'Text API IDs listed on the official pricing page, reviewed 2026-09-28',
+      ids: [
+        'grok-4.7',
+        'grok-4.6',
+        'grok-4.5',
+        'grok-4.3',
+        'grok-build-0.1',
+        'grok-4.20-multi-agent-0309',
+        'grok-4.20-0309-reasoning',
+        'grok-4.20-0309-non-reasoning',
+      ],
+    },
+    response: { service_tier: 'priority' },
+    effect: { mode_token_multiplier: { priority: 2 } },
+    source_url: 'https://docs.x.ai/developers/pricing#priority-processing-pricing',
+    supporting_urls: ['https://docs.x.ai/developers/advanced-api-usage/priority-processing'],
+    checked_at: '2026-09-28',
+  },
   {
     id: 'anthropic-us-inference',
     provider: 'anthropic',
