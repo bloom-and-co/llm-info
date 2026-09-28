@@ -22,6 +22,61 @@ def make(fetch=None, store=None, **kwargs):
     )
 
 
+@pytest.mark.parametrize(
+    "model,mode,expected",
+    [
+        ("claude-opus-5", "fast", "0.066"),
+        ("claude-opus-5-5", "standard", "0.0264"),
+    ],
+)
+def test_anthropic_us_residency(model, mode, expected):
+    p = make()
+    p.load()
+    result = p.calc(
+        "anthropic",
+        model,
+        {"input_tokens": 1000, "output_tokens": 1000},
+        mode=mode,
+        region="us",
+    )
+    assert result["total_usd"] == Decimal(expected)
+    assert result["warnings"] == []
+
+
+@pytest.mark.parametrize(
+    "category,expected",
+    [
+        ("input_tokens", "0.011"),
+        ("output_tokens", "0.055"),
+        ("cache_write_tokens", "0.01375"),
+        ("cache_write_1h_tokens", "0.022"),
+        ("cache_read_tokens", "0.0011"),
+    ],
+)
+def test_us_residency_stacks_with_fast_and_cache(category, expected):
+    p = make()
+    p.load()
+    usage = {category: 1000}
+    if category.startswith("cache_"):
+        usage["input_tokens"] = 1000
+    result = p.calc("anthropic", "claude-opus-5", usage, mode="fast", region="us")
+    assert result["total_usd"] == Decimal(expected)
+    assert result["warnings"] == []
+
+
+def test_pre_46_us_residency_still_warns_without_uplift():
+    p = make()
+    p.load()
+    result = p.calc(
+        "anthropic",
+        "claude-sonnet-4-5",
+        {"input_tokens": 1000, "output_tokens": 1000},
+        region="us",
+    )
+    assert result["total_usd"] == Decimal("0.018")
+    assert result["warnings"] == ["missing_region_uplift"]
+
+
 def test_schema_and_own_engine():
     assert DATA["schema"] == 2
     assert len({m["provider"] for m in DATA["models"]}) == 4

@@ -3,6 +3,91 @@ import { readFile } from 'node:fs/promises';
 import { mergeSources, validate, finalize, normalizeId } from './core.mjs';
 const row = (d: any, provider: string, id: string) =>
   d.models.find((m: any) => m.provider === provider && m.id === id);
+const residencyIds = [
+  'claude-fable-5',
+  'claude-fable-5-1',
+  'claude-mythos-5',
+  'claude-mythos-5-1',
+  'claude-opus-4-6',
+  'claude-opus-4-7',
+  'claude-opus-4-8',
+  'claude-opus-5',
+  'claude-opus-5-5',
+  'claude-sonnet-4-6',
+  'claude-sonnet-5',
+];
+it.each(['litellm', 'models_dev'])('adds reviewed US residency facts to %s models', (source) => {
+  const excluded = [
+    'claude-haiku-4-5',
+    'claude-opus-4-5',
+    'claude-sonnet-4-5',
+    'claude-opus-4-6-20260205',
+    'claude-opus-4-7-20260416',
+    'claude-mythos-preview',
+    'claude-opus-99',
+    'claude-opus-5-custom',
+  ];
+  const ids = [...residencyIds, ...excluded];
+  const lite = Object.fromEntries(
+    ids.map((id) => [
+      'anthropic/' + id,
+      {
+        litellm_provider: 'anthropic',
+        input_cost_per_token: 4e-6,
+        output_cost_per_token: 20e-6,
+      },
+    ]),
+  );
+  const models = {
+    anthropic: {
+      models: Object.fromEntries(ids.map((id) => [id, { cost: { input: 4, output: 20 } }])),
+    },
+  };
+  const before = JSON.stringify({ lite, models });
+  const merged = mergeSources(
+    source === 'litellm' ? lite : {},
+    source === 'models_dev' ? models : {},
+  );
+  for (const id of residencyIds)
+    expect(row(merged, 'anthropic', id).region_uplift).toEqual({ us: 1.1 });
+  for (const id of excluded) expect(row(merged, 'anthropic', id).region_uplift).toEqual({});
+  expect(merged.applied_rules).toHaveLength(residencyIds.length);
+  expect(merged.applied_rules[0]).toMatchObject({
+    rule: 'anthropic-us-inference',
+    provider: 'anthropic',
+    field: 'region_uplift.us',
+    previous: null,
+    adopted: 1.1,
+    source_url: 'https://platform.claude.com/docs/en/build-with-claude/data-residency',
+    checked_at: '2026-09-28',
+  });
+  expect(JSON.stringify({ lite, models })).toBe(before);
+});
+it.each([0, 1.05, 1.1, 1.25])('provider rules never lower existing uplift %s', (factor) => {
+  const merged = mergeSources(
+    {
+      'claude-opus-5': {
+        litellm_provider: 'anthropic',
+        input_cost_per_token: 10e-6,
+        output_cost_per_token: 50e-6,
+        regional_processing_uplift_multiplier_us: factor,
+        regional_processing_uplift_multiplier_eu: 1.3,
+      },
+      'openai/claude-opus-5': {
+        litellm_provider: 'openai',
+        input_cost_per_token: 1e-6,
+        output_cost_per_token: 2e-6,
+      },
+    },
+    {},
+  );
+  expect(row(merged, 'anthropic', 'claude-opus-5')).toMatchObject({
+    prices: { input: 10, output: 50 },
+    region_uplift: { us: Math.max(factor, 1.1), eu: 1.3 },
+  });
+  expect(row(merged, 'openai', 'claude-opus-5').region_uplift).toEqual({});
+  expect(merged.applied_rules).toHaveLength(factor < 1.1 ? 1 : 0);
+});
 it('normalizes provider prefixes', () => {
   expect(normalizeId('gemini/gemini-3.8-flash', 'google')).toBe('gemini-3.8-flash');
   expect(normalizeId('xai/grok-4.7', 'x-ai')).toBe('grok-4.7');
