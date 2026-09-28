@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { providerRules } from './rules.mjs';
 
 export const IDS = ['openai', 'anthropic', 'google', 'x-ai'];
 const direct = {
@@ -718,7 +719,40 @@ export function mergeSources(lite, models) {
   conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
   capability_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
   mode_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  return { models: modelsOut, skipped, conflicts, capability_conflicts, mode_conflicts };
+  const applied_rules = [];
+  for (const rule of providerRules) {
+    for (const model of modelsOut) {
+      if (model.provider !== rule.provider || !rule.model_selector.ids.includes(model.id)) continue;
+      // Supplements can only add missing multipliers or raise existing ones.
+      // Base/mode prices and source objects are never overwritten by a rule.
+      for (const [region, factor] of Object.entries(rule.effect.region_uplift)) {
+        if (!Number.isFinite(factor) || factor < 1)
+          throw Error('invalid provider rule uplift: ' + rule.id);
+        const previous = model.region_uplift[region];
+        const adopted = Math.max(previous ?? 1, factor);
+        if (previous === adopted) continue;
+        model.region_uplift[region] = adopted;
+        applied_rules.push({
+          rule: rule.id,
+          provider: model.provider,
+          model: model.id,
+          field: `region_uplift.${region}`,
+          previous: previous ?? null,
+          adopted,
+          source_url: rule.source_url,
+          checked_at: rule.checked_at,
+        });
+      }
+    }
+  }
+  return {
+    models: modelsOut,
+    skipped,
+    conflicts,
+    capability_conflicts,
+    mode_conflicts,
+    applied_rules,
+  };
 }
 export function validate(doc, previous) {
   if (doc.schema !== 2 || !Array.isArray(doc.models)) throw Error('invalid document');

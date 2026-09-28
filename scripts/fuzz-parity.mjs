@@ -61,10 +61,49 @@ for (const id of ['gpt-image-1.5', 'chatgpt-image-latest', 'gemini-3.1-flash-ima
   for (const u of [
     { input_tokens: 50, cache_read_tokens: 20, output_tokens: 4160, output_images: 1 },
     { input_tokens: 50, input_text_tokens: 20, output_tokens: 100, output_text_tokens: 50 },
-    { input_tokens: 50, input_breakdown_present: 1, output_tokens: 100, output_breakdown_present: 1, output_image_tokens: 40 },
+    {
+      input_tokens: 50,
+      input_breakdown_present: 1,
+      output_tokens: 100,
+      output_breakdown_present: 1,
+      output_image_tokens: 40,
+    },
   ]) {
     const r = calculate(m, u);
-    cases.push({ p: m.provider, id: m.id, u, mode: 'standard', region: 'global', opt: {}, t: r.totalUsd, w: r.warnings });
+    cases.push({
+      p: m.provider,
+      id: m.id,
+      u,
+      mode: 'standard',
+      region: 'global',
+      opt: {},
+      t: r.totalUsd,
+      w: r.warnings,
+    });
+  }
+}
+// Guarantee US coverage for every Anthropic model, including excluded/legacy IDs,
+// and exercise caching together with each mode (random cases above also use us).
+for (const m of d.models.filter((model) => model.provider === 'anthropic')) {
+  for (const mode of ['standard', 'fast', 'batch']) {
+    const u = {
+      input_tokens: 4000,
+      output_tokens: 1000,
+      cache_read_tokens: 1000,
+      cache_write_tokens: 1000,
+      cache_write_1h_tokens: 1000,
+    };
+    const r = calculate(m, u, {}, mode, 'us');
+    cases.push({
+      p: m.provider,
+      id: m.id,
+      u,
+      mode,
+      region: 'us',
+      opt: {},
+      t: r.totalUsd,
+      w: r.warnings,
+    });
   }
 }
 fs.writeFileSync(process.argv[2], JSON.stringify(cases));

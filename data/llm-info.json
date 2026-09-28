@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-09-27T05:08:06.232Z","ref":"W/\"a232fdff28383c7cf8ff3e6d065e3329194609e594382721351ffc8c436e66fc\"","latest_new_model_at":"2026-09-27T04:48:27.265Z"},
-    "models_dev": {"fetched_at":"2026-09-27T05:08:06.384Z","etag":"W/\"63b2a49b818f5744373560e75e1b1897\"","latest_new_model_at":"2026-09-27T04:48:27.417Z"}
+    "litellm": {"fetched_at":"2026-09-28T03:41:47.831Z","ref":"W/\"a1d26ee78a9d2ea1d9ad5f5a121eda02172f7691192021972fa288e4f5b370be\"","latest_new_model_at":"2026-09-27T04:48:27.265Z"},
+    "models_dev": {"fetched_at":"2026-09-28T03:41:48.017Z","etag":"W/\"6e6acdfcd2de9d76e1a647f4acaebb49\"","latest_new_model_at":"2026-09-27T04:48:27.417Z"}
   },
   "models": [
     {
@@ -6740,7 +6740,7 @@
       "provider": "openai",
       "id": "gpt-daybreak-blue-latest",
       "mode": "chat",
-      "name": "gpt-daybreak-blue-latest",
+      "name": "Daybreak Blue",
       "aliases": [],
       "match": {
         "exact": [
@@ -6769,7 +6769,14 @@
       "region_uplift": {},
       "capabilities": {
         "reasoning": true,
-        "reasoning_efforts": null,
+        "reasoning_efforts": [
+          "none",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
         "default_reasoning_effort": null,
         "tool_call": true,
         "parallel_tool_calls": true,
@@ -6777,19 +6784,20 @@
         "web_search": true,
         "input_modalities": [
           "image",
+          "pdf",
           "text"
         ],
         "output_modalities": [
           "text"
         ],
-        "temperature": null,
+        "temperature": false,
         "prompt_caching": true,
         "computer_use": true,
-        "context_window": null,
+        "context_window": 1050000,
         "max_input_tokens": 922000,
         "max_output_tokens": 128000,
-        "knowledge_cutoff": null,
-        "release_date": null,
+        "knowledge_cutoff": "2026-02-16",
+        "release_date": "2026-08-07",
         "endpoints": [
           "/v1/responses"
         ]
@@ -6799,7 +6807,7 @@
       "provider": "openai",
       "id": "gpt-daybreak-red-latest",
       "mode": "chat",
-      "name": "gpt-daybreak-red-latest",
+      "name": "Daybreak Red",
       "aliases": [],
       "match": {
         "exact": [
@@ -6828,7 +6836,14 @@
       "region_uplift": {},
       "capabilities": {
         "reasoning": true,
-        "reasoning_efforts": null,
+        "reasoning_efforts": [
+          "none",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
         "default_reasoning_effort": null,
         "tool_call": true,
         "parallel_tool_calls": true,
@@ -6841,14 +6856,14 @@
         "output_modalities": [
           "text"
         ],
-        "temperature": null,
+        "temperature": false,
         "prompt_caching": true,
         "computer_use": true,
-        "context_window": null,
-        "max_input_tokens": 400000,
+        "context_window": 400000,
+        "max_input_tokens": 272000,
         "max_output_tokens": 128000,
-        "knowledge_cutoff": null,
-        "release_date": null,
+        "knowledge_cutoff": "2026-02-16",
+        "release_date": "2026-08-07",
         "endpoints": [
           "/v1/responses"
         ]
@@ -9133,7 +9148,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -9197,7 +9214,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -9375,7 +9394,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -9432,7 +9453,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -9661,7 +9684,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -9780,7 +9805,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -9918,7 +9945,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -9999,7 +10028,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -10080,7 +10111,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -10306,7 +10339,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -10369,7 +10404,9 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -18873,6 +18910,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-09-27T05:08:06.424Z",
-  "version": "2026-09-27T05:08:06.424Z-74c28096da2f"
+  "generated_at": "2026-09-28T03:41:48.061Z",
+  "version": "2026-09-28T03:41:48.061Z-32fac7d6803a"
 }

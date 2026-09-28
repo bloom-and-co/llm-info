@@ -24,6 +24,8 @@ const previousIds = new Set(
   (previous?.models ?? []).map((model) => `${model.provider}\0${model.id}`),
 );
 const merged = mergeSources(l.data, m.data);
+for (const applied of merged.applied_rules)
+  console.log('provider_rule: ' + JSON.stringify(applied));
 const publishedIds = new Set(merged.models.map((model) => `${model.provider}\0${model.id}`));
 const latest = (source, hasNew) =>
   hasNew || !previous?.sources?.[source]?.latest_new_model_at

@@ -2,6 +2,8 @@
 
 A cached LLM price table and independent cost calculators for OpenAI, Anthropic, Google, and xAI. The builder merges [LiteLLM](https://github.com/BerriAI/litellm) and [models.dev](https://github.com/sst/models.dev) data. Conflicting prices use the higher value; the builder prints conflict counts in its log.
 
+Reviewed supplements in [`builder/rules.mjs`](builder/rules.mjs) add officially documented facts missing from the feeds. Each rule records its provider, exact model IDs, effect, source URLs, and check date. Rules only add missing region multipliers or take the higher value, and each change is logged as `provider_rule`. The Anthropic rule adds `region_uplift.us = 1.1` for verified Claude 4.6 and later IDs, reflecting [`inference_geo: "us"`](https://platform.claude.com/docs/en/build-with-claude/data-residency). Use `region: 'us'` in JS or `region="us"` in Python; it stacks with fast mode and cache pricing. Unverified IDs (including Mythos Preview and dated Opus 4.6/4.7 variants) are excluded from the supplement. New IDs require review before being added; excluded models retain source prices and warn `missing_region_uplift` when no source supplies an uplift.
+
 ## Install
 
 ```sh
