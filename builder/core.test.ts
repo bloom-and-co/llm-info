@@ -563,3 +563,103 @@ it('sorts conflicts across providers independently of discovery order', () => {
   expect(serialized.length).toBeGreaterThan(2);
   expect(serialized).toEqual([...serialized].sort((a, b) => a.localeCompare(b, 'en')));
 });
+
+const xaiPriorityIds = [
+  'grok-4.7',
+  'grok-4.6',
+  'grok-4.5',
+  'grok-4.3',
+  'grok-build-0.1',
+  'grok-4.20-multi-agent-0309',
+  'grok-4.20-0309-reasoning',
+  'grok-4.20-0309-non-reasoning',
+];
+it.each(['litellm', 'models_dev'])('adds reviewed xAI priority token prices from %s', (source) => {
+  const excluded = [
+    'grok-4.7-latest',
+    'grok-4.3-latest',
+    'grok-4.20',
+    'grok-4.20-beta-0309',
+    'grok-code-fast-1',
+    'grok-imagine-image',
+    'grok-future',
+  ];
+  const ids = [...xaiPriorityIds, ...excluded];
+  const lite = Object.fromEntries(
+    ids.map((id) => [
+      id,
+      {
+        litellm_provider: 'xai',
+        input_cost_per_token: 2e-6,
+        output_cost_per_token: 6e-6,
+        cache_read_input_token_cost: 0.5e-6,
+        output_cost_per_reasoning_token: 6e-6,
+        input_cost_per_token_above_200k_tokens: 4e-6,
+        output_cost_per_token_above_200k_tokens: 12e-6,
+        input_cost_per_token_batches: 1e-6,
+      },
+    ]),
+  );
+  const models = {
+    xai: {
+      models: Object.fromEntries(
+        ids.map((id) => [id, { cost: { input: 2, output: 6, cache_read: 0.5, reasoning: 6 } }]),
+      ),
+    },
+  };
+  const before = JSON.stringify({ lite, models });
+  const merged = mergeSources(
+    source === 'litellm' ? lite : {},
+    source === 'models_dev' ? models : {},
+  );
+  for (const id of xaiPriorityIds) {
+    const m = row(merged, 'x-ai', id);
+    const scaled = Object.fromEntries(
+      Object.entries(m.prices).map(([key, value]: any) => [
+        key,
+        key === 'tiers'
+          ? value.map((t: any) => ({
+              ...t,
+              prices: Object.fromEntries(Object.entries(t.prices).map(([k, v]: any) => [k, v * 2])),
+            }))
+          : value * 2,
+      ]),
+    );
+    expect(m.modes.priority).toEqual({ prices: scaled });
+    if (source === 'litellm') expect(m.modes.batch.prices.input).toBe(1);
+  }
+  for (const id of excluded) expect(row(merged, 'x-ai', id).modes.priority).toBeUndefined();
+  expect(merged.applied_rules).toHaveLength(xaiPriorityIds.length);
+  expect(merged.applied_rules[0]).toMatchObject({
+    rule: 'xai-priority-processing',
+    provider: 'x-ai',
+    field: 'modes.priority',
+    source_url: 'https://docs.x.ai/developers/pricing#priority-processing-pricing',
+    checked_at: '2026-09-28',
+  });
+  expect(JSON.stringify({ lite, models })).toBe(before);
+});
+it('applies the official token multiplier without multiplying tool fees or applying it twice', () => {
+  const merged = mergeSources(
+    {
+      'grok-4.7': {
+        litellm_provider: 'xai',
+        input_cost_per_token: 2e-6,
+        output_cost_per_token: 6e-6,
+        input_cost_per_token_priority: 4e-6,
+        search_context_cost_per_query: { search_context_size_low: 0.005 },
+      },
+      'openai/grok-4.7': {
+        litellm_provider: 'openai',
+        input_cost_per_token: 2e-6,
+        output_cost_per_token: 6e-6,
+      },
+    },
+    {},
+  );
+  const m = row(merged, 'x-ai', 'grok-4.7');
+  expect(m.modes.priority.prices.input).toBe(4);
+  expect(m.modes.priority.prices.output).toBe(12);
+  expect(m.modes.priority.prices.per_web_search).toBeUndefined();
+  expect(row(merged, 'openai', 'grok-4.7').modes.priority).toBeUndefined();
+});

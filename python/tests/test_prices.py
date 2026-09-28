@@ -896,3 +896,128 @@ def test_task6_long_context_invalid_usage_and_matching():
         find_model(rows, "anthropic", "anthropic.claude-opus-5-5")["id"]
         == "claude-opus-5-5"
     )
+
+
+@pytest.mark.parametrize("mode", ["priority", "fast"])
+def test_missing_surcharge_ignores_discount_modes(mode):
+    from llm_info._engine import calculate
+
+    model = {
+        "provider": "x-ai",
+        "id": "grok-test",
+        "prices": {"input": 2, "output": 6},
+        "modes": {"batch": {"prices": {"input": 1, "output": 3}}},
+    }
+    p = make(fetch=lambda u, e: (200, "tag", {**DATA, "models": [model]}))
+    p.load()
+    usage = {"input_tokens": 1000, "output_tokens": 1000}
+    for result in [
+        calculate(model, usage, mode=mode),
+        p.calc("x-ai", "grok-test", usage, mode=mode),
+    ]:
+        assert result["total_usd"] == Decimal("0.016")
+        assert "missing_price:mode:" + mode in result["warnings"]
+    rows = [
+        model,
+        {**model, "id": "discount", "modes": {"flex": {"multiplier": 9}}},
+        {**model, "id": "surcharge", "modes": {"fast": {"prices": {"input": 6}}}},
+        {**model, "provider": "openai", "modes": {"priority": {"multiplier": 20}}},
+    ]
+    p = make(fetch=lambda u, e: (200, "tag", {**DATA, "models": rows}))
+    p.load()
+    assert p.calc("x-ai", "grok-test", usage, mode="priority")["total_usd"] == Decimal(
+        "0.024"
+    )
+    assert p.calc("x-ai", "grok-test", usage, mode="flex")["total_usd"] == Decimal(
+        "0.008"
+    )
+    for factor in [0.5, 1]:
+        m = {**model, "modes": {"fast": {"multiplier": factor}}}
+        assert calculate(m, usage, {"providerModeMultiplier": factor}, "priority")[
+            "total_usd"
+        ] == Decimal("0.016")
+
+
+@pytest.mark.parametrize(
+    "model,expected", [("grok-4.7", "0.016"), ("grok-4.3", "0.0075")]
+)
+def test_xai_priority_prices(model, expected):
+    p = make()
+    p.load()
+    assert "priority" in next(m for m in DATA["models"] if m["id"] == model)["modes"]
+    result = p.calc(
+        "x-ai", model, {"input_tokens": 1000, "output_tokens": 1000}, mode="priority"
+    )
+    assert result["total_usd"] == Decimal(expected)
+    assert "missing_price:mode:priority" not in result["warnings"]
+
+
+@pytest.mark.parametrize("flavor", ["xai-chat", "xai-responses"])
+def test_xai_actual_response_tier(flavor):
+    model = {
+        "provider": "x-ai",
+        "id": "grok-test",
+        "prices": {"input": 2, "output": 6},
+        "modes": {"priority": {"prices": {"input": 4, "output": 12}}},
+    }
+    p = make(fetch=lambda u, e: (200, "tag", {**DATA, "models": [model]}))
+    p.load()
+    usage = (
+        {"prompt_tokens": 1000, "completion_tokens": 1000}
+        if flavor == "xai-chat"
+        else {"input_tokens": 1000, "output_tokens": 1000}
+    )
+    for tier, expected in [
+        ("priority", "0.016"),
+        ("default", "0.008"),
+        (None, "0.008"),
+    ]:
+        result = p.from_response(
+            "x-ai",
+            {"model": model["id"], "service_tier": tier, "usage": usage},
+            {"service_tier": "priority"},
+            api_flavor=flavor,
+        )
+        assert result["total_usd"] == Decimal(expected)
+
+
+def test_gemini_actual_usage_tier():
+    p = make()
+    p.load()
+    for tier, expected in [
+        ("priority", "0.0081"),
+        ("flex", "0.00225"),
+        ("standard", "0.0045"),
+        (None, "0.0045"),
+    ]:
+        result = p.from_response(
+            "google",
+            {
+                "modelVersion": "gemini-3.8-flash",
+                "usageMetadata": {
+                    "promptTokenCount": 1000,
+                    "candidatesTokenCount": 1000,
+                    "serviceTier": tier,
+                },
+            },
+            {"service_tier": "priority"},
+        )
+        assert result["total_usd"] == Decimal(expected)
+
+
+def test_xai_priority_cache_reasoning_and_tiers():
+    from llm_info._engine import calculate
+
+    model = next(
+        m for m in DATA["models"] if m["provider"] == "x-ai" and m["id"] == "grok-4.7"
+    )
+    for count in [1000, 200001]:
+        usage = {
+            "input_tokens": count,
+            "output_tokens": 1000,
+            "cache_read_tokens": 500,
+            "reasoning_tokens": 200,
+        }
+        result = calculate(model, usage, mode="priority")
+        assert result["total_usd"] == calculate(model, usage)["total_usd"] * 2
+        assert "missing_price:mode:priority" not in result["warnings"]
