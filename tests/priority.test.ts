@@ -75,6 +75,9 @@ it.each(['xai-chat', 'xai-responses'])(
         service_tier: tier,
         usage: apiFlavor === 'xai-chat' ? { prompt_tokens: 1000, completion_tokens: 1000 } : usage,
       };
+      expect(info.extractUsage({ provider: 'x-ai', apiFlavor, response }).mode).toBe(
+        tier === 'priority' ? 'priority' : 'standard',
+      );
       expect(
         info.fromResponse({
           provider: 'x-ai',

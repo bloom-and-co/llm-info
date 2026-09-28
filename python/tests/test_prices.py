@@ -972,6 +972,12 @@ def test_xai_actual_response_tier(flavor):
         ("default", "0.008"),
         (None, "0.008"),
     ]:
+        extracted = p.extract_usage(
+            "x-ai",
+            {"model": model["id"], "service_tier": tier, "usage": usage},
+            api_flavor=flavor,
+        )
+        assert extracted["mode"] == ("priority" if tier == "priority" else "standard")
         result = p.from_response(
             "x-ai",
             {"model": model["id"], "service_tier": tier, "usage": usage},
