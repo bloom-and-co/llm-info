@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-09-29T01:08:26.178Z","ref":"W/\"c31b533dd77406d3bbfea897e49907857510a88529638a4bb4abceb78c88fd55\"","latest_new_model_at":"2026-09-28T18:37:05.610Z"},
-    "models_dev": {"fetched_at":"2026-09-29T01:08:26.314Z","etag":"W/\"6eefb3626943dba9b0510eaa0eff2fed\"","latest_new_model_at":"2026-09-27T04:48:27.417Z"}
+    "litellm": {"fetched_at":"2026-09-29T18:37:29.835Z","ref":"W/\"9ffa4565539a90af5b7ffdc451987cda038d153ef643b86d95a5259d8c3a37aa\"","latest_new_model_at":"2026-09-29T18:37:29.835Z"},
+    "models_dev": {"fetched_at":"2026-09-29T18:37:30.167Z","etag":"W/\"d7a8ad626ec75513acaac39c93cb3356\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
   },
   "models": [
     {
@@ -6472,6 +6472,149 @@
         "max_output_tokens": 128000,
         "knowledge_cutoff": "2026-04-20",
         "release_date": "2026-09-22",
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/batch",
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-6.1-sol",
+      "mode": "chat",
+      "name": "GPT-6.1 Sol",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6.1-sol"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2,
+        "output": 10,
+        "cache_read": 0.1,
+        "cache_write": 2.5,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 4,
+              "output": 15,
+              "cache_read": 0.2,
+              "cache_write": 5
+            }
+          }
+        ],
+        "per_web_search": 0.01
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 8,
+                  "output": 30,
+                  "cache_read": 0.4,
+                  "cache_write": 10
+                }
+              }
+            ]
+          }
+        },
+        "flex": {
+          "prices": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.05,
+            "cache_write": 1.25,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 2,
+                  "output": 7.5,
+                  "cache_read": 0.1,
+                  "cache_write": 2.5
+                }
+              }
+            ]
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.05,
+            "cache_write": 1.25,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 2,
+                  "output": 7.5,
+                  "cache_read": 0.1,
+                  "cache_write": 2.5
+                }
+              }
+            ]
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
+          }
+        }
+      },
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "pdf",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": false,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": 1050000,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": "2026-04-30",
+        "release_date": "2026-09-29",
         "endpoints": [
           "/v1/chat/completions",
           "/v1/batch",
@@ -19122,6 +19265,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-09-29T01:08:26.451Z",
-  "version": "2026-09-29T01:08:26.451Z-96cdf1ce49a7"
+  "generated_at": "2026-09-29T18:37:30.280Z",
+  "version": "2026-09-29T18:37:30.280Z-35e66deef1e6"
 }
