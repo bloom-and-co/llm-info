@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-09-28T18:37:05.610Z","ref":"W/\"34be72eba3c2f4f74bb72f13ec1176687252259f70276de3e698c4dd3cbdf131\"","latest_new_model_at":"2026-09-28T18:37:05.610Z"},
-    "models_dev": {"fetched_at":"2026-09-28T18:37:05.870Z","etag":"W/\"3f1f436d1e9407b10066bdbb87263658\"","latest_new_model_at":"2026-09-27T04:48:27.417Z"}
+    "litellm": {"fetched_at":"2026-09-29T01:08:26.178Z","ref":"W/\"c31b533dd77406d3bbfea897e49907857510a88529638a4bb4abceb78c88fd55\"","latest_new_model_at":"2026-09-28T18:37:05.610Z"},
+    "models_dev": {"fetched_at":"2026-09-29T01:08:26.314Z","etag":"W/\"6eefb3626943dba9b0510eaa0eff2fed\"","latest_new_model_at":"2026-09-27T04:48:27.417Z"}
   },
   "models": [
     {
@@ -10444,7 +10444,7 @@
       "provider": "anthropic",
       "id": "claude-sonnet-5-5",
       "mode": "chat",
-      "name": "claude-sonnet-5-5",
+      "name": "Claude Sonnet 5.5",
       "aliases": [],
       "match": {
         "exact": [
@@ -10474,6 +10474,9 @@
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
+          "low",
+          "medium",
+          "high",
           "xhigh",
           "max"
         ],
@@ -10482,18 +10485,22 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "pdf",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
         "temperature": false,
         "prompt_caching": true,
         "computer_use": true,
-        "context_window": null,
+        "context_window": 1000000,
         "max_input_tokens": 1000000,
         "max_output_tokens": 128000,
-        "knowledge_cutoff": null,
-        "release_date": null,
+        "knowledge_cutoff": "2026-06",
+        "release_date": "2026-09-28",
         "endpoints": null
       }
     },
@@ -19115,6 +19122,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-09-28T18:37:05.934Z",
-  "version": "2026-09-28T18:37:05.934Z-8418e99e7d1e"
+  "generated_at": "2026-09-29T01:08:26.451Z",
+  "version": "2026-09-29T01:08:26.451Z-96cdf1ce49a7"
 }
