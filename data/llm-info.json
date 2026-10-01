@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-09-29T18:37:29.835Z","ref":"W/\"9ffa4565539a90af5b7ffdc451987cda038d153ef643b86d95a5259d8c3a37aa\"","latest_new_model_at":"2026-09-29T18:37:29.835Z"},
-    "models_dev": {"fetched_at":"2026-09-29T18:37:30.167Z","etag":"W/\"d7a8ad626ec75513acaac39c93cb3356\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
+    "litellm": {"fetched_at":"2026-10-01T03:33:21.781Z","ref":"W/\"4994adb0a045658b12645c13a0d150715637a72e2634f80b37eae6152ac228c8\"","latest_new_model_at":"2026-10-01T03:33:21.781Z"},
+    "models_dev": {"fetched_at":"2026-10-01T03:33:21.973Z","etag":"W/\"a69e5608d8acda217c0160a95657d17a\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
   },
   "models": [
     {
@@ -1272,6 +1272,18 @@
             "input": 1,
             "output": 4
           }
+        },
+        "fast": {
+          "prices": {
+            "input": 3.5,
+            "output": 14,
+            "cache_read": 0.875
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
+          }
         }
       },
       "region_uplift": {},
@@ -1401,6 +1413,18 @@
             "input": 0.2,
             "output": 0.8
           }
+        },
+        "fast": {
+          "prices": {
+            "input": 0.7,
+            "output": 2.8,
+            "cache_read": 0.175
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
+          }
         }
       },
       "region_uplift": {},
@@ -1529,6 +1553,18 @@
             "input": 0.05,
             "output": 0.2
           }
+        },
+        "fast": {
+          "prices": {
+            "input": 0.2,
+            "output": 0.8,
+            "cache_read": 0.05
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
+          }
         }
       },
       "region_uplift": {},
@@ -1655,6 +1691,18 @@
             "input": 1.25,
             "output": 5
           }
+        },
+        "fast": {
+          "prices": {
+            "input": 4.25,
+            "output": 17,
+            "cache_read": 2.125
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
+          }
         }
       },
       "region_uplift": {},
@@ -1712,6 +1760,17 @@
           "prices": {
             "input": 2.5,
             "output": 7.5
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 8.75,
+            "output": 26.25
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -1976,6 +2035,18 @@
           "prices": {
             "input": 0.075,
             "output": 0.3
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 0.25,
+            "output": 1,
+            "cache_read": 0.125
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -2381,6 +2452,53 @@
     },
     {
       "provider": "openai",
+      "id": "gpt-4o-mini-tts-2025-03-20",
+      "mode": "audio_speech",
+      "name": "gpt-4o-mini-tts-2025-03-20",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-4o-mini-tts-2025-03-20"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 0.6,
+        "output": 10,
+        "output_audio": 12
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "audio",
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/audio/speech"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
       "id": "gpt-4o-mini-tts-2025-12-15",
       "mode": "audio_speech",
       "name": "gpt-4o-mini-tts-2025-12-15",
@@ -2595,6 +2713,11 @@
             "input": 0.625,
             "output": 5,
             "cache_read": 0.0625
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -2602,6 +2725,18 @@
             "input": 0.625,
             "output": 5,
             "cache_read": 0.0625
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 2.5,
+            "output": 20,
+            "cache_read": 0.25
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -2892,6 +3027,11 @@
             "input": 0.125,
             "output": 1,
             "cache_read": 0.0125
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -2899,6 +3039,18 @@
             "input": 0.125,
             "output": 1,
             "cache_read": 0.0125
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 0.45,
+            "output": 3.6,
+            "cache_read": 0.045
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -3041,6 +3193,11 @@
             "input": 0.025,
             "output": 0.2,
             "cache_read": 0.0025
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -3392,6 +3549,11 @@
             "input": 0.625,
             "output": 5,
             "cache_read": 0.0625
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -3399,6 +3561,18 @@
             "input": 0.625,
             "output": 5,
             "cache_read": 0.0625
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 2.5,
+            "output": 20,
+            "cache_read": 0.25
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -3732,6 +3906,11 @@
             "input": 0.875,
             "output": 7,
             "cache_read": 0.0875
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -3739,6 +3918,18 @@
             "input": 0.875,
             "output": 7,
             "cache_read": 0.0875
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 3.5,
+            "output": 28,
+            "cache_read": 0.35
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -4143,6 +4334,18 @@
             "output": 28,
             "cache_read": 0.35
           }
+        },
+        "fast": {
+          "prices": {
+            "input": 3.5,
+            "output": 28,
+            "cache_read": 0.35
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
+          }
         }
       },
       "region_uplift": {},
@@ -4494,6 +4697,11 @@
             "input": 0.375,
             "output": 2.25,
             "cache_read": 0.0375
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -4658,6 +4866,11 @@
             "input": 0.1,
             "output": 0.625,
             "cache_read": 0.01
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -7380,7 +7593,15 @@
         "output_image": 30,
         "cache_image_read": 2
       },
-      "modes": {},
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 2.5,
+            "cache_read": 0.625,
+            "input_image": 4
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": false,
@@ -7474,7 +7695,15 @@
         "output_image": 30,
         "cache_image_read": 2
       },
-      "modes": {},
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 2.5,
+            "cache_read": 0.625,
+            "input_image": 4
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": false,
@@ -8292,12 +8521,29 @@
             "input": 1,
             "output": 4,
             "cache_read": 0.25
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
           "prices": {
             "input": 1,
             "output": 4
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 3.5,
+            "output": 14,
+            "cache_read": 0.875
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -8707,12 +8953,29 @@
             "input": 0.55,
             "output": 2.2,
             "cache_read": 0.138
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
           "prices": {
             "input": 0.55,
             "output": 2.2
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 2,
+            "output": 8,
+            "cache_read": 0.5
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
           }
         }
       },
@@ -10794,7 +11057,7 @@
     {
       "provider": "google",
       "id": "deep-research-pro-preview-12-2025",
-      "mode": "image_generation",
+      "mode": "chat",
       "name": "deep-research-pro-preview-12-2025",
       "aliases": [],
       "match": {
@@ -10806,8 +11069,6 @@
       "prices": {
         "input": 2,
         "output": 12,
-        "output_image": 120,
-        "per_image": 0.134,
         "per_web_search": 0.035
       },
       "modes": {
@@ -10828,19 +11089,20 @@
         "structured_output": true,
         "web_search": true,
         "input_modalities": [
+          "audio",
           "image",
-          "text"
+          "text",
+          "video"
         ],
         "output_modalities": [
-          "image",
           "text"
         ],
         "temperature": null,
         "prompt_caching": true,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": 65536,
-        "max_output_tokens": 32768,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": null,
         "release_date": null,
         "endpoints": [
@@ -11357,7 +11619,8 @@
         "input": 0.5,
         "output": 2,
         "input_audio": 3,
-        "output_audio": 12
+        "output_audio": 12,
+        "input_image": 3
       },
       "modes": {},
       "region_uplift": {},
@@ -14850,7 +15113,7 @@
       "prices": {
         "input": 1,
         "output": 5,
-        "reasoning": 10,
+        "reasoning": 5,
         "cache_read": 0.1,
         "input_audio": 1,
         "per_web_search": 0.014
@@ -14918,7 +15181,7 @@
       "modes": {},
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": true,
@@ -14938,8 +15201,8 @@
         "prompt_caching": null,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": null,
-        "max_output_tokens": null,
+        "max_input_tokens": 131072,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": null,
         "release_date": null,
         "endpoints": [
@@ -19265,6 +19528,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-09-29T18:37:30.280Z",
-  "version": "2026-09-29T18:37:30.280Z-35e66deef1e6"
+  "generated_at": "2026-10-01T03:33:22.062Z",
+  "version": "2026-10-01T03:33:22.062Z-ab3876320510"
 }
