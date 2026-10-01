@@ -345,8 +345,22 @@ it('retains flat and sized xAI image charges', () => {
     '1024x1024/low': 0.04,
   });
 });
-it('publishes exact rows before dated suffix matches', async () => {
-  const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
+it('publishes exact rows before dated suffix matches', () => {
+  const d = mergeSources(
+    {
+      'gpt-4o': {
+        litellm_provider: 'openai',
+        input_cost_per_token: 2.5e-6,
+        output_cost_per_token: 10e-6,
+      },
+      'gpt-4o-2024-05-13': {
+        litellm_provider: 'openai',
+        input_cost_per_token: 5e-6,
+        output_cost_per_token: 15e-6,
+      },
+    },
+    {},
+  );
   const base = row(d, 'openai', 'gpt-4o'),
     dated = row(d, 'openai', 'gpt-4o-2024-05-13');
   expect(base.match.dated_suffix).toBe(true);

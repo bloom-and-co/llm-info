@@ -6,7 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from llm_info import LlmInfo, MemoryStore
 
 root = Path(__file__).resolve().parents[2]
-data = json.loads((root / "data/llm-info.json").read_text())
+data = json.loads((root / "tests/fixtures/llm-info-snapshot.json").read_text())
 fixtures = json.loads((root / "tests/fixtures/responses.json").read_text())
 fixtures += [
     {

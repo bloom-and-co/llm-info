@@ -5,7 +5,7 @@ import { createLlmInfo, memoryStore } from '../src/index.ts';
 
 it('matches Python totals and warnings for every fixture', async () => {
   vi.resetModules();
-  const data = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
+  const data = JSON.parse(await readFile('tests/fixtures/llm-info-snapshot.json', 'utf8'));
   const fixtures = JSON.parse(await readFile('tests/fixtures/responses.json', 'utf8'));
   fixtures.push(
     {

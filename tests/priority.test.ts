@@ -2,7 +2,7 @@ import { it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { createLlmInfo, memoryStore } from '../src/index.ts';
 import { calculate } from '../src/engine.ts';
-const data = JSON.parse(readFileSync('data/llm-info.json', 'utf8'));
+const data = JSON.parse(readFileSync('tests/fixtures/llm-info-snapshot.json', 'utf8'));
 async function client(models = data.models) {
   const info = createLlmInfo({
     store: memoryStore(),

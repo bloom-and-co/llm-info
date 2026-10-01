@@ -20,7 +20,7 @@ it('applies base tier ratios to modes without their own tiers', () => {
   ).toBeCloseTo(2.52, 9);
 });
 it('charges long-context production modes at hand-computed rates', () => {
-  const data = JSON.parse(readFileSync('data/llm-info.json', 'utf8'));
+  const data = JSON.parse(readFileSync('tests/fixtures/llm-info-snapshot.json', 'utf8'));
   const get = (provider: string, id: string) =>
     data.models.find((m: any) => m.provider === provider && m.id === id);
   const usage = { input_tokens: 400000, output_tokens: 10000 };
@@ -167,7 +167,7 @@ it('publishes only positive tier overrides', () => {
   expect(d.models[0].prices.tiers).toBeUndefined();
 });
 it('counts Imagen request counts and assumes one image when absent', async () => {
-  const data = JSON.parse(readFileSync('data/llm-info.json', 'utf8'));
+  const data = JSON.parse(readFileSync('tests/fixtures/llm-info-snapshot.json', 'utf8'));
   const info = createLlmInfo({
     store: memoryStore(),
     fetch: async () => new Response(JSON.stringify(data)),

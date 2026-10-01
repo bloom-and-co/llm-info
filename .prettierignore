@@ -1,0 +1,2 @@
+# Preserve the frozen price table verbatim in the builder output format.
+tests/fixtures/llm-info-snapshot.json

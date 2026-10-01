@@ -88,3 +88,5 @@ MIT licensed. See [NOTICE](NOTICE) for attribution.
 ## Development
 
 Run `npm ci --ignore-scripts`, `npm test`, and `uv run --with pytest pytest -q python/tests` before a change. `npm run build:data` refreshes the checked-in price table from LiteLLM and models.dev. The parity fuzz harness lives in `scripts/`; it writes generated cases to a temporary file and leaves source files untouched.
+
+Price calculations, model-specific behavior, and Python/TypeScript parity tests use the frozen `tests/fixtures/llm-info-snapshot.json`, including mocked client fetches. Schema and published-data integrity tests still read the live `data/llm-info.json`. To refresh the snapshot intentionally, run `npm run build:data`, then `cp data/llm-info.json tests/fixtures/llm-info-snapshot.json`, review and update the fixed expectations, and run both test suites. The snapshot is excluded from Prettier to preserve the builder's output verbatim; scheduled price updates do not refresh it.

@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import { it, expect } from 'vitest';
 import { calculate } from '../src/engine.ts';
 
-const data = JSON.parse(readFileSync(new URL('../data/llm-info.json', import.meta.url), 'utf8'));
+const data = JSON.parse(
+  readFileSync(new URL('./fixtures/llm-info-snapshot.json', import.meta.url), 'utf8'),
+);
 const model = (id: string) =>
   data.models.find((m: any) => m.provider === 'anthropic' && m.id === id);
 

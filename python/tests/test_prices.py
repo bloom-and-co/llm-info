@@ -10,7 +10,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from llm_info import FileStore, LlmInfo, MemoryStore, PricesNotLoadedError
 
 DATA = json.loads(
-    (Path(__file__).resolve().parents[2] / "data/llm-info.json").read_text()
+    (
+        Path(__file__).resolve().parents[2] / "tests/fixtures/llm-info-snapshot.json"
+    ).read_text()
 )
 
 
@@ -77,9 +79,15 @@ def test_pre_46_us_residency_still_warns_without_uplift():
     assert result["warnings"] == ["missing_region_uplift"]
 
 
-def test_schema_and_own_engine():
-    assert DATA["schema"] == 2
-    assert len({m["provider"] for m in DATA["models"]}) == 4
+def test_live_data_schema():
+    data = json.loads(
+        (Path(__file__).resolve().parents[2] / "data/llm-info.json").read_text()
+    )
+    assert data["schema"] == 2
+    assert len({m["provider"] for m in data["models"]}) == 4
+
+
+def test_own_engine():
     p = make()
     p.load()
     assert p.calc("openai", "gpt-6-luna", {"input_tokens": 1000})[
@@ -452,24 +460,6 @@ def test_image_video_and_warnings():
     )
 
 
-def expected_usd(f):
-    """Live-priced fixtures state token counts so a price refresh cannot break them."""
-    if "expectedFromPrices" not in f:
-        return Decimal(str(f["expected"]))
-    row = next(
-        m
-        for m in DATA["models"]
-        if m["provider"] == f["provider"] and m["id"] == f["model"]
-    )
-    return sum(
-        (
-            Decimal(tokens) * Decimal(str(row["prices"][key])) / Decimal(1_000_000)
-            for key, tokens in f["expectedFromPrices"].items()
-        ),
-        Decimal(0),
-    )
-
-
 def test_all_response_fixtures():
     p = make()
     p.load()
@@ -486,9 +476,9 @@ def test_all_response_fixtures():
             f.get("apiFlavor"),
             model=f.get("model"),
         )
-        assert abs(cost["total_usd"] - expected_usd(f)) < Decimal("0.000000001"), f[
-            "name"
-        ]
+        assert abs(cost["total_usd"] - Decimal(str(f["expected"]))) < Decimal(
+            "0.000000001"
+        ), f["name"]
         for key, value in f.get("expectedUsage", {}).items():
             assert cost["usage"].get(key) == value, f["name"]
         for warning in f.get("expectedWarnings", []):
@@ -795,14 +785,10 @@ def test_openai_compatible_output_recovers_total_gap():
 def test_requested_model_override_controls_reasoning_and_pricing():
     p = make()
     p.load()
-    for model in ["gemini-robotics-er-2-preview", "gemini-omni-flash-preview"]:
-        # Live-priced models: read prices so a price refresh cannot break the test.
-        prices = next(
-            m["prices"]
-            for m in DATA["models"]
-            if m["provider"] == "google" and m["id"] == model
-        )
-        output_price, reasoning_price = prices["output"], prices["reasoning"]
+    for model, output_price, reasoning_price in [
+        ("gemini-robotics-er-2-preview", 5, 10),
+        ("gemini-omni-flash-preview", 17.5, 9),
+    ]:
         for model_version in [None, "unknown-response-model"]:
             response = {
                 "modelVersion": model_version,
@@ -889,8 +875,7 @@ def test_included_reasoning_uses_disjoint_output_bucket():
 def test_task6_long_context_invalid_usage_and_matching():
     from llm_info._engine import calculate, find_model
 
-    data = json.loads(Path("data/llm-info.json").read_text())
-    rows = data["models"]
+    rows = DATA["models"]
 
     def model(provider, name):
         return next(m for m in rows if m["provider"] == provider and m["id"] == name)
