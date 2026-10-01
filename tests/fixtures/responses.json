@@ -304,7 +304,7 @@
       }
     },
     "expectedUsage": { "output_reasoning_tokens": 20 },
-    "expected": 0.00035
+    "expectedFromPrices": { "input": 100, "output": 10, "reasoning": 20 }
   },
   {
     "name": "xai_image_default",

@@ -256,7 +256,17 @@ it('prices every response fixture', async () => {
   const p = client();
   await p.load();
   const fixtures = JSON.parse(await readFile('tests/fixtures/responses.json', 'utf8'));
-  for (const f of fixtures) expect(p.fromResponse(f)?.totalUsd, f.name).toBeCloseTo(f.expected, 8);
+  // Live-priced fixtures state token counts so a price refresh cannot break them.
+  const expectedUsd = (f: any) => {
+    if (f.expectedFromPrices === undefined) return f.expected;
+    const row = data.models.find((m: any) => m.provider === f.provider && m.id === f.model);
+    return Object.entries(f.expectedFromPrices).reduce(
+      (sum, [key, tokens]: [string, any]) => sum + (tokens * row.prices[key]) / 1e6,
+      0,
+    );
+  };
+  for (const f of fixtures)
+    expect(p.fromResponse(f)?.totalUsd, f.name).toBeCloseTo(expectedUsd(f), 8);
   for (const f of fixtures)
     if (f.expectedUsage) expect(p.fromResponse(f)?.usage, f.name).toMatchObject(f.expectedUsage);
   for (const f of fixtures)

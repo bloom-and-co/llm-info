@@ -452,6 +452,24 @@ def test_image_video_and_warnings():
     )
 
 
+def expected_usd(f):
+    """Live-priced fixtures state token counts so a price refresh cannot break them."""
+    if "expectedFromPrices" not in f:
+        return Decimal(str(f["expected"]))
+    row = next(
+        m
+        for m in DATA["models"]
+        if m["provider"] == f["provider"] and m["id"] == f["model"]
+    )
+    return sum(
+        (
+            Decimal(tokens) * Decimal(str(row["prices"][key])) / Decimal(1_000_000)
+            for key, tokens in f["expectedFromPrices"].items()
+        ),
+        Decimal(0),
+    )
+
+
 def test_all_response_fixtures():
     p = make()
     p.load()
@@ -468,9 +486,9 @@ def test_all_response_fixtures():
             f.get("apiFlavor"),
             model=f.get("model"),
         )
-        assert abs(cost["total_usd"] - Decimal(str(f["expected"]))) < Decimal(
-            "0.000000001"
-        ), f["name"]
+        assert abs(cost["total_usd"] - expected_usd(f)) < Decimal("0.000000001"), f[
+            "name"
+        ]
         for key, value in f.get("expectedUsage", {}).items():
             assert cost["usage"].get(key) == value, f["name"]
         for warning in f.get("expectedWarnings", []):
@@ -777,10 +795,14 @@ def test_openai_compatible_output_recovers_total_gap():
 def test_requested_model_override_controls_reasoning_and_pricing():
     p = make()
     p.load()
-    for model, output_price, reasoning_price in [
-        ("gemini-robotics-er-2-preview", 5, 10),
-        ("gemini-omni-flash-preview", 17.5, 9),
-    ]:
+    for model in ["gemini-robotics-er-2-preview", "gemini-omni-flash-preview"]:
+        # Live-priced models: read prices so a price refresh cannot break the test.
+        prices = next(
+            m["prices"]
+            for m in DATA["models"]
+            if m["provider"] == "google" and m["id"] == model
+        )
+        output_price, reasoning_price = prices["output"], prices["reasoning"]
         for model_version in [None, "unknown-response-model"]:
             response = {
                 "modelVersion": model_version,
