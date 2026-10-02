@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-02T01:06:59.957Z","ref":"W/\"382d2fced713ffbb2fb48a5a82e17e5f7d9de6c327af890710b206410ec26041\"","latest_new_model_at":"2026-10-01T03:33:21.781Z"},
-    "models_dev": {"fetched_at":"2026-10-02T01:07:00.098Z","etag":"W/\"a39b13bb1218fe92326071ca3f645523\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
+    "litellm": {"fetched_at":"2026-10-02T18:36:46.961Z","ref":"W/\"76d76f50b2f430b7077ff06dd64082d62edeb2efc27ec1f83d6b45912dbd37e0\"","latest_new_model_at":"2026-10-01T03:33:21.781Z"},
+    "models_dev": {"fetched_at":"2026-10-02T18:36:47.145Z","etag":"W/\"81f8b4433bbcd07c4a2912b2d1abc32b\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
   },
   "models": [
     {
@@ -19519,6 +19519,11 @@
     },
     {
       "provider": "x-ai",
+      "model": "grok-imagine-video-1.5-lite",
+      "reason": "missing_required_price"
+    },
+    {
+      "provider": "x-ai",
       "model": "grok-voice-transcribe-1.0",
       "reason": "missing_required_price"
     },
@@ -19528,6 +19533,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-02T01:07:00.252Z",
-  "version": "2026-10-02T01:07:00.252Z-da7b6f6d674e"
+  "generated_at": "2026-10-02T18:36:47.257Z",
+  "version": "2026-10-02T18:36:47.257Z-f1683d4df771"
 }
