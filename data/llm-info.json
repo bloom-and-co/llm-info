@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-01T03:33:21.781Z","ref":"W/\"4994adb0a045658b12645c13a0d150715637a72e2634f80b37eae6152ac228c8\"","latest_new_model_at":"2026-10-01T03:33:21.781Z"},
-    "models_dev": {"fetched_at":"2026-10-01T03:33:21.973Z","etag":"W/\"a69e5608d8acda217c0160a95657d17a\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
+    "litellm": {"fetched_at":"2026-10-02T01:06:59.957Z","ref":"W/\"382d2fced713ffbb2fb48a5a82e17e5f7d9de6c327af890710b206410ec26041\"","latest_new_model_at":"2026-10-01T03:33:21.781Z"},
+    "models_dev": {"fetched_at":"2026-10-02T01:07:00.098Z","etag":"W/\"a39b13bb1218fe92326071ca3f645523\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
   },
   "models": [
     {
@@ -11764,7 +11764,7 @@
       "modes": {},
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": true,
@@ -13968,7 +13968,7 @@
           "audio"
         ],
         "temperature": null,
-        "prompt_caching": null,
+        "prompt_caching": true,
         "computer_use": null,
         "context_window": null,
         "max_input_tokens": 8192,
@@ -14035,7 +14035,7 @@
           "audio"
         ],
         "temperature": null,
-        "prompt_caching": null,
+        "prompt_caching": true,
         "computer_use": null,
         "context_window": null,
         "max_input_tokens": 8192,
@@ -14069,7 +14069,7 @@
       "modes": {},
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": true,
@@ -15591,7 +15591,7 @@
         "prompt_caching": false,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": 1048576,
+        "max_input_tokens": 131072,
         "max_output_tokens": 65536,
         "knowledge_cutoff": null,
         "release_date": null,
@@ -19528,6 +19528,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-01T03:33:22.062Z",
-  "version": "2026-10-01T03:33:22.062Z-ab3876320510"
+  "generated_at": "2026-10-02T01:07:00.252Z",
+  "version": "2026-10-02T01:07:00.252Z-da7b6f6d674e"
 }
