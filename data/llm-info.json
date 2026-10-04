@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-02T18:36:46.961Z","ref":"W/\"76d76f50b2f430b7077ff06dd64082d62edeb2efc27ec1f83d6b45912dbd37e0\"","latest_new_model_at":"2026-10-01T03:33:21.781Z"},
-    "models_dev": {"fetched_at":"2026-10-02T18:36:47.145Z","etag":"W/\"81f8b4433bbcd07c4a2912b2d1abc32b\"","latest_new_model_at":"2026-09-29T18:37:30.167Z"}
+    "litellm": {"fetched_at":"2026-10-04T01:35:29.099Z","ref":"W/\"7e62c145ca7abe9e6fe94bb8927100ac32f9040c1195793ae03f69840199ad64\"","latest_new_model_at":"2026-10-04T01:35:29.099Z"},
+    "models_dev": {"fetched_at":"2026-10-04T01:35:29.239Z","etag":"W/\"5573e71bc5702246215abdcab6919b12\"","latest_new_model_at":"2026-10-04T01:35:29.239Z"}
   },
   "models": [
     {
@@ -13448,8 +13448,8 @@
         "prompt_caching": null,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": null,
-        "max_output_tokens": null,
+        "max_input_tokens": 98304,
+        "max_output_tokens": 32768,
         "knowledge_cutoff": null,
         "release_date": null,
         "endpoints": [
@@ -13494,8 +13494,8 @@
         "prompt_caching": null,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": null,
-        "max_output_tokens": null,
+        "max_input_tokens": 131072,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": null,
         "release_date": null,
         "endpoints": [
@@ -19413,6 +19413,55 @@
     },
     {
       "provider": "x-ai",
+      "id": "grok-imagine-video-1.5-lite",
+      "mode": "video_generation",
+      "name": "Grok Imagine Video 1.5 Lite",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "grok-imagine-video-1.5-lite"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "per_video_second": {
+          "default": 0.02,
+          "1080p": 0.14,
+          "480p": 0.02,
+          "720p": 0.03
+        }
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "image",
+          "pdf",
+          "text"
+        ],
+        "output_modalities": [
+          "video"
+        ],
+        "temperature": false,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": 1024,
+        "max_input_tokens": null,
+        "max_output_tokens": 0,
+        "knowledge_cutoff": null,
+        "release_date": "2026-10-01",
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "x-ai",
       "id": "grok-imagine-video-1.5-preview",
       "mode": "video_generation",
       "name": "grok-imagine-video-1.5-preview",
@@ -19519,11 +19568,6 @@
     },
     {
       "provider": "x-ai",
-      "model": "grok-imagine-video-1.5-lite",
-      "reason": "missing_required_price"
-    },
-    {
-      "provider": "x-ai",
       "model": "grok-voice-transcribe-1.0",
       "reason": "missing_required_price"
     },
@@ -19533,6 +19577,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-02T18:36:47.257Z",
-  "version": "2026-10-02T18:36:47.257Z-f1683d4df771"
+  "generated_at": "2026-10-04T01:35:29.322Z",
+  "version": "2026-10-04T01:35:29.322Z-1cb26a789f9f"
 }
