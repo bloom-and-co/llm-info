@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-04T01:35:29.099Z","ref":"W/\"7e62c145ca7abe9e6fe94bb8927100ac32f9040c1195793ae03f69840199ad64\"","latest_new_model_at":"2026-10-04T01:35:29.099Z"},
-    "models_dev": {"fetched_at":"2026-10-04T01:35:29.239Z","etag":"W/\"5573e71bc5702246215abdcab6919b12\"","latest_new_model_at":"2026-10-04T01:35:29.239Z"}
+    "litellm": {"fetched_at":"2026-10-06T18:37:02.922Z","ref":"W/\"8d0e11e4f8efdca9727f41cd4325a698d30a08f37a2beb3658d915646172c9fa\"","latest_new_model_at":"2026-10-06T18:37:02.922Z"},
+    "models_dev": {"fetched_at":"2026-10-06T18:37:03.165Z","etag":"W/\"6770aebe416145d4286d08b11308a07a\"","latest_new_model_at":"2026-10-04T01:35:29.239Z"}
   },
   "models": [
     {
@@ -10971,7 +10971,7 @@
         "prompt_caching": false,
         "computer_use": null,
         "context_window": 131072,
-        "max_input_tokens": 131072,
+        "max_input_tokens": 1048576,
         "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
         "release_date": "2026-04-21",
@@ -11043,7 +11043,7 @@
         "prompt_caching": false,
         "computer_use": null,
         "context_window": 131072,
-        "max_input_tokens": 131072,
+        "max_input_tokens": 1048576,
         "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
         "release_date": "2026-04-21",
@@ -11464,7 +11464,8 @@
         "release_date": "2025-08-26",
         "endpoints": [
           "/v1/chat/completions",
-          "/v1/completions",
+          "/v1/images/generations",
+          "/v1/images/edits",
           "/v1/batch"
         ]
       }
@@ -12321,7 +12322,8 @@
         "release_date": "2026-05-28",
         "endpoints": [
           "/v1/chat/completions",
-          "/v1/completions",
+          "/v1/images/generations",
+          "/v1/images/edits",
           "/v1/batch"
         ]
       }
@@ -12415,7 +12417,8 @@
         "release_date": "2025-11-20",
         "endpoints": [
           "/v1/chat/completions",
-          "/v1/completions",
+          "/v1/images/generations",
+          "/v1/images/edits",
           "/v1/batch"
         ]
       }
@@ -12574,7 +12577,8 @@
         "release_date": "2026-05-28",
         "endpoints": [
           "/v1/chat/completions",
-          "/v1/completions",
+          "/v1/images/generations",
+          "/v1/images/edits",
           "/v1/batch"
         ]
       }
@@ -12639,7 +12643,8 @@
         "release_date": "2026-02-26",
         "endpoints": [
           "/v1/chat/completions",
-          "/v1/completions",
+          "/v1/images/generations",
+          "/v1/images/edits",
           "/v1/batch"
         ]
       }
@@ -12795,7 +12800,8 @@
         "release_date": "2026-06-30",
         "endpoints": [
           "/v1/chat/completions",
-          "/v1/completions",
+          "/v1/images/generations",
+          "/v1/images/edits",
           "/v1/batch"
         ]
       }
@@ -14804,6 +14810,67 @@
     },
     {
       "provider": "google",
+      "id": "gemini-nano-banana-2.1",
+      "mode": "image_generation",
+      "name": "gemini-nano-banana-2.1",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gemini-nano-banana-2.1"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 1.5,
+        "output": 7.5,
+        "output_image": 30,
+        "per_image": 0.0336,
+        "per_web_search": 0.014
+      },
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 0.75,
+            "output": 3.75
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text",
+          "video"
+        ],
+        "output_modalities": [
+          "image",
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": false,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 131072,
+        "max_output_tokens": 32768,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/images/generations",
+          "/v1/images/edits",
+          "/v1/batch"
+        ]
+      }
+    },
+    {
+      "provider": "google",
       "id": "gemini-omni-1.1-flash",
       "mode": "chat",
       "name": "gemini-omni-1.1-flash",
@@ -15796,8 +15863,7 @@
         "release_date": null,
         "endpoints": [
           "/v1/chat/completions",
-          "/v1/completions",
-          "/v1/batch"
+          "/v1/images/edits"
         ]
       }
     },
@@ -19577,6 +19643,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-04T01:35:29.322Z",
-  "version": "2026-10-04T01:35:29.322Z-1cb26a789f9f"
+  "generated_at": "2026-10-06T18:37:03.257Z",
+  "version": "2026-10-06T18:37:03.257Z-6964aeb40b35"
 }
