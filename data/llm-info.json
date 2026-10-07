@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-06T18:37:02.922Z","ref":"W/\"8d0e11e4f8efdca9727f41cd4325a698d30a08f37a2beb3658d915646172c9fa\"","latest_new_model_at":"2026-10-06T18:37:02.922Z"},
-    "models_dev": {"fetched_at":"2026-10-06T18:37:03.165Z","etag":"W/\"6770aebe416145d4286d08b11308a07a\"","latest_new_model_at":"2026-10-04T01:35:29.239Z"}
+    "litellm": {"fetched_at":"2026-10-07T01:10:18.718Z","ref":"W/\"ef604892ba8b197d233ab1d5a58b4c4a25f8a6875291851e0b2fb37d5d35d257\"","latest_new_model_at":"2026-10-06T18:37:02.922Z"},
+    "models_dev": {"fetched_at":"2026-10-07T01:10:18.937Z","etag":"W/\"68bf9cb5477b3b0cc8afb869c0719a8b\"","latest_new_model_at":"2026-10-04T01:35:29.239Z"}
   },
   "models": [
     {
@@ -12288,7 +12288,8 @@
           "prices": {
             "input": 1,
             "output": 6,
-            "cache_read": 0.1
+            "cache_read": 0.1,
+            "output_image": 60
           }
         }
       },
@@ -12530,6 +12531,13 @@
         "per_web_search": 0.014
       },
       "modes": {
+        "priority": {
+          "prices": {
+            "input": 0.9,
+            "output": 5.4,
+            "cache_read": 0.09
+          }
+        },
         "flex": {
           "prices": {
             "input": 0.25,
@@ -12541,7 +12549,8 @@
           "prices": {
             "input": 0.25,
             "output": 1.5,
-            "cache_read": 0.025
+            "cache_read": 0.025,
+            "output_image": 30
           }
         }
       },
@@ -12754,6 +12763,13 @@
         "per_image": 0.0336
       },
       "modes": {
+        "priority": {
+          "prices": {
+            "input": 0.45,
+            "output": 2.7,
+            "cache_read": 0.045
+          }
+        },
         "flex": {
           "prices": {
             "input": 0.125,
@@ -14823,15 +14839,24 @@
       "prices": {
         "input": 1.5,
         "output": 7.5,
+        "cache_read": 0.15,
         "output_image": 30,
         "per_image": 0.0336,
         "per_web_search": 0.014
       },
       "modes": {
+        "priority": {
+          "prices": {
+            "input": 2.7,
+            "output": 13.5,
+            "cache_read": 0.27
+          }
+        },
         "batch": {
           "prices": {
             "input": 0.75,
-            "output": 3.75
+            "output": 3.75,
+            "cache_read": 0.075
           }
         }
       },
@@ -14854,7 +14879,7 @@
           "text"
         ],
         "temperature": null,
-        "prompt_caching": false,
+        "prompt_caching": true,
         "computer_use": null,
         "context_window": null,
         "max_input_tokens": 131072,
@@ -19643,6 +19668,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-06T18:37:03.257Z",
-  "version": "2026-10-06T18:37:03.257Z-6964aeb40b35"
+  "generated_at": "2026-10-07T01:10:19.051Z",
+  "version": "2026-10-07T01:10:19.051Z-cbebfbad9388"
 }
