@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-08T01:09:51.867Z","ref":"W/\"51f3b28e06a999014b06fd6fc70b978bcd6a7c79f15fd40f82bfcc99c2d9380f\"","latest_new_model_at":"2026-10-08T01:09:51.867Z"},
-    "models_dev": {"fetched_at":"2026-10-08T01:09:52.022Z","etag":"W/\"fef635e7e2f481557a319656face65f8\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
+    "litellm": {"fetched_at":"2026-10-08T06:51:18.964Z","ref":"W/\"c80dde987318cd96085d20077df0868e2b4fbe0b3a8cceec9e29b4e4d5585f0b\"","latest_new_model_at":"2026-10-08T01:09:51.867Z"},
+    "models_dev": {"fetched_at":"2026-10-08T06:51:19.115Z","etag":"W/\"05addd6cbaf3dd2b9233d742921af093\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
   },
   "models": [
     {
@@ -6544,7 +6544,8 @@
         "endpoints": [
           "/v1/chat/completions",
           "/v1/batch",
-          "/v1/responses"
+          "/v1/responses",
+          "/v1/decisions"
         ]
       }
     },
@@ -19743,6 +19744,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-08T01:09:52.134Z",
-  "version": "2026-10-08T01:09:52.134Z-cead001f6b66"
+  "generated_at": "2026-10-08T06:51:19.250Z",
+  "version": "2026-10-08T06:51:19.250Z-b46ab34f8c90"
 }
