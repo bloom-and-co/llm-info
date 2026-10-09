@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-08T06:51:18.964Z","ref":"W/\"c80dde987318cd96085d20077df0868e2b4fbe0b3a8cceec9e29b4e4d5585f0b\"","latest_new_model_at":"2026-10-08T01:09:51.867Z"},
-    "models_dev": {"fetched_at":"2026-10-08T06:51:19.115Z","etag":"W/\"05addd6cbaf3dd2b9233d742921af093\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
+    "litellm": {"fetched_at":"2026-10-09T01:11:51.492Z","ref":"W/\"9d9eb1796a1468bc0aaad0e67ded08b1b9c2c0a968c1f48f80929b8a3c490cd5\"","latest_new_model_at":"2026-10-08T01:09:51.867Z"},
+    "models_dev": {"fetched_at":"2026-10-09T01:11:51.761Z","etag":"W/\"e8809531aae837ff4a488dd3f269a0d2\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
   },
   "models": [
     {
@@ -9751,7 +9751,7 @@
         "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
-        "web_search": null,
+        "web_search": true,
         "input_modalities": [
           "image",
           "pdf",
@@ -19744,6 +19744,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-08T06:51:19.250Z",
-  "version": "2026-10-08T06:51:19.250Z-b46ab34f8c90"
+  "generated_at": "2026-10-09T01:11:51.850Z",
+  "version": "2026-10-09T01:11:51.850Z-f3d6e164332b"
 }
