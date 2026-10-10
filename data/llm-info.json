@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-09T01:11:51.492Z","ref":"W/\"9d9eb1796a1468bc0aaad0e67ded08b1b9c2c0a968c1f48f80929b8a3c490cd5\"","latest_new_model_at":"2026-10-08T01:09:51.867Z"},
-    "models_dev": {"fetched_at":"2026-10-09T01:11:51.761Z","etag":"W/\"e8809531aae837ff4a488dd3f269a0d2\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
+    "litellm": {"fetched_at":"2026-10-10T01:09:48.572Z","ref":"W/\"6544b393fc7c1636e0b0f32fbb9458ecb3a8c5b7e3135544ae3801d68fa98d0b\"","latest_new_model_at":"2026-10-10T01:09:48.572Z"},
+    "models_dev": {"fetched_at":"2026-10-10T01:09:48.797Z","etag":"W/\"351c480fa7ff0d6047a63b004e7bd6d7\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
   },
   "models": [
     {
@@ -8233,6 +8233,48 @@
     },
     {
       "provider": "openai",
+      "id": "gpt-rosalind-discovery",
+      "mode": "chat",
+      "name": "gpt-rosalind-discovery",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-rosalind-discovery"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 5,
+        "output": 25,
+        "cache_read": 0.5
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "openai",
       "id": "gpt-rosalind-research",
       "mode": "chat",
       "name": "gpt-rosalind-research",
@@ -10647,18 +10689,6 @@
         "cache_read": 0.3,
         "cache_write": 3.75,
         "cache_write_1h": 6,
-        "tiers": [
-          {
-            "above_input_tokens": 200000,
-            "prices": {
-              "input": 6,
-              "output": 22.5,
-              "cache_read": 0.6,
-              "cache_write": 7.5,
-              "cache_write_1h": 12
-            }
-          }
-        ],
         "per_web_search": 0.01
       },
       "modes": {
@@ -10667,18 +10697,7 @@
             "input": 1.5,
             "output": 7.5,
             "cache_read": 0.15,
-            "cache_write": 1.875,
-            "tiers": [
-              {
-                "above_input_tokens": 200000,
-                "prices": {
-                  "input": 3,
-                  "output": 11.25,
-                  "cache_read": 0.3,
-                  "cache_write": 3.75
-                }
-              }
-            ]
+            "cache_write": 1.875
           }
         }
       },
@@ -10703,7 +10722,7 @@
         "prompt_caching": true,
         "computer_use": true,
         "context_window": 200000,
-        "max_input_tokens": 1000000,
+        "max_input_tokens": 200000,
         "max_output_tokens": 64000,
         "knowledge_cutoff": "2025-07-31",
         "release_date": "2025-09-29",
@@ -10728,18 +10747,6 @@
         "cache_read": 0.3,
         "cache_write": 3.75,
         "cache_write_1h": 6,
-        "tiers": [
-          {
-            "above_input_tokens": 200000,
-            "prices": {
-              "input": 6,
-              "output": 22.5,
-              "cache_read": 0.6,
-              "cache_write": 7.5,
-              "cache_write_1h": 12
-            }
-          }
-        ],
         "per_web_search": 0.01
       },
       "modes": {
@@ -10748,18 +10755,7 @@
             "input": 1.5,
             "output": 7.5,
             "cache_read": 0.15,
-            "cache_write": 1.875,
-            "tiers": [
-              {
-                "above_input_tokens": 200000,
-                "prices": {
-                  "input": 3,
-                  "output": 11.25,
-                  "cache_read": 0.3,
-                  "cache_write": 3.75
-                }
-              }
-            ]
+            "cache_write": 1.875
           }
         }
       },
@@ -10784,7 +10780,7 @@
         "prompt_caching": true,
         "computer_use": true,
         "context_window": 200000,
-        "max_input_tokens": 1000000,
+        "max_input_tokens": 200000,
         "max_output_tokens": 64000,
         "knowledge_cutoff": "2025-07-31",
         "release_date": "2025-09-29",
@@ -19744,6 +19740,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-09T01:11:51.850Z",
-  "version": "2026-10-09T01:11:51.850Z-f3d6e164332b"
+  "generated_at": "2026-10-10T01:09:48.918Z",
+  "version": "2026-10-10T01:09:48.918Z-590983f1f08e"
 }
