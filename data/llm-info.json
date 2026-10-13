@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-13T01:13:21.761Z","ref":"W/\"d149a412c97d9f8728f4a5df62f78311ccaf57f0861826f0f3de71dee5843732\"","latest_new_model_at":"2026-10-13T01:13:21.761Z"},
-    "models_dev": {"fetched_at":"2026-10-13T01:13:22.025Z","etag":"W/\"fb82540234e63bf70d6b79bbe19d17a0\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
+    "litellm": {"fetched_at":"2026-10-13T18:39:25.153Z","ref":"W/\"fae974aef4ae7887d32a196b75916d14919095be8b09da3a544c606b5e000ab8\"","latest_new_model_at":"2026-10-13T18:39:25.153Z"},
+    "models_dev": {"fetched_at":"2026-10-13T18:39:25.680Z","etag":"W/\"9393fb327a59dde2f8510ae50bc555a8\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
   },
   "models": [
     {
@@ -14541,6 +14541,166 @@
     },
     {
       "provider": "google",
+      "id": "gemini-4-argon",
+      "mode": "chat",
+      "name": "Gemini 4 Argon",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gemini-4-argon"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2,
+        "output": 10,
+        "reasoning": 10,
+        "cache_read": 0.1,
+        "input_audio": 2,
+        "per_web_search": 0.014
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 3.6,
+            "output": 18,
+            "cache_read": 0.18,
+            "input_audio": 3.6
+          }
+        },
+        "flex": {
+          "prices": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.05
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.05,
+            "input_audio": 1
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "audio",
+          "image",
+          "pdf",
+          "text",
+          "video"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": true,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": 1048576,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 32768,
+        "knowledge_cutoff": "2026-03",
+        "release_date": "2026-10-13",
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/completions"
+        ]
+      }
+    },
+    {
+      "provider": "google",
+      "id": "gemini-4-argon-cyber-permissive",
+      "mode": "chat",
+      "name": "gemini-4-argon-cyber-permissive",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gemini-4-argon-cyber-permissive"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 4,
+        "output": 20,
+        "reasoning": 20,
+        "cache_read": 0.2,
+        "input_audio": 4,
+        "per_web_search": 0.014
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 7.2,
+            "output": 36,
+            "cache_read": 0.36,
+            "input_audio": 7.2
+          }
+        },
+        "flex": {
+          "prices": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "input_audio": 2
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "audio",
+          "image",
+          "text",
+          "video"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 1048576,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/completions",
+          "/v1/batch"
+        ]
+      }
+    },
+    {
+      "provider": "google",
       "id": "gemini-embedding-001",
       "mode": "embedding",
       "name": "Gemini Embedding 001",
@@ -20034,6 +20194,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-13T01:13:22.160Z",
-  "version": "2026-10-13T01:13:22.160Z-61852bc3f40f"
+  "generated_at": "2026-10-13T18:39:25.792Z",
+  "version": "2026-10-13T18:39:25.792Z-309619a6e810"
 }
