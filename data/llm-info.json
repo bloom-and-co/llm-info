@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-10T01:09:48.572Z","ref":"W/\"6544b393fc7c1636e0b0f32fbb9458ecb3a8c5b7e3135544ae3801d68fa98d0b\"","latest_new_model_at":"2026-10-10T01:09:48.572Z"},
-    "models_dev": {"fetched_at":"2026-10-10T01:09:48.797Z","etag":"W/\"351c480fa7ff0d6047a63b004e7bd6d7\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
+    "litellm": {"fetched_at":"2026-10-13T01:13:21.761Z","ref":"W/\"d149a412c97d9f8728f4a5df62f78311ccaf57f0861826f0f3de71dee5843732\"","latest_new_model_at":"2026-10-13T01:13:21.761Z"},
+    "models_dev": {"fetched_at":"2026-10-13T01:13:22.025Z","etag":"W/\"fb82540234e63bf70d6b79bbe19d17a0\"","latest_new_model_at":"2026-10-08T01:09:52.022Z"}
   },
   "models": [
     {
@@ -125,6 +125,52 @@
       "match": {
         "exact": [
           "computer-use-preview"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 3,
+        "output": 12
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": false,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 8192,
+        "max_output_tokens": 1024,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "computer-use-preview-2025-03-11",
+      "mode": "chat",
+      "name": "computer-use-preview-2025-03-11",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "computer-use-preview-2025-03-11"
         ],
         "dated_suffix": true
       },
@@ -2273,6 +2319,56 @@
     },
     {
       "provider": "openai",
+      "id": "gpt-4o-mini-search-preview-2025-03-11",
+      "mode": "chat",
+      "name": "gpt-4o-mini-search-preview-2025-03-11",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-4o-mini-search-preview-2025-03-11"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 0.15,
+        "output": 0.6,
+        "cache_read": 0.075,
+        "per_web_search": 0.025
+      },
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 0.075,
+            "output": 0.3
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 128000,
+        "max_output_tokens": 16384,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "openai",
       "id": "gpt-4o-mini-transcribe",
       "mode": "audio_transcription",
       "name": "gpt-4o-mini-transcribe",
@@ -2553,6 +2649,56 @@
       "match": {
         "exact": [
           "gpt-4o-search-preview"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2.5,
+        "output": 10,
+        "cache_read": 1.25,
+        "per_web_search": 0.025
+      },
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 1.25,
+            "output": 5
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 128000,
+        "max_output_tokens": 16384,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-4o-search-preview-2025-03-11",
+      "mode": "chat",
+      "name": "gpt-4o-search-preview-2025-03-11",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-4o-search-preview-2025-03-11"
         ],
         "dated_suffix": true
       },
@@ -7043,6 +7189,58 @@
     },
     {
       "provider": "openai",
+      "id": "gpt-audio-mini-2025-10-06",
+      "mode": "chat",
+      "name": "gpt-audio-mini-2025-10-06",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-audio-mini-2025-10-06"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 0.6,
+        "output": 2.4,
+        "input_audio": 10,
+        "output_audio": 20
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "audio",
+          "text"
+        ],
+        "output_modalities": [
+          "audio",
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": false,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 128000,
+        "max_output_tokens": 16384,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/responses",
+          "/v1/realtime",
+          "/v1/batch"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
       "id": "gpt-audio-mini-2025-12-15",
       "mode": "chat",
       "name": "gpt-audio-mini-2025-12-15",
@@ -8749,6 +8947,54 @@
     },
     {
       "provider": "openai",
+      "id": "o3-deep-research-2025-06-26",
+      "mode": "chat",
+      "name": "o3-deep-research-2025-06-26",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "o3-deep-research-2025-06-26"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 10,
+        "output": 40,
+        "cache_read": 2.5
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": false,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 200000,
+        "max_output_tokens": 100000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/batch",
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
       "id": "o3-mini",
       "mode": "chat",
       "name": "o3-mini",
@@ -9126,6 +9372,54 @@
       "match": {
         "exact": [
           "o4-mini-deep-research"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2,
+        "output": 8,
+        "cache_read": 0.5
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": false,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 200000,
+        "max_output_tokens": 100000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/batch",
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "o4-mini-deep-research-2025-06-26",
+      "mode": "chat",
+      "name": "o4-mini-deep-research-2025-06-26",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "o4-mini-deep-research-2025-06-26"
         ],
         "dated_suffix": true
       },
@@ -19740,6 +20034,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-10T01:09:48.918Z",
-  "version": "2026-10-10T01:09:48.918Z-590983f1f08e"
+  "generated_at": "2026-10-13T01:13:22.160Z",
+  "version": "2026-10-13T01:13:22.160Z-61852bc3f40f"
 }
