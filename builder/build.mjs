@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { finalize, mergeSources, normalizeId, providerOf, validate } from './core.mjs';
+import { IDS, finalize, mergeSources, normalizeId, providerOf, validate } from './core.mjs';
 const URLs = {
   litellm:
     'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json',
@@ -43,7 +43,7 @@ const newLite = Object.entries(l.data).some(([id, value]) => {
 const newModels = Object.entries(m.data).some(([source, entry]) => {
   const p = source === 'xai' ? 'x-ai' : source;
   return (
-    ['openai', 'anthropic', 'google', 'x-ai'].includes(p) &&
+    IDS.includes(p) &&
     Object.keys(entry.models ?? {}).some(
       (id) =>
         publishedIds.has(`${p}\0${normalizeId(id, p)}`) &&
@@ -85,5 +85,5 @@ for (const conflict of [
 ])
   console.log('conflict: ' + JSON.stringify(conflict));
 console.log(
-  `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${['openai', 'anthropic', 'google', 'x-ai'].map((p) => p + '=' + doc.models.filter((m) => m.provider === p).length).join(' ')}; conflicts=${merged.conflicts.length + merged.capability_conflicts.length + merged.mode_conflicts.length}; skipped=${doc.skipped.length}`,
+  `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${IDS.map((p) => p + '=' + doc.models.filter((m) => m.provider === p).length).join(' ')}; conflicts=${merged.conflicts.length + merged.capability_conflicts.length + merged.mode_conflicts.length}; skipped=${doc.skipped.length}`,
 );

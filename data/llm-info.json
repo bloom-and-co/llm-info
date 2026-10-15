@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-15T00:57:54.738Z","ref":"W/\"2157fa47e956aac4b579b3b60c0e5f96b24007249f36d706a330b6ec2e4bd5fb\"","latest_new_model_at":"2026-10-13T18:39:25.153Z"},
-    "models_dev": {"fetched_at":"2026-10-15T00:57:54.936Z","etag":"W/\"a800b5d27fb1b2464bff14c4feb8c10d\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
+    "litellm": {"fetched_at":"2026-10-15T02:57:06.925Z","ref":"W/\"1ba32bcb4caa49be0a17128c0147bac3cba1c62e4d3d494a7956a9d17dc5f213\"","latest_new_model_at":"2026-10-15T02:57:06.925Z"},
+    "models_dev": {"fetched_at":"2026-10-15T02:57:07.102Z","etag":"W/\"4e6b521814379781b3bd32609ed8f7f4\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
   },
   "models": [
     {
@@ -20132,6 +20132,524 @@
         "release_date": null,
         "endpoints": null
       }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "audio-isolation",
+      "mode": "audio_isolation",
+      "name": "audio-isolation",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "audio-isolation"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.002
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "audio"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/audio-isolation"
+        ]
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "eleven_flash_v2",
+      "mode": "audio_speech",
+      "name": "eleven_flash_v2",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "eleven_flash_v2"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_character": 0.00004
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "eleven_flash_v2_5",
+      "mode": "audio_speech",
+      "name": "eleven_flash_v2_5",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "eleven_flash_v2_5"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_character": 0.00004
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "eleven_multilingual_v2",
+      "mode": "audio_speech",
+      "name": "eleven_multilingual_v2",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "eleven_multilingual_v2"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_character": 0.00018
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/audio/speech"
+        ]
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "eleven_text_to_sound_v2",
+      "mode": "audio_generation",
+      "name": "eleven_text_to_sound_v2",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "eleven_text_to_sound_v2"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_output_audio_second": 0.002
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/sound-generation"
+        ]
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "eleven_turbo_v2",
+      "mode": "audio_speech",
+      "name": "eleven_turbo_v2",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "eleven_turbo_v2"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_character": 0.00004
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "eleven_turbo_v2_5",
+      "mode": "audio_speech",
+      "name": "eleven_turbo_v2_5",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "eleven_turbo_v2_5"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_character": 0.00004
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "eleven_v3",
+      "mode": "audio_speech",
+      "name": "eleven_v3",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "eleven_v3"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_character": 0.00018
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "audio"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/audio/speech"
+        ]
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "forced-alignment",
+      "mode": "audio_alignment",
+      "name": "forced-alignment",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "forced-alignment"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.00006111111111111111
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "audio",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/forced-alignment"
+        ]
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "scribe_v1",
+      "mode": "audio_transcription",
+      "name": "scribe_v1",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "scribe_v1"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.0000611,
+        "per_output_audio_second": 0
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/audio/transcriptions"
+        ]
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "scribe_v1_experimental",
+      "mode": "audio_transcription",
+      "name": "scribe_v1_experimental",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "scribe_v1_experimental"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.0000611,
+        "per_output_audio_second": 0
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/audio/transcriptions"
+        ]
+      }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "scribe_v2",
+      "mode": "audio_transcription",
+      "name": "scribe_v2",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "scribe_v2"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.0000611,
+        "per_output_audio_second": 0
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/audio/transcriptions"
+        ]
+      }
     }
   ],
   "skipped": [
@@ -20201,6 +20719,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-15T00:57:55.066Z",
-  "version": "2026-10-15T00:57:55.066Z-bad224b02fa1"
+  "generated_at": "2026-10-15T02:57:07.149Z",
+  "version": "2026-10-15T02:57:07.149Z-4c16219c8a22"
 }

@@ -84,7 +84,13 @@ def test_live_data_schema():
         (Path(__file__).resolve().parents[2] / "data/llm-info.json").read_text()
     )
     assert data["schema"] == 2
-    assert len({m["provider"] for m in data["models"]}) == 4
+    assert {m["provider"] for m in data["models"]} == {
+        "openai",
+        "anthropic",
+        "google",
+        "x-ai",
+        "elevenlabs",
+    }
 
 
 def test_own_engine():

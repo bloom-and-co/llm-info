@@ -2,6 +2,120 @@
 // Exact IDs intentionally exclude unverified aliases and dated variants.
 export const providerRules = [
   {
+    id: 'elevenlabs-multilingual-tts',
+    provider: 'elevenlabs',
+    model_selector: {
+      description: 'Reviewed TTS model IDs; retain higher LiteLLM character prices',
+      ids: ['eleven_v3', 'eleven_multilingual_v2'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_speech',
+        prices: { per_character: 0.08 / 1000 },
+        capabilities: { input_modalities: ['text'], output_modalities: ['audio'] },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing/api',
+    supporting_urls: ['https://elevenlabs.io/docs/overview/models'],
+    checked_at: '2026-10-15',
+  },
+  {
+    id: 'elevenlabs-flash-turbo-tts',
+    provider: 'elevenlabs',
+    model_selector: {
+      description: 'Exact Flash IDs and documented deprecated Turbo equivalents',
+      ids: ['eleven_flash_v2', 'eleven_flash_v2_5', 'eleven_turbo_v2', 'eleven_turbo_v2_5'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_speech',
+        prices: { per_character: 0.04 / 1000 },
+        capabilities: { input_modalities: ['text'], output_modalities: ['audio'] },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing/api',
+    supporting_urls: ['https://elevenlabs.io/docs/overview/models'],
+    checked_at: '2026-10-15',
+  },
+  {
+    id: 'elevenlabs-forced-alignment',
+    provider: 'elevenlabs',
+    model_selector: {
+      // This API has no model_id parameter; use its exact endpoint ID as the catalog ID.
+      description: 'Endpoint ID forced-alignment (no selectable model)',
+      ids: ['forced-alignment'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_alignment',
+        // Docs specify the STT rate; API pricing lists $0.22 per input audio hour.
+        prices: { per_input_audio_second: 0.22 / 3600 },
+        capabilities: {
+          input_modalities: ['audio', 'text'],
+          output_modalities: ['text'],
+          endpoints: ['/v1/forced-alignment'],
+        },
+      },
+    },
+    source_url: 'https://elevenlabs.io/docs/overview/capabilities/forced-alignment',
+    supporting_urls: [
+      'https://elevenlabs.io/pricing/api',
+      'https://elevenlabs.io/docs/api-reference/forced-alignment/create',
+    ],
+    checked_at: '2026-10-15',
+  },
+  {
+    id: 'elevenlabs-sound-effects',
+    provider: 'elevenlabs',
+    model_selector: {
+      description: 'Exact model ID accepted by the sound-generation endpoint',
+      ids: ['eleven_text_to_sound_v2'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_generation',
+        // The product table and per-product rate FAQ list $0.12/minute.
+        prices: { per_output_audio_second: 0.12 / 60 },
+        capabilities: {
+          input_modalities: ['text'],
+          output_modalities: ['audio'],
+          endpoints: ['/v1/sound-generation'],
+        },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing/api',
+    supporting_urls: [
+      'https://elevenlabs.io/docs/overview/capabilities/sound-effects',
+      'https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert',
+    ],
+    checked_at: '2026-10-15',
+  },
+  {
+    id: 'elevenlabs-audio-isolation',
+    provider: 'elevenlabs',
+    model_selector: {
+      description: 'Endpoint ID audio-isolation (no selectable model)',
+      ids: ['audio-isolation'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_isolation',
+        prices: { per_input_audio_second: 0.12 / 60 },
+        capabilities: {
+          input_modalities: ['audio'],
+          output_modalities: ['audio'],
+          endpoints: ['/v1/audio-isolation'],
+        },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing/api',
+    supporting_urls: [
+      'https://elevenlabs.io/docs/overview/capabilities/voice-isolator',
+      'https://elevenlabs.io/docs/api-reference/audio-isolation/convert',
+    ],
+    checked_at: '2026-10-15',
+  },
+  {
     id: 'xai-priority-processing',
     provider: 'x-ai',
     model_selector: {

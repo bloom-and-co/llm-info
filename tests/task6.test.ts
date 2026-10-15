@@ -49,7 +49,9 @@ it('skips malformed and incomplete rows with reasons', () => {
     },
     {},
   );
-  expect(d.models.map((m: any) => m.id)).toEqual(['good']);
+  expect(d.models.filter((m: any) => m.provider === 'openai').map((m: any) => m.id)).toEqual([
+    'good',
+  ]);
   expect(d.skipped).toEqual(
     expect.arrayContaining([
       expect.objectContaining({ model: 'bad' }),

@@ -1,7 +1,12 @@
 import { createHash } from 'node:crypto';
 import { providerRules } from './rules.mjs';
 
-export const IDS = ['openai', 'anthropic', 'google', 'x-ai'];
+export const IDS = ['openai', 'anthropic', 'google', 'x-ai', 'elevenlabs'];
+const unitPrices = {
+  input_cost_per_character: 'per_character',
+  input_cost_per_second: 'per_input_audio_second',
+  output_cost_per_second: 'per_output_audio_second',
+};
 const direct = {
   input_cost_per_token: 'input_mtok',
   output_cost_per_token: 'output_mtok',
@@ -37,6 +42,9 @@ const API_MODES = new Set([
   'video_generation',
   'audio_speech',
   'audio_transcription',
+  'audio_alignment',
+  'audio_generation',
+  'audio_isolation',
   'realtime',
   'moderation',
   'rerank',
@@ -65,11 +73,12 @@ export function normalizeId(id, provider) {
   if (provider === 'x-ai') return id.replace(/^xai\//, '');
   if (provider === 'openai') return id.replace(/^openai\//, '');
   if (provider === 'anthropic') return id.replace(/^anthropic\//, '');
+  if (provider === 'elevenlabs') return id.replace(/^elevenlabs\//, '');
   return id;
 }
 export function providerOf(v, id) {
   const p = v.litellm_provider;
-  if (p === 'openai' || p === 'anthropic') return p;
+  if (p === 'openai' || p === 'anthropic' || p === 'elevenlabs') return p;
   if (
     p === 'gemini' ||
     (p?.startsWith('vertex_ai') && /^(gemini|imagen|veo|models\/)/.test(id.replace(/^.*?\//, '')))
@@ -96,6 +105,9 @@ function put(obj, key, value) {
 function fromLite(v, provider) {
   const prices = {};
   const extras = {};
+  // These fields are already USD/unit, unlike token fields. Video seconds stay separate.
+  if (provider === 'elevenlabs')
+    for (const [field, key] of Object.entries(unitPrices)) put(extras, key, num(v[field]));
   for (const [k, d] of Object.entries(direct))
     put(prices, d, num(v[k]) === undefined ? undefined : mtok(v[k]));
   if (v.mode === 'image_generation' || v.output_cost_per_image !== undefined)
@@ -510,6 +522,7 @@ export function mergeSources(lite, models) {
       if (
         malformedPrice(v, [
           ...Object.keys(direct),
+          ...(p === 'elevenlabs' ? Object.keys(unitPrices) : []),
           'output_cost_per_image',
           'input_cost_per_image',
           'output_cost_per_second',
@@ -571,6 +584,46 @@ export function mergeSources(lite, models) {
         malformed.set(p + '\0' + normalized, 'invalid_price');
       add(p, id, { ...fromModels(v, imageOutput), mode: modelsMode(v, normalized) }, 'models_dev');
     }
+  const applied_rules = [];
+  // Supplements can seed feed-missing exact IDs. Merge before publishability checks
+  // so unit-only rows need no invented token rates. Invalid feed data remains skipped.
+  for (const rule of providerRules) {
+    const supplement = rule.effect.supplement;
+    if (!supplement) continue;
+    if (!API_MODES.has(supplement.mode)) throw Error('invalid provider rule mode: ' + rule.id);
+    for (const id of rule.model_selector.ids) {
+      const key = rule.provider + '\0' + id;
+      const model = map.get(key) ?? { id, prices: {} };
+      model.x_mode ??= supplement.mode;
+      model._cap = mergeCapabilities(
+        model._cap,
+        supplement.capabilities,
+        'reviewed_rule',
+        capability_conflicts,
+        rule.provider,
+        id,
+      );
+      for (const [field, value] of Object.entries(supplement.prices)) {
+        if (!Object.values(unitPrices).includes(field) || num(value) === undefined)
+          throw Error('invalid provider rule price: ' + rule.id);
+        const previous = (model.x_extra_prices ??= {})[field];
+        const adopted = Math.max(previous ?? 0, value);
+        if (previous === adopted) continue;
+        model.x_extra_prices[field] = adopted;
+        applied_rules.push({
+          rule: rule.id,
+          provider: rule.provider,
+          model: id,
+          field: `prices.${field}`,
+          previous: previous ?? null,
+          adopted,
+          source_url: rule.source_url,
+          checked_at: rule.checked_at,
+        });
+      }
+      map.set(key, model);
+    }
+  }
   const modelsOut = [];
   for (const provider of IDS) {
     const ms = [...map.entries()]
@@ -579,8 +632,11 @@ export function mergeSources(lite, models) {
       .sort((a, b) => a.id.localeCompare(b.id, 'en'));
     for (const m of ms) {
       const key = provider + '\0' + m.id;
-      const required =
-        m.x_extra_prices?.per_video_second !== undefined
+      const required = Object.values(unitPrices).some(
+        (key) => m.x_extra_prices?.[key] !== undefined,
+      )
+        ? 'audio'
+        : m.x_extra_prices?.per_video_second !== undefined
           ? 'video'
           : m.x_extra_prices?.per_image !== undefined || m.prices.output_image_mtok !== undefined
             ? 'image'
@@ -588,13 +644,16 @@ export function mergeSources(lite, models) {
               ? 'embedding'
               : 'text';
       const publishable =
-        required === 'video'
-          ? m.x_extra_prices?.per_video_second !== undefined
-          : required === 'image'
-            ? m.x_extra_prices?.per_image !== undefined || m.prices.output_image_mtok !== undefined
-            : required === 'embedding'
-              ? m.prices.input_mtok !== undefined
-              : m.prices.input_mtok !== undefined && m.prices.output_mtok !== undefined;
+        required === 'audio'
+          ? Object.values(unitPrices).some((key) => m.x_extra_prices?.[key] > 0)
+          : required === 'video'
+            ? m.x_extra_prices?.per_video_second !== undefined
+            : required === 'image'
+              ? m.x_extra_prices?.per_image !== undefined ||
+                m.prices.output_image_mtok !== undefined
+              : required === 'embedding'
+                ? m.prices.input_mtok !== undefined
+                : m.prices.input_mtok !== undefined && m.prices.output_mtok !== undefined;
       if (malformed.has(key) || !publishable) {
         skipped.push({
           provider,
@@ -643,6 +702,9 @@ export function mergeSources(lite, models) {
           video_generation: 'video',
           audio_speech: 'audio',
           audio_transcription: 'text',
+          audio_alignment: 'text',
+          audio_generation: 'audio',
+          audio_isolation: 'audio',
           moderation: 'text',
           rerank: 'text',
         }[m.x_mode];
@@ -708,7 +770,7 @@ export function mergeSources(lite, models) {
         mode: m.x_mode ?? 'other',
         name: dev?.name ?? m.id,
         aliases: [],
-        match: { exact, dated_suffix: true },
+        match: { exact, dated_suffix: provider !== 'elevenlabs' },
         prices,
         modes,
         region_uplift: m.x_region_uplift ?? {},
@@ -719,7 +781,6 @@ export function mergeSources(lite, models) {
   conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
   capability_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
   mode_conflicts.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'));
-  const applied_rules = [];
   for (const rule of providerRules) {
     for (const model of modelsOut) {
       if (model.provider !== rule.provider || !rule.model_selector.ids.includes(model.id)) continue;
