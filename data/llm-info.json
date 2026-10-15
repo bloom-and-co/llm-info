@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-13T18:39:25.153Z","ref":"W/\"fae974aef4ae7887d32a196b75916d14919095be8b09da3a544c606b5e000ab8\"","latest_new_model_at":"2026-10-13T18:39:25.153Z"},
-    "models_dev": {"fetched_at":"2026-10-13T18:39:25.680Z","etag":"W/\"9393fb327a59dde2f8510ae50bc555a8\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
+    "litellm": {"fetched_at":"2026-10-15T00:57:54.738Z","ref":"W/\"2157fa47e956aac4b579b3b60c0e5f96b24007249f36d706a330b6ec2e4bd5fb\"","latest_new_model_at":"2026-10-13T18:39:25.153Z"},
+    "models_dev": {"fetched_at":"2026-10-15T00:57:54.936Z","etag":"W/\"a800b5d27fb1b2464bff14c4feb8c10d\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
   },
   "models": [
     {
@@ -15378,6 +15378,13 @@
             "cache_read": 0.27
           }
         },
+        "flex": {
+          "prices": {
+            "input": 0.75,
+            "output": 3.75,
+            "cache_read": 0.075
+          }
+        },
         "batch": {
           "prices": {
             "input": 0.75,
@@ -20194,6 +20201,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-13T18:39:25.792Z",
-  "version": "2026-10-13T18:39:25.792Z-309619a6e810"
+  "generated_at": "2026-10-15T00:57:55.066Z",
+  "version": "2026-10-15T00:57:55.066Z-bad224b02fa1"
 }
