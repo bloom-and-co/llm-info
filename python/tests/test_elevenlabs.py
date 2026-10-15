@@ -33,10 +33,13 @@ def test_elevenlabs_calculations(case):
     if case["expected"] is None:
         assert result is None
     else:
-        assert abs(result["total_usd"] - Decimal(str(case["expected"]))) < Decimal(
+        assert abs(result["total_credits"] - Decimal(str(case["expected"]))) < Decimal(
             "1e-10"
         )
-        assert result["extra_usd"] == result["total_usd"]
+        assert result["extra_credits"] == result["total_credits"]
+        assert result["price_unit"] == "credit"
+        for key in ("total_usd", "input_usd", "output_usd", "extra_usd"):
+            assert result[key] is None
         assert result["warnings"] == case["warnings"]
 
 
@@ -51,8 +54,64 @@ def test_elevenlabs_calculations(case):
 )
 def test_invalid_unit_usage(field, price, value):
     result = calculate(
-        {"provider": "elevenlabs", "id": "synthetic", "prices": {price: 0.002}},
+        {
+            "provider": "elevenlabs",
+            "id": "synthetic",
+            "price_unit": "credit",
+            "prices": {price: 0.002},
+        },
         {field: value},
     )
-    assert result["total_usd"] == 0
+    assert result["total_usd"] is None
+    assert result["total_credits"] == 0
     assert result["warnings"] == ["invalid_usage:" + field]
+
+
+@pytest.mark.parametrize("provider", ["openai", "anthropic", "google", "x-ai"])
+def test_original_usd_output_shape(provider):
+    info = LlmInfo(store=MemoryStore(), fetch=lambda u, e: (200, None, DATA))
+    info.load()
+    model = next(
+        m for m in DATA["models"] if m["provider"] == provider and m["mode"] == "chat"
+    )
+    result = info.calc(
+        provider, model["id"], {"input_tokens": 1000, "output_tokens": 100}
+    )
+    assert set(result) == {
+        "total_usd",
+        "input_usd",
+        "output_usd",
+        "extra_usd",
+        "warnings",
+        "provider",
+        "model",
+        "requested_model",
+        "usage",
+        "data_version",
+    }
+    assert isinstance(result["total_usd"], Decimal)
+    assert all("price_unit" not in m for m in info.models(provider))
+    assert "price_unit" not in info.capabilities(provider, model["id"])
+    assert all(m["price_unit"] == "credit" for m in info.models("elevenlabs"))
+    assert info.capabilities("elevenlabs", "scribe_v2")["price_unit"] == "credit"
+
+
+def test_legacy_usd_cache_requires_refresh():
+    old = copy.deepcopy(DATA)
+    row = next(
+        m
+        for m in old["models"]
+        if m["provider"] == "elevenlabs" and m["id"] == "eleven_v3"
+    )
+    del row["price_unit"]
+    row["prices"] = {"per_character": 0.00018}
+    source = old
+    info = LlmInfo(store=MemoryStore(), fetch=lambda u, e: (200, None, source))
+    info.load()
+    assert info.calc("elevenlabs", "eleven_v3", {"characters": 1000}) is None
+    source = DATA
+    info.refresh(force=True)
+    result = info.calc("elevenlabs", "eleven_v3", {"characters": 1000})
+    assert result["total_credits"] == 1000
+    assert result["total_usd"] is None
+    assert result["price_unit"] == "credit"

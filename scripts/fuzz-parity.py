@@ -18,10 +18,25 @@ for case in cases:
         case["mode"],
         case["region"],
     )
-    if abs(float(result["total_usd"]) - case["t"]) > 1e-9 * max(1, case["t"]):
+    unit = result.get("price_unit", "usd")
+    mismatch = unit != case["unit"]
+    for suffix, expected in [("usd", case["usd"]), ("credits", case["credits"])]:
+        actual = [
+            result.get(f"{bucket}_{suffix}")
+            for bucket in ("input", "output", "extra", "total")
+        ]
+        if expected is None:
+            mismatch |= any(value is not None for value in actual)
+            continue
+        for value, want in zip(actual, expected):
+            if value is None or want is None:
+                mismatch |= (value is None) != (want is None)
+            else:
+                mismatch |= abs(float(value) - want) > 1e-9 * max(1, abs(want))
+    if mismatch:
         bad += 1
         if bad < 8:
-            print("DIFF", case["id"], case["u"], case["t"], result["total_usd"])
+            print("DIFF", case["id"], case["u"], case["unit"], unit, result)
     if sorted(result["warnings"]) != sorted(case["w"]):
         warning_diffs += 1
         if warning_diffs < 6:

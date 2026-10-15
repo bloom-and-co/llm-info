@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-15T02:57:06.925Z","ref":"W/\"1ba32bcb4caa49be0a17128c0147bac3cba1c62e4d3d494a7956a9d17dc5f213\"","latest_new_model_at":"2026-10-15T02:57:06.925Z"},
-    "models_dev": {"fetched_at":"2026-10-15T02:57:07.102Z","etag":"W/\"4e6b521814379781b3bd32609ed8f7f4\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
+    "litellm": {"fetched_at":"2026-10-15T05:54:03.294Z","ref":"W/\"619cfca2314cd3c203fafbb9812c257918e02f7b4e28e03873fc95bc94af3ba5\"","latest_new_model_at":"2026-10-15T02:57:06.925Z"},
+    "models_dev": {"fetched_at":"2026-10-15T05:54:03.493Z","etag":"W/\"a819b0deb7424bb618b9d1bacc5ce11e\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
   },
   "models": [
     {
@@ -20137,6 +20137,7 @@
       "provider": "elevenlabs",
       "id": "audio-isolation",
       "mode": "audio_isolation",
+      "price_unit": "credit",
       "name": "audio-isolation",
       "aliases": [],
       "match": {
@@ -20146,7 +20147,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_input_audio_second": 0.002
+        "per_input_audio_second": 16.666666666666668
       },
       "modes": {},
       "region_uplift": {},
@@ -20181,6 +20182,7 @@
       "provider": "elevenlabs",
       "id": "eleven_flash_v2",
       "mode": "audio_speech",
+      "price_unit": "credit",
       "name": "eleven_flash_v2",
       "aliases": [],
       "match": {
@@ -20190,7 +20192,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_character": 0.00004
+        "per_character": 0.5
       },
       "modes": {},
       "region_uplift": {},
@@ -20223,6 +20225,7 @@
       "provider": "elevenlabs",
       "id": "eleven_flash_v2_5",
       "mode": "audio_speech",
+      "price_unit": "credit",
       "name": "eleven_flash_v2_5",
       "aliases": [],
       "match": {
@@ -20232,7 +20235,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_character": 0.00004
+        "per_character": 0.5
       },
       "modes": {},
       "region_uplift": {},
@@ -20265,6 +20268,7 @@
       "provider": "elevenlabs",
       "id": "eleven_multilingual_v2",
       "mode": "audio_speech",
+      "price_unit": "credit",
       "name": "eleven_multilingual_v2",
       "aliases": [],
       "match": {
@@ -20274,7 +20278,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_character": 0.00018
+        "per_character": 1
       },
       "modes": {},
       "region_uplift": {},
@@ -20300,15 +20304,14 @@
         "max_output_tokens": null,
         "knowledge_cutoff": null,
         "release_date": null,
-        "endpoints": [
-          "/v1/audio/speech"
-        ]
+        "endpoints": null
       }
     },
     {
       "provider": "elevenlabs",
       "id": "eleven_text_to_sound_v2",
       "mode": "audio_generation",
+      "price_unit": "credit",
       "name": "eleven_text_to_sound_v2",
       "aliases": [],
       "match": {
@@ -20318,7 +20321,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_output_audio_second": 0.002
+        "per_output_audio_second": 10
       },
       "modes": {},
       "region_uplift": {},
@@ -20353,6 +20356,7 @@
       "provider": "elevenlabs",
       "id": "eleven_turbo_v2",
       "mode": "audio_speech",
+      "price_unit": "credit",
       "name": "eleven_turbo_v2",
       "aliases": [],
       "match": {
@@ -20362,7 +20366,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_character": 0.00004
+        "per_character": 0.5
       },
       "modes": {},
       "region_uplift": {},
@@ -20395,6 +20399,7 @@
       "provider": "elevenlabs",
       "id": "eleven_turbo_v2_5",
       "mode": "audio_speech",
+      "price_unit": "credit",
       "name": "eleven_turbo_v2_5",
       "aliases": [],
       "match": {
@@ -20404,7 +20409,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_character": 0.00004
+        "per_character": 0.5
       },
       "modes": {},
       "region_uplift": {},
@@ -20437,6 +20442,7 @@
       "provider": "elevenlabs",
       "id": "eleven_v3",
       "mode": "audio_speech",
+      "price_unit": "credit",
       "name": "eleven_v3",
       "aliases": [],
       "match": {
@@ -20446,7 +20452,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_character": 0.00018
+        "per_character": 1
       },
       "modes": {},
       "region_uplift": {},
@@ -20472,15 +20478,14 @@
         "max_output_tokens": null,
         "knowledge_cutoff": null,
         "release_date": null,
-        "endpoints": [
-          "/v1/audio/speech"
-        ]
+        "endpoints": null
       }
     },
     {
       "provider": "elevenlabs",
       "id": "forced-alignment",
       "mode": "audio_alignment",
+      "price_unit": "credit",
       "name": "forced-alignment",
       "aliases": [],
       "match": {
@@ -20490,7 +20495,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_input_audio_second": 0.00006111111111111111
+        "per_input_audio_second": 0.4444444444444444
       },
       "modes": {},
       "region_uplift": {},
@@ -20526,6 +20531,7 @@
       "provider": "elevenlabs",
       "id": "scribe_v1",
       "mode": "audio_transcription",
+      "price_unit": "credit",
       "name": "scribe_v1",
       "aliases": [],
       "match": {
@@ -20535,7 +20541,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_input_audio_second": 0.0000611,
+        "per_input_audio_second": 0.4444444444444444,
         "per_output_audio_second": 0
       },
       "modes": {},
@@ -20548,7 +20554,9 @@
         "parallel_tool_calls": null,
         "structured_output": false,
         "web_search": null,
-        "input_modalities": [],
+        "input_modalities": [
+          "audio"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20560,15 +20568,14 @@
         "max_output_tokens": null,
         "knowledge_cutoff": null,
         "release_date": null,
-        "endpoints": [
-          "/v1/audio/transcriptions"
-        ]
+        "endpoints": null
       }
     },
     {
       "provider": "elevenlabs",
       "id": "scribe_v1_experimental",
       "mode": "audio_transcription",
+      "price_unit": "credit",
       "name": "scribe_v1_experimental",
       "aliases": [],
       "match": {
@@ -20578,7 +20585,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_input_audio_second": 0.0000611,
+        "per_input_audio_second": 0.4444444444444444,
         "per_output_audio_second": 0
       },
       "modes": {},
@@ -20591,7 +20598,9 @@
         "parallel_tool_calls": null,
         "structured_output": false,
         "web_search": null,
-        "input_modalities": [],
+        "input_modalities": [
+          "audio"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20603,15 +20612,14 @@
         "max_output_tokens": null,
         "knowledge_cutoff": null,
         "release_date": null,
-        "endpoints": [
-          "/v1/audio/transcriptions"
-        ]
+        "endpoints": null
       }
     },
     {
       "provider": "elevenlabs",
       "id": "scribe_v2",
       "mode": "audio_transcription",
+      "price_unit": "credit",
       "name": "scribe_v2",
       "aliases": [],
       "match": {
@@ -20621,7 +20629,7 @@
         "dated_suffix": false
       },
       "prices": {
-        "per_input_audio_second": 0.0000611,
+        "per_input_audio_second": 0.4444444444444444,
         "per_output_audio_second": 0
       },
       "modes": {},
@@ -20634,7 +20642,9 @@
         "parallel_tool_calls": null,
         "structured_output": false,
         "web_search": null,
-        "input_modalities": [],
+        "input_modalities": [
+          "audio"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20646,9 +20656,7 @@
         "max_output_tokens": null,
         "knowledge_cutoff": null,
         "release_date": null,
-        "endpoints": [
-          "/v1/audio/transcriptions"
-        ]
+        "endpoints": null
       }
     }
   ],
@@ -20710,6 +20718,21 @@
     },
     {
       "provider": "x-ai",
+      "model": "grok-voice-2.0",
+      "reason": "missing_required_price"
+    },
+    {
+      "provider": "x-ai",
+      "model": "grok-voice-3.0",
+      "reason": "missing_required_price"
+    },
+    {
+      "provider": "x-ai",
+      "model": "grok-voice-latest",
+      "reason": "missing_required_price"
+    },
+    {
+      "provider": "x-ai",
       "model": "grok-voice-transcribe-1.0",
       "reason": "missing_required_price"
     },
@@ -20719,6 +20742,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-15T02:57:07.149Z",
-  "version": "2026-10-15T02:57:07.149Z-4c16219c8a22"
+  "generated_at": "2026-10-15T05:54:03.534Z",
+  "version": "2026-10-15T05:54:03.534Z-3718a88807f8"
 }

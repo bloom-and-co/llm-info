@@ -28,7 +28,12 @@ if "--elevenlabs" in sys.argv:
             None
             if result is None
             else {
-                "total": str(result["total_usd"]),
+                **{
+                    k: (str(v) if k.endswith("_credits") else v)
+                    for k, v in result.items()
+                    if k.endswith(("_usd", "_credits"))
+                },
+                "price_unit": result["price_unit"],
                 "warnings": result["warnings"],
             }
         )

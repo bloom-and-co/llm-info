@@ -9,4 +9,4 @@ Examples below use field layouts documented by the providers. Values and model I
 - Google Veo: https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/veo-video-generation
 - xAI Chat: https://docs.x.ai/docs/api-reference#chat-completions
 
-`llm-info-snapshot.json` includes the 12 ElevenLabs rows generated on 2026-10-15; existing provider rows and snapshot metadata were preserved. `elevenlabs-calc.json` supplies hand-calculated character/audio-second cases shared by JS, Python, and their parity test. Some cases override prices to exercise fallback, explicit zero, and mode/region behavior. No paid API requests are used.
+`llm-info-snapshot.json` includes the 12 ElevenLabs rows generated on 2026-10-15; the original four provider rows are preserved, and the version records this credit-rule refresh. `elevenlabs-calc.json` supplies hand-calculated credit amounts for character/audio-second cases (USD fields must be null) shared by JS, Python, and their parity test. Some cases override prices to exercise fallback, explicit zero, and mode/region behavior. No paid API requests are used.

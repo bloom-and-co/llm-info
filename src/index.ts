@@ -47,11 +47,7 @@ export type Info = {
   stale: boolean;
   lastError: string | null;
 };
-export type Cost = {
-  totalUsd: number;
-  inputUsd: number;
-  outputUsd: number;
-  extraUsd: number;
+export type Cost = ReturnType<typeof calculate> & {
   provider: string;
   model: string;
   requestedModel: string;
@@ -229,12 +225,20 @@ export function createLlmInfo(options: Options = {}) {
   }
   function capabilities({ provider, model }: { provider: string; model: string }) {
     const m = findModel(current().data.models, provider, model);
-    return m ? { ...m.capabilities, mode: m.mode } : null;
+    return m
+      ? { ...m.capabilities, mode: m.mode, ...(m.price_unit ? { price_unit: m.price_unit } : {}) }
+      : null;
   }
   function models({ provider }: { provider?: string } = {}) {
     return current()
       .data.models.filter((m) => !provider || m.provider === provider)
-      .map((m) => ({ provider: m.provider, id: m.id, mode: m.mode, capabilities: m.capabilities }));
+      .map((m) => ({
+        provider: m.provider,
+        id: m.id,
+        mode: m.mode,
+        ...(m.price_unit ? { price_unit: m.price_unit } : {}),
+        capabilities: m.capabilities,
+      }));
   }
   function calc({
     provider,
@@ -255,7 +259,8 @@ export function createLlmInfo(options: Options = {}) {
   }): Cost | null {
     const d = current().data;
     const m = findModel(d.models, provider, model);
-    if (!m) return null;
+    // Old caches may still contain pre-credit ElevenLabs USD rows. Require a refresh.
+    if (!m || (m.provider === 'elevenlabs' && m.price_unit !== 'credit')) return null;
     const selectedMode = mode ?? opts.mode ?? 'standard';
     const providerModeMultiplier = d.models
       .filter((row) => row.provider === m.provider)

@@ -457,6 +457,19 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         if normalized_region != "global"
         else D(1)
     )
+    if model.get("price_unit") == "credit":
+        return {
+            "price_unit": "credit",
+            "input_usd": None,
+            "output_usd": None,
+            "extra_usd": None,
+            "total_usd": None,
+            "input_credits": input_cost * uplift,
+            "output_credits": output_cost * uplift,
+            "extra_credits": extra * uplift,
+            "total_credits": (input_cost + output_cost + extra) * uplift,
+            "warnings": list(dict.fromkeys(warnings)),
+        }
     return {
         "input_usd": input_cost * uplift,
         "output_usd": output_cost * uplift,

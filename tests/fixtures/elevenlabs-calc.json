@@ -5,7 +5,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.18,
+    "expected": 1000,
     "warnings": []
   },
   {
@@ -14,7 +14,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.18,
+    "expected": 1000,
     "warnings": []
   },
   {
@@ -23,7 +23,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.04,
+    "expected": 500,
     "warnings": []
   },
   {
@@ -32,7 +32,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.04,
+    "expected": 500,
     "warnings": []
   },
   {
@@ -41,7 +41,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.04,
+    "expected": 500,
     "warnings": []
   },
   {
@@ -50,7 +50,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.04,
+    "expected": 500,
     "warnings": []
   },
   {
@@ -59,7 +59,7 @@
     "usage": {
       "input_audio_seconds": 3600
     },
-    "expected": 0.21996,
+    "expected": 1600,
     "warnings": []
   },
   {
@@ -68,7 +68,7 @@
     "usage": {
       "input_audio_seconds": 3600
     },
-    "expected": 0.21996,
+    "expected": 1600,
     "warnings": []
   },
   {
@@ -77,7 +77,7 @@
     "usage": {
       "input_audio_seconds": 3600
     },
-    "expected": 0.21996,
+    "expected": 1600,
     "warnings": []
   },
   {
@@ -86,7 +86,7 @@
     "usage": {
       "input_audio_seconds": 3600
     },
-    "expected": 0.22,
+    "expected": 1600,
     "warnings": []
   },
   {
@@ -95,7 +95,7 @@
     "usage": {
       "output_audio_seconds": 30
     },
-    "expected": 0.06,
+    "expected": 300,
     "warnings": []
   },
   {
@@ -104,7 +104,7 @@
     "usage": {
       "input_audio_seconds": 60
     },
-    "expected": 0.12,
+    "expected": 1000,
     "warnings": []
   },
   {
@@ -113,7 +113,7 @@
     "usage": {
       "input_audio_seconds": "2.5"
     },
-    "expected": 0.005,
+    "expected": 41.666666666666664,
     "warnings": []
   },
   {
@@ -122,7 +122,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.18,
+    "expected": 1000,
     "warnings": []
   },
   {
@@ -267,19 +267,19 @@
       "input_audio_seconds": 0,
       "output_audio_seconds": 5
     },
-    "expected": 0.19,
+    "expected": 1100,
     "warnings": [
       "fallback_price:per_output_audio_second"
     ],
     "overrides": {
       "prices": {
-        "per_character": 0.00018,
-        "per_input_audio_second": 0.002
+        "per_character": 1,
+        "per_input_audio_second": 20
       }
     }
   },
   {
-    "name": "fallback token USD",
+    "name": "fallback token credits",
     "model": "eleven_v3",
     "usage": {
       "characters": 1000
@@ -320,7 +320,7 @@
     "usage": {
       "input_audio_seconds": 60
     },
-    "expected": 0.396,
+    "expected": 3300,
     "warnings": [],
     "mode": "fast",
     "region": "us",
@@ -341,14 +341,14 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.36,
+    "expected": 2000,
     "warnings": [],
     "mode": "priority",
     "overrides": {
       "modes": {
         "priority": {
           "prices": {
-            "per_character": 0.00036
+            "per_character": 2
           }
         }
       }
@@ -360,7 +360,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.36,
+    "expected": 2000,
     "warnings": [
       "missing_price:mode:priority"
     ],
@@ -372,7 +372,7 @@
     "usage": {
       "characters": 1000
     },
-    "expected": 0.18,
+    "expected": 1000,
     "warnings": [
       "missing_price:mode:batch"
     ],
@@ -403,6 +403,42 @@
       "characters": 1000
     },
     "expected": null,
+    "warnings": []
+  },
+  {
+    "name": "observed STT 63 seconds",
+    "model": "scribe_v2",
+    "usage": {
+      "input_audio_seconds": 63
+    },
+    "expected": 28,
+    "warnings": []
+  },
+  {
+    "name": "STT 8 seconds unrounded",
+    "model": "scribe_v2",
+    "usage": {
+      "input_audio_seconds": 8
+    },
+    "expected": 3.5555555555555554,
+    "warnings": []
+  },
+  {
+    "name": "isolation 5 seconds unrounded",
+    "model": "audio-isolation",
+    "usage": {
+      "input_audio_seconds": 5
+    },
+    "expected": 83.33333333333333,
+    "warnings": []
+  },
+  {
+    "name": "observed sound one second",
+    "model": "eleven_text_to_sound_v2",
+    "usage": {
+      "output_audio_seconds": 1
+    },
+    "expected": 10,
     "warnings": []
   }
 ]

@@ -38,6 +38,14 @@ const keys = [
   'input_audio_seconds',
   'output_audio_seconds',
 ];
+const amounts = (r) => ({
+  unit: r.priceUnit ?? 'usd',
+  usd: [r.inputUsd, r.outputUsd, r.extraUsd, r.totalUsd],
+  credits:
+    r.priceUnit === 'credit'
+      ? [r.inputCredits, r.outputCredits, r.extraCredits, r.totalCredits]
+      : null,
+});
 const cases = [];
 for (let i = 0; i < 20000; i++) {
   const m = pick(d.models);
@@ -58,8 +66,9 @@ for (let i = 0; i < 20000; i++) {
       ? { size: '1024x1024', quality: pick(['high', 'low']), resolution: pick(['4k', '720p']) }
       : {};
   const r = calculate(m, u, opt, mode, region);
-  cases.push({ p: m.provider, id: m.id, u, mode, region, opt, t: r.totalUsd, w: r.warnings });
-  if (r.totalUsd < 0 || !Number.isFinite(r.totalUsd)) console.log('BAD', m.id, u, r);
+  cases.push({ p: m.provider, id: m.id, u, mode, region, opt, ...amounts(r), w: r.warnings });
+  const total = r.priceUnit === 'credit' ? r.totalCredits : r.totalUsd;
+  if (total < 0 || !Number.isFinite(total)) throw Error('Invalid total for ' + m.id);
 }
 for (const id of ['gpt-image-1.5', 'chatgpt-image-latest', 'gemini-3.1-flash-image']) {
   const m = d.models.find((row) => row.id === id);
@@ -82,7 +91,7 @@ for (const id of ['gpt-image-1.5', 'chatgpt-image-latest', 'gemini-3.1-flash-ima
       mode: 'standard',
       region: 'global',
       opt: {},
-      t: r.totalUsd,
+      ...amounts(r),
       w: r.warnings,
     });
   }
@@ -106,7 +115,7 @@ for (const m of d.models.filter((model) => model.provider === 'anthropic')) {
       mode,
       region: 'us',
       opt: {},
-      t: r.totalUsd,
+      ...amounts(r),
       w: r.warnings,
     });
   }
@@ -129,7 +138,7 @@ for (const m of d.models.filter((model) => model.provider === 'x-ai')) {
         mode,
         region: 'global',
         opt: {},
-        t: r.totalUsd,
+        ...amounts(r),
         w: r.warnings,
       });
     }
@@ -148,7 +157,7 @@ for (const m of d.models.filter((model) => model.provider === 'elevenlabs')) {
         mode,
         region: 'global',
         opt: {},
-        t: r.totalUsd,
+        ...amounts(r),
         w: r.warnings,
       });
     }
@@ -179,7 +188,7 @@ for (const mode of ['priority', 'fast']) {
         mode,
         region: 'global',
         opt,
-        t: r.totalUsd,
+        ...amounts(r),
         w: r.warnings,
       });
     }

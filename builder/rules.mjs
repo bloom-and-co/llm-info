@@ -1,21 +1,28 @@
 // Reviewed supplements to upstream data. Add IDs only after checking official docs.
 // Exact IDs intentionally exclude unverified aliases and dated variants.
+// ElevenLabs: reviewed 2026-10-15 against the official TTS credit descriptions
+// and the production usage screen filtered to Hangar's API key (user-supplied evidence).
+// API usage consumes subscription credits; USD/credit is account-specific and excluded.
+// Observations: STT/alignment 63s -> 28, 8s -> 3.5 credits; isolation 5s -> 83;
+// sound effects 1s -> 10 (one observation). Rates below are linear estimates;
+// displayed credits may be rounded. The pricing FAQ's product approximations differ.
 export const providerRules = [
   {
     id: 'elevenlabs-multilingual-tts',
     provider: 'elevenlabs',
     model_selector: {
-      description: 'Reviewed TTS model IDs; retain higher LiteLLM character prices',
+      description: 'Reviewed TTS model IDs with subscription credit rates',
       ids: ['eleven_v3', 'eleven_multilingual_v2'],
     },
     effect: {
       supplement: {
         mode: 'audio_speech',
-        prices: { per_character: 0.08 / 1000 },
+        price_unit: 'credit',
+        prices: { per_character: 1 },
         capabilities: { input_modalities: ['text'], output_modalities: ['audio'] },
       },
     },
-    source_url: 'https://elevenlabs.io/pricing/api',
+    source_url: 'https://elevenlabs.io/pricing',
     supporting_urls: ['https://elevenlabs.io/docs/overview/models'],
     checked_at: '2026-10-15',
   },
@@ -29,11 +36,31 @@ export const providerRules = [
     effect: {
       supplement: {
         mode: 'audio_speech',
-        prices: { per_character: 0.04 / 1000 },
+        price_unit: 'credit',
+        prices: { per_character: 0.5 },
         capabilities: { input_modalities: ['text'], output_modalities: ['audio'] },
       },
     },
-    source_url: 'https://elevenlabs.io/pricing/api',
+    source_url: 'https://elevenlabs.io/pricing',
+    supporting_urls: ['https://elevenlabs.io/docs/overview/models'],
+    checked_at: '2026-10-15',
+  },
+  {
+    id: 'elevenlabs-scribe',
+    provider: 'elevenlabs',
+    model_selector: {
+      description: 'Reviewed Scribe API model IDs',
+      ids: ['scribe_v1', 'scribe_v1_experimental', 'scribe_v2'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_transcription',
+        price_unit: 'credit',
+        prices: { per_input_audio_second: 4 / 9, per_output_audio_second: 0 },
+        capabilities: { input_modalities: ['audio'], output_modalities: ['text'] },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing',
     supporting_urls: ['https://elevenlabs.io/docs/overview/models'],
     checked_at: '2026-10-15',
   },
@@ -48,8 +75,8 @@ export const providerRules = [
     effect: {
       supplement: {
         mode: 'audio_alignment',
-        // Docs specify the STT rate; API pricing lists $0.22 per input audio hour.
-        prices: { per_input_audio_second: 0.22 / 3600 },
+        price_unit: 'credit',
+        prices: { per_input_audio_second: 4 / 9 },
         capabilities: {
           input_modalities: ['audio', 'text'],
           output_modalities: ['text'],
@@ -57,9 +84,9 @@ export const providerRules = [
         },
       },
     },
-    source_url: 'https://elevenlabs.io/docs/overview/capabilities/forced-alignment',
+    source_url: 'https://elevenlabs.io/pricing',
     supporting_urls: [
-      'https://elevenlabs.io/pricing/api',
+      'https://elevenlabs.io/docs/overview/capabilities/forced-alignment',
       'https://elevenlabs.io/docs/api-reference/forced-alignment/create',
     ],
     checked_at: '2026-10-15',
@@ -74,8 +101,8 @@ export const providerRules = [
     effect: {
       supplement: {
         mode: 'audio_generation',
-        // The product table and per-product rate FAQ list $0.12/minute.
-        prices: { per_output_audio_second: 0.12 / 60 },
+        price_unit: 'credit',
+        prices: { per_output_audio_second: 10 },
         capabilities: {
           input_modalities: ['text'],
           output_modalities: ['audio'],
@@ -83,7 +110,7 @@ export const providerRules = [
         },
       },
     },
-    source_url: 'https://elevenlabs.io/pricing/api',
+    source_url: 'https://elevenlabs.io/pricing',
     supporting_urls: [
       'https://elevenlabs.io/docs/overview/capabilities/sound-effects',
       'https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert',
@@ -100,7 +127,8 @@ export const providerRules = [
     effect: {
       supplement: {
         mode: 'audio_isolation',
-        prices: { per_input_audio_second: 0.12 / 60 },
+        price_unit: 'credit',
+        prices: { per_input_audio_second: 1000 / 60 },
         capabilities: {
           input_modalities: ['audio'],
           output_modalities: ['audio'],
@@ -108,7 +136,7 @@ export const providerRules = [
         },
       },
     },
-    source_url: 'https://elevenlabs.io/pricing/api',
+    source_url: 'https://elevenlabs.io/pricing',
     supporting_urls: [
       'https://elevenlabs.io/docs/overview/capabilities/voice-isolator',
       'https://elevenlabs.io/docs/api-reference/audio-isolation/convert',

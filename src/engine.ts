@@ -5,6 +5,8 @@ export type Model = {
   name?: string;
   aliases?: string[];
   match?: { exact?: string[]; dated_suffix?: boolean };
+  // Absent means USD for backward compatibility. Applies to all prices and modes.
+  price_unit?: 'usd' | 'credit';
   prices: Record<string, any>;
   modes?: Record<string, any>;
   region_uplift?: Record<string, number>;
@@ -371,6 +373,19 @@ export function calculate(
     warnings.push('missing_region_uplift');
   const uplift = normalizedRegion === 'global' ? 1 : (model.region_uplift?.[normalizedRegion] ?? 1);
   const money = (value: number) => Math.round(value * 1e10) / 1e10;
+  if (model.price_unit === 'credit')
+    return {
+      priceUnit: 'credit' as const,
+      inputUsd: null,
+      outputUsd: null,
+      extraUsd: null,
+      totalUsd: null,
+      inputCredits: money(inputCost * uplift),
+      outputCredits: money(outputCost * uplift),
+      extraCredits: money(extra * uplift),
+      totalCredits: money((inputCost + outputCost + extra) * uplift),
+      warnings: [...new Set(warnings)],
+    };
   return {
     inputUsd: money(inputCost * uplift),
     outputUsd: money(outputCost * uplift),

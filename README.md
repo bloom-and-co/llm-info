@@ -1,6 +1,6 @@
 # llm-info
 
-A cached LLM price table and independent cost calculators for OpenAI, Anthropic, Google, xAI, and ElevenLabs. The builder merges [LiteLLM](https://github.com/BerriAI/litellm) and [models.dev](https://github.com/sst/models.dev) data. Conflicting prices use the higher value; the builder prints conflict counts in its log.
+A cached model price table and independent cost calculators for OpenAI, Anthropic, Google, xAI, and ElevenLabs. The builder merges [LiteLLM](https://github.com/BerriAI/litellm) and [models.dev](https://github.com/sst/models.dev) data. ElevenLabs uses reviewed credit prices exclusively and ignores LiteLLM USD rows. Conflicting USD prices use the higher value; the builder prints conflict counts in its log.
 
 Reviewed supplements in [`builder/rules.mjs`](builder/rules.mjs) add officially documented facts missing from the feeds. Each rule records its provider, exact model IDs, effect, source URLs, and check date. Regional rules add missing multipliers or take the higher value; token-mode rules materialize documented token rates from base prices, including tiers. Each change is logged as `provider_rule`. The Anthropic rule adds `region_uplift.us = 1.1` for verified Claude 4.6 and later IDs, reflecting [`inference_geo: "us"`](https://platform.claude.com/docs/en/build-with-claude/data-residency). Use `region: 'us'` in JS or `region="us"` in Python; it stacks with fast mode and cache pricing. Unverified IDs (including Mythos Preview and dated Opus 4.6/4.7 variants) are excluded from the supplement. New IDs require review before being added; excluded models retain source prices and warn `missing_region_uplift` when no source supplies an uplift.
 
@@ -67,7 +67,7 @@ Python money fields are `Decimal`. Its API is synchronous; `auto_refresh` starts
 
 `data/llm-info.json` has `schema: 2`, a version and timestamp, source fetch metadata with `latest_new_model_at`, a flat `models` array, and `skipped` rows with short reasons. Each model gives `provider`, `id`, `name`, `aliases`, deterministic `match` rules, `mode`, `prices`, `modes`, `region_uplift`, and `capabilities`. `mode` is the primary API kind: `chat`, `embedding`, `image_generation`, `video_generation`, `audio_speech`, `audio_transcription`, `audio_alignment`, `audio_generation`, `audio_isolation`, `realtime`, `moderation`, `rerank`, or `other`. LiteLLM's mode takes precedence over the kind inferred from models.dev output modalities; disagreements are logged during the build. Both JS and Python include `mode` in `models()` rows and `capabilities()` results. `modes` is separate and holds optional pricing tiers such as `fast` and `priority`.
 
-Prices for token buckets are USD per million tokens. `per_image`, `per_video_second`, and `per_web_search` are USD per unit. `per_character` is USD per input character; `per_input_audio_second` and `per_output_audio_second` are USD per input/output audio second. These unit charges appear in `extraUsd` (Python: `extra_usd`), including any selected mode multiplier and regional uplift. A tier `{ "above_input_tokens": 272000, "prices": {...} }` applies only when total input is **greater** than 272,000. Exact dated model rows win over aliases and suffix matching. Known provider prefixes are stripped case insensitively. A `null` result means an unknown model; callers must not treat it as free.
+The optional model field `price_unit` applies to every price, including mode and tier prices. It is `"credit"` for ElevenLabs; absent (or `"usd"`) means USD. `models()` and `capabilities()` expose it when present. Existing USD rows and calculation result shapes are unchanged. Prices for token buckets are USD per million tokens for USD rows. `per_image`, `per_video_second`, and `per_web_search` are USD per unit. `per_character` is the row's price unit per input character; `per_input_audio_second` and `per_output_audio_second` are that unit per input/output audio second. For USD rows, these unit charges appear in `extraUsd` (Python: `extra_usd`), including any selected mode multiplier and regional uplift. A tier `{ "above_input_tokens": 272000, "prices": {...} }` applies only when total input is **greater** than 272,000. Exact dated model rows win over aliases and suffix matching. Known provider prefixes are stripped case insensitively. A `null` result means an unknown model; callers must not treat it as free.
 
 Usage totals include their modality and cache subcounts. The engine makes disjoint input and output buckets, and never charges the same reported token twice. When cache and modality counts overlap without a detailed split, it chooses the allocation with the **highest plausible cost**. For example, 1 million input tokens with 600,000 audio and 500,000 cached tokens require at least 100,000 cached audio tokens; the remaining cache allocation follows the most expensive feasible split. Counts that exceed a total are clamped and add `inconsistent_usage`.
 
@@ -82,24 +82,32 @@ A missing bucket price uses the most expensive applicable fallback and adds `fal
 Use `calc()` with provider `elevenlabs` and usage `characters`, `input_audio_seconds`, or `output_audio_seconds`; pass the billed character count or measured audio duration, including fractional seconds. Do not substitute token counts. These units are additive when supplied together. Native ElevenLabs responses are not extracted by `fromResponse`; binary TTS/sound/isolation responses require caller-supplied usage.
 
 ```js
-info.calc({ provider: 'elevenlabs', model: 'eleven_v3', usage: { characters: 1000 } });
-info.calc({ provider: 'elevenlabs', model: 'forced-alignment', usage: { input_audio_seconds: 60 } });
-info.calc({ provider: 'elevenlabs', model: 'eleven_text_to_sound_v2', usage: { output_audio_seconds: 10 } });
+const cost = info.calc({ provider: 'elevenlabs', model: 'eleven_v3', usage: { characters: 1000 } });
+// cost.priceUnit === 'credit'; cost.totalCredits === 1000; cost.totalUsd === null
+if (cost?.priceUnit === 'credit') {
+  // Hangar supplies its account's USD/credit; llm-info does not store this value.
+  const usd = cost.totalCredits * accountUsdPerCredit;
+}
 ```
 
-LiteLLM supplies `eleven_v3`, `eleven_multilingual_v2` ($0.00018/character), and `scribe_v1`, `scribe_v1_experimental`, `scribe_v2` ($0.0000611/input audio second; $0/output audio second). models.dev has no ElevenLabs prices. Reviewed rules checked **2026-10-15** supplement exact IDs from the [official API rates](https://elevenlabs.io/pricing/api) and [model list](https://elevenlabs.io/docs/overview/models):
+Credit results include `priceUnit: "credit"`, `totalCredits`, `inputCredits`, `outputCredits`, and `extraCredits`. **All four USD fields are `null`**, so they never contain credit amounts. TypeScript's `Cost` is a union: check `priceUnit` before using the corresponding amount. Python returns `price_unit: "credit"`, Decimal `total_credits`, `input_credits`, `output_credits`, `extra_credits`, and `None` for every `*_usd` field. Callers must branch on the unit before aggregation or conversion. The credit unit is specific to ElevenLabs and must not be combined with another provider's credits. USD/credit depends on the account's contract and belongs in Hangar's configuration, outside this public dataset. Legacy ElevenLabs cache rows without `price_unit: "credit"` return `null`/`None` from `calc()` until the data is refreshed.
 
-| IDs | API mode | Price (USD) |
+The builder ignores **all ElevenLabs LiteLLM USD rows**, including higher prices and unreviewed IDs. Reviewed rules publish only the following exact IDs, checked **2026-10-15**, using the [official pricing page's TTS credit descriptions](https://elevenlabs.io/pricing) and user-supplied production reconciliation of the ElevenLabs usage screen filtered to Hangar's API key:
+
+| IDs | API mode | Price (ElevenLabs credits) |
 | --- | --- | --- |
-| `eleven_v3`, `eleven_multilingual_v2` | `audio_speech` | Official $0.08/1K characters; higher LiteLLM $0.00018/character retained |
-| `eleven_flash_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2`, `eleven_turbo_v2_5` | `audio_speech` | `per_character: 0.00004` ($0.04/1K characters) |
-| `forced-alignment` | `audio_alignment` | `per_input_audio_second: 0.22/3600` (STT rate, $0.22/hour) |
-| `eleven_text_to_sound_v2` | `audio_generation` | `per_output_audio_second: 0.002` ($0.12/minute) |
-| `audio-isolation` | `audio_isolation` | `per_input_audio_second: 0.002` ($0.12/minute) |
+| `eleven_v3`, `eleven_multilingual_v2` | `audio_speech` | `per_character: 1` |
+| `eleven_flash_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2`, `eleven_turbo_v2_5` | `audio_speech` | `per_character: 0.5` |
+| `scribe_v1`, `scribe_v1_experimental`, `scribe_v2` | `audio_transcription` | `per_input_audio_second: 4/9` (1,600/hour); output seconds cost zero |
+| `forced-alignment` | `audio_alignment` | `per_input_audio_second: 4/9` (1,600/hour) |
+| `audio-isolation` | `audio_isolation` | `per_input_audio_second: 1000/60` (1,000/minute) |
+| `eleven_text_to_sound_v2` | `audio_generation` | `per_output_audio_second: 10` |
 
-[Forced Alignment](https://elevenlabs.io/docs/overview/capabilities/forced-alignment) uses the STT rate. [Its API](https://elevenlabs.io/docs/api-reference/forced-alignment/create) and the [audio-isolation API](https://elevenlabs.io/docs/api-reference/audio-isolation/convert) accept no selectable model; their catalog IDs above are exact endpoint IDs. [Sound generation](https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert) accepts `eleven_text_to_sound_v2`. Only reviewed exact IDs match; unverified aliases and dated ElevenLabs suffixes return `null`/`None`.
+The pricing page describes Multilingual v2 at 1 credit/character and Flash/Turbo API usage at 0.5–1 credit/character. The 0.5 rate here and the audio rates above are reviewed rules based on the supplied production reconciliation; the public FAQ's approximate STT and sound-effect product costs differ. Observed usage was STT/alignment 63 seconds → 28 credits and 8 seconds → 3.5; isolation 5 seconds → 83; sound effects 1 second → 10 (one observation). Calculations use the specified linear rates without rounding to the usage screen's display precision: 8 seconds at 4/9 gives about 3.5556 credits, and 5 seconds at 1000/60 gives about 83.3333. These are estimates, not a reproduction of invoice rounding.
 
-Missing character/audio-second rates use the highest known character/audio-second rate or the highest token rate converted to USD/token, whichever is greater, with `fallback_price:<key>` (or `missing_price:<key>` if no character/audio-second rate exists). This is a conservative numerical estimate, not a unit conversion. Missing usage for a positive rate adds `missing_param:characters`, `missing_param:input_audio_seconds`, or `missing_param:output_audio_seconds`; no duration or character count is invented. Explicit zero counts and zero rates remain zero. An unknown model returns `null`/`None`, which must not be treated as free. Feed/rule disagreements retain the higher price.
+[Forced Alignment](https://elevenlabs.io/docs/api-reference/forced-alignment/create) and [audio isolation](https://elevenlabs.io/docs/api-reference/audio-isolation/convert) have no selectable model; their catalog IDs above are exact endpoint IDs. Only reviewed exact IDs match; unverified aliases and dated ElevenLabs suffixes return `null`/`None`.
+
+Missing character/audio-second rates use the highest known character/audio-second rate or the highest token rate divided by one million, whichever is greater, with `fallback_price:<key>` (or `missing_price:<key>` if no character/audio-second rate exists). All prices remain in the row's unit; this fallback is a conservative numerical estimate, not a conversion between usage dimensions. Missing usage for a positive rate adds `missing_param:characters`, `missing_param:input_audio_seconds`, or `missing_param:output_audio_seconds`; no duration or character count is invented. Explicit zero counts and zero rates remain zero. An unknown model returns `null`/`None`, which must not be treated as free.
 
 ## Known limitations
 

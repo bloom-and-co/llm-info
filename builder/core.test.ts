@@ -682,132 +682,104 @@ it('applies the official token multiplier without multiplying tool fees or apply
   expect(row(merged, 'openai', 'grok-4.7').modes.priority).toBeUndefined();
 });
 
-it('imports ElevenLabs units without token scaling and preserves higher duplicate feed/rule rates', () => {
+it('ignores ElevenLabs USD feeds entirely, including higher prices, modes and unreviewed IDs', () => {
   const lite = {
     'elevenlabs/eleven_v3': {
       litellm_provider: 'elevenlabs',
       mode: 'audio_speech',
-      input_cost_per_character: 0.00018,
+      input_cost_per_character: 9999,
+      input_cost_per_token: 9999,
+      output_cost_per_token: 9999,
+      input_cost_per_character_priority: 9999,
     },
-    eleven_v3: {
-      litellm_provider: 'elevenlabs',
-      mode: 'audio_speech',
-      input_cost_per_character: 0.0001,
-    },
-    'elevenlabs/scribe_v2': {
+    scribe_v2: {
       litellm_provider: 'elevenlabs',
       mode: 'audio_transcription',
-      input_cost_per_second: 0.0000611,
-      output_cost_per_second: 0,
+      input_cost_per_second: 9999,
+      output_cost_per_second: 9999,
     },
-    'elevenlabs/eleven_flash_v2': {
+    'elevenlabs/unreviewed': {
       litellm_provider: 'elevenlabs',
       mode: 'audio_speech',
-      input_cost_per_character: 0.00001,
+      input_cost_per_character: 9999,
     },
-    'elevenlabs/eleven_turbo_v2': {
-      litellm_provider: 'elevenlabs',
-      mode: 'audio_speech',
-      input_cost_per_character: 0.0002,
-    },
-    'elevenlabs/audio-isolation': {
-      litellm_provider: 'elevenlabs',
-      mode: 'audio_isolation',
-      input_cost_per_second: 0.004,
+    'openai/test': {
+      litellm_provider: 'openai',
+      mode: 'chat',
+      input_cost_per_token: 0.001,
+      output_cost_per_token: 0.002,
     },
   };
   const before = JSON.stringify(lite);
+  const baseline = mergeSources({ 'openai/test': lite['openai/test'] }, {});
   const merged = mergeSources(lite, {});
   expect(normalizeId('elevenlabs/eleven_v3', 'elevenlabs')).toBe('eleven_v3');
-  expect(row(merged, 'elevenlabs', 'eleven_v3')).toMatchObject({
-    mode: 'audio_speech',
-    prices: { per_character: 0.00018 },
-    match: { dated_suffix: false },
-  });
-  expect(row(merged, 'elevenlabs', 'scribe_v2').prices).toEqual({
-    per_input_audio_second: 0.0000611,
-    per_output_audio_second: 0,
-  });
-  expect(row(merged, 'elevenlabs', 'eleven_flash_v2').prices).toEqual({ per_character: 0.00004 });
-  expect(row(merged, 'elevenlabs', 'eleven_turbo_v2').prices).toEqual({ per_character: 0.0002 });
-  expect(row(merged, 'elevenlabs', 'audio-isolation').prices).toEqual({
-    per_input_audio_second: 0.004,
-  });
-  expect(merged.conflicts).toContainEqual(
-    expect.objectContaining({ provider: 'elevenlabs', model: 'eleven_v3', adopted: 0.00018 }),
-  );
-  expect(merged.applied_rules).toContainEqual(
-    expect.objectContaining({
-      provider: 'elevenlabs',
-      model: 'eleven_flash_v2',
-      field: 'prices.per_character',
-      previous: 0.00001,
-      adopted: 0.00004,
-      source_url: 'https://elevenlabs.io/pricing/api',
-      checked_at: '2026-10-15',
-    }),
-  );
+  expect(merged).toEqual(baseline);
   expect(JSON.stringify(lite)).toBe(before);
-  expect(mergeSources(Object.fromEntries(Object.entries(lite).reverse()), {}).models).toEqual(
-    merged.models,
-  );
+  expect(mergeSources(Object.fromEntries(Object.entries(lite).reverse()), {})).toEqual(merged);
 });
-it('seeds only reviewed exact ElevenLabs IDs with official units, kinds, and provenance', async () => {
+it('seeds exactly twelve reviewed credit models and records provenance', async () => {
   const { providerRules } = await import('./rules.mjs');
   const merged = mergeSources({}, {});
   const expected = [
-    ['audio-isolation', 'audio_isolation', 'per_input_audio_second', 0.002],
-    ['eleven_flash_v2', 'audio_speech', 'per_character', 0.00004],
-    ['eleven_flash_v2_5', 'audio_speech', 'per_character', 0.00004],
-    ['eleven_multilingual_v2', 'audio_speech', 'per_character', 0.00008],
-    ['eleven_text_to_sound_v2', 'audio_generation', 'per_output_audio_second', 0.002],
-    ['eleven_turbo_v2', 'audio_speech', 'per_character', 0.00004],
-    ['eleven_turbo_v2_5', 'audio_speech', 'per_character', 0.00004],
-    ['eleven_v3', 'audio_speech', 'per_character', 0.00008],
-    ['forced-alignment', 'audio_alignment', 'per_input_audio_second', 0.22 / 3600],
+    ['audio-isolation', 'audio_isolation', { per_input_audio_second: 1000 / 60 }],
+    ['eleven_flash_v2', 'audio_speech', { per_character: 0.5 }],
+    ['eleven_flash_v2_5', 'audio_speech', { per_character: 0.5 }],
+    ['eleven_multilingual_v2', 'audio_speech', { per_character: 1 }],
+    ['eleven_text_to_sound_v2', 'audio_generation', { per_output_audio_second: 10 }],
+    ['eleven_turbo_v2', 'audio_speech', { per_character: 0.5 }],
+    ['eleven_turbo_v2_5', 'audio_speech', { per_character: 0.5 }],
+    ['eleven_v3', 'audio_speech', { per_character: 1 }],
+    ['forced-alignment', 'audio_alignment', { per_input_audio_second: 4 / 9 }],
+    ...['scribe_v1', 'scribe_v1_experimental', 'scribe_v2'].map((id) => [
+      id,
+      'audio_transcription',
+      { per_input_audio_second: 4 / 9, per_output_audio_second: 0 },
+    ]),
   ];
   expect(merged.models).toHaveLength(expected.length);
-  for (const [id, mode, key, value] of expected) {
+  for (const [id, mode, prices] of expected) {
     const m = row(merged, 'elevenlabs', id as string);
     expect(m.mode).toBe(mode);
-    expect(m.prices).toEqual({ [key as string]: value });
+    expect(m.price_unit).toBe('credit');
+    expect(m.prices).toEqual(prices);
     expect(m.capabilities.input_modalities.length).toBeGreaterThan(0);
     expect(m.capabilities.output_modalities.length).toBeGreaterThan(0);
     expect(m.match).toEqual({ exact: [id], dated_suffix: false });
   }
   for (const rule of providerRules.filter((r: any) => r.provider === 'elevenlabs')) {
     expect(rule.checked_at).toBe('2026-10-15');
-    expect(rule.source_url).toMatch(/^https:\/\/elevenlabs.io\//);
+    expect(rule.source_url).toBe('https://elevenlabs.io/pricing');
     expect(rule.supporting_urls.length).toBeGreaterThan(0);
   }
+  expect(merged.applied_rules).toContainEqual(
+    expect.objectContaining({
+      provider: 'elevenlabs',
+      model: 'eleven_v3',
+      field: 'prices.per_character',
+      price_unit: 'credit',
+      previous: null,
+      adopted: 1,
+      source_url: 'https://elevenlabs.io/pricing',
+      checked_at: '2026-10-15',
+    }),
+  );
 });
 it.each([null, -1, '0.002'])(
-  'skips malformed ElevenLabs prices even when a reviewed supplement exists: %s',
+  'ignores malformed ElevenLabs USD feed prices without suppressing reviewed credits: %s',
   (price) => {
-    const merged = mergeSources(
-      {
-        'elevenlabs/eleven_v3': {
-          litellm_provider: 'elevenlabs',
-          mode: 'audio_speech',
-          input_cost_per_character: price,
+    expect(
+      mergeSources(
+        {
+          'elevenlabs/eleven_v3': {
+            litellm_provider: 'elevenlabs',
+            mode: 'audio_speech',
+            input_cost_per_character: price,
+          },
         },
-        'elevenlabs/no-price': { litellm_provider: 'elevenlabs', mode: 'audio_transcription' },
-        'elevenlabs/zero-output-only': {
-          litellm_provider: 'elevenlabs',
-          mode: 'audio_transcription',
-          output_cost_per_second: 0,
-        },
-      },
-      {},
-    );
-    expect(row(merged, 'elevenlabs', 'eleven_v3')).toBeUndefined();
-    expect(merged.skipped).toEqual(
-      expect.arrayContaining([
-        { provider: 'elevenlabs', model: 'eleven_v3', reason: 'invalid_price' },
-        { provider: 'elevenlabs', model: 'no-price', reason: 'missing_required_price' },
-        { provider: 'elevenlabs', model: 'zero-output-only', reason: 'missing_required_price' },
-      ]),
-    );
+        {},
+      ),
+    ).toEqual(mergeSources({}, {}));
   },
 );
 it('freezes twelve ElevenLabs models and validates the published audio API kinds', async () => {
@@ -815,10 +787,19 @@ it('freezes twelve ElevenLabs models and validates the published audio API kinds
   const snapshot = JSON.parse(await readFile('tests/fixtures/llm-info-snapshot.json', 'utf8'));
   const rows = d.models.filter((m: any) => m.provider === 'elevenlabs');
   expect(snapshot.models.filter((m: any) => m.provider === 'elevenlabs')).toHaveLength(12);
-  expect(rows.length).toBeGreaterThan(0);
+  expect(rows).toEqual(snapshot.models.filter((m: any) => m.provider === 'elevenlabs'));
   for (const model of rows) {
+    expect(model.price_unit).toBe('credit');
     expect(model.mode).toMatch(/^audio_/);
     expect(Object.keys(model.prices).some((key) => key.startsWith('per_'))).toBe(true);
   }
   validate(d);
+});
+it('rejects missing or unsupported published price units', async () => {
+  const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
+  const m = d.models.find((m: any) => m.provider === 'elevenlabs');
+  delete m.price_unit;
+  expect(() => validate(d)).toThrow('ElevenLabs requires credit prices');
+  m.price_unit = 'unknown';
+  expect(() => validate(d)).toThrow('invalid price unit');
 });

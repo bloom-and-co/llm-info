@@ -320,7 +320,15 @@ class LlmInfo:
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
         m = find_model(self.doc["data"]["models"], provider, model)
-        return {**(m.get("capabilities") or {}), "mode": m.get("mode")} if m else None
+        return (
+            {
+                **(m.get("capabilities") or {}),
+                "mode": m.get("mode"),
+                **({"price_unit": m["price_unit"]} if "price_unit" in m else {}),
+            }
+            if m
+            else None
+        )
 
     def models(self, provider=None):
         if not self.doc:
@@ -330,6 +338,7 @@ class LlmInfo:
                 "provider": m["provider"],
                 "id": m["id"],
                 "mode": m.get("mode"),
+                **({"price_unit": m["price_unit"]} if "price_unit" in m else {}),
                 "capabilities": m.get("capabilities"),
             }
             for m in self.doc["data"]["models"]
@@ -342,7 +351,8 @@ class LlmInfo:
         if not self.doc:
             raise PricesNotLoadedError("Prices are not loaded; call load() first")
         m = find_model(self.doc["data"]["models"], provider, model)
-        if not m:
+        # Legacy ElevenLabs USD cache rows require a refresh before calculation.
+        if not m or (m["provider"] == "elevenlabs" and m.get("price_unit") != "credit"):
             return None
         provider_mode_multiplier = max(
             (

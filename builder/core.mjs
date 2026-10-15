@@ -505,6 +505,8 @@ export function mergeSources(lite, models) {
     if (v && typeof v === 'object') {
       const p = providerOf(v, id);
       if (!p) continue;
+      // ElevenLabs feed prices are USD. Only reviewed credit rules may publish rows.
+      if (p === 'elevenlabs') continue;
       const sized = id.match(/^(?:(low|medium|high|standard|hd)\/)?(\d+)-x-(\d+)\/(.+)$/);
       if (sized && v.mode === 'image_generation') {
         sizedImages.push({
@@ -586,7 +588,7 @@ export function mergeSources(lite, models) {
     }
   const applied_rules = [];
   // Supplements can seed feed-missing exact IDs. Merge before publishability checks
-  // so unit-only rows need no invented token rates. Invalid feed data remains skipped.
+  // so unit-only rows need no invented token rates. ElevenLabs USD feeds are excluded above.
   for (const rule of providerRules) {
     const supplement = rule.effect.supplement;
     if (!supplement) continue;
@@ -595,6 +597,7 @@ export function mergeSources(lite, models) {
       const key = rule.provider + '\0' + id;
       const model = map.get(key) ?? { id, prices: {} };
       model.x_mode ??= supplement.mode;
+      if (supplement.price_unit) model.x_price_unit = supplement.price_unit;
       model._cap = mergeCapabilities(
         model._cap,
         supplement.capabilities,
@@ -615,6 +618,7 @@ export function mergeSources(lite, models) {
           provider: rule.provider,
           model: id,
           field: `prices.${field}`,
+          ...(supplement.price_unit ? { price_unit: supplement.price_unit } : {}),
           previous: previous ?? null,
           adopted,
           source_url: rule.source_url,
@@ -768,6 +772,7 @@ export function mergeSources(lite, models) {
         provider,
         id: m.id,
         mode: m.x_mode ?? 'other',
+        ...(m.x_price_unit ? { price_unit: m.x_price_unit } : {}),
         name: dev?.name ?? m.id,
         aliases: [],
         match: { exact, dated_suffix: provider !== 'elevenlabs' },
@@ -888,6 +893,10 @@ export function validate(doc, previous) {
     if (!rows.length) throw Error('empty provider: ' + provider);
   }
   for (const m of doc.models) {
+    if (m.price_unit !== undefined && !['usd', 'credit'].includes(m.price_unit))
+      throw Error('invalid price unit ' + m.id);
+    if (m.provider === 'elevenlabs' && m.price_unit !== 'credit')
+      throw Error('ElevenLabs requires credit prices ' + m.id);
     if (!API_MODES.has(m.mode)) throw Error('invalid mode ' + m.id);
     if (!Object.keys(m.prices ?? {}).some((key) => key !== 'tiers'))
       throw Error('model without price ' + m.id);
