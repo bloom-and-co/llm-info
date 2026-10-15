@@ -34,6 +34,9 @@ const keys = [
   'output_images',
   'output_video_seconds',
   'web_searches',
+  'characters',
+  'input_audio_seconds',
+  'output_audio_seconds',
 ];
 const cases = [];
 for (let i = 0; i < 20000; i++) {
@@ -41,9 +44,11 @@ for (let i = 0; i < 20000; i++) {
   const u = {};
   for (const k of keys)
     if (rnd() < 0.35) {
-      const value = k.endsWith('_breakdown_present')
+      let value = k.endsWith('_breakdown_present')
         ? 1
         : Math.floor(rnd() * pick([10, 1000, 300000, 1e6]));
+      if (['characters', 'input_audio_seconds', 'output_audio_seconds'].includes(k))
+        value = rnd() < 0.1 ? pick([-1, true, '', 'NaN']) : value / 10;
       u[k] = rnd() < 0.2 ? String(value) : value;
     }
   const mode = pick(['standard', 'standard', 'fast', 'priority', 'flex', 'batch']);
@@ -116,6 +121,25 @@ for (const m of d.models.filter((model) => model.provider === 'x-ai')) {
         cache_read_tokens: 500,
         reasoning_tokens: 200,
       };
+      const r = calculate(m, u, {}, mode);
+      cases.push({
+        p: m.provider,
+        id: m.id,
+        u,
+        mode,
+        region: 'global',
+        opt: {},
+        t: r.totalUsd,
+        w: r.warnings,
+      });
+    }
+  }
+}
+// Guarantee fractional and zero usage for every ElevenLabs ID in each pricing mode.
+for (const m of d.models.filter((model) => model.provider === 'elevenlabs')) {
+  for (const mode of ['standard', 'priority', 'batch']) {
+    for (const amount of [0, 0.5, 60.25, 1000]) {
+      const u = { characters: amount, input_audio_seconds: amount, output_audio_seconds: amount };
       const r = calculate(m, u, {}, mode);
       cases.push({
         p: m.provider,

@@ -28,7 +28,7 @@ def surcharge_multiplier(model):
 
 def find_model(models, provider, name):
     name = re.sub(
-        r"^(openai|anthropic|gemini|models|google|xai|x-ai)/",
+        r"^(openai|anthropic|gemini|models|google|xai|x-ai|elevenlabs)/",
         "",
         name,
         flags=re.IGNORECASE,
@@ -398,6 +398,28 @@ def calculate(model, usage, options=None, mode="standard", region="global"):
         return max(map(D, value.values()))
 
     extra = D(0)
+    unit_buckets = (
+        ("characters", "per_character"),
+        ("input_audio_seconds", "per_input_audio_second"),
+        ("output_audio_seconds", "per_output_audio_second"),
+    )
+    for field, key in unit_buckets:
+        amount = count(field)
+        if amount:
+            unit_rate = prices.get(key)
+            if not isinstance(unit_rate, (int, float, Decimal)):
+                candidates = [
+                    D(prices[k])
+                    for _, k in unit_buckets
+                    if isinstance(prices.get(k), (int, float, Decimal))
+                ]
+                warnings.append(
+                    ("fallback_price:" if candidates else "missing_price:") + key
+                )
+                unit_rate = max([highest / D(1000000)] + candidates)
+            extra += amount * D(unit_rate) * multiplier
+        elif D(prices.get(key, 0)) > 0 and (usage or {}).get(field) is None:
+            warnings.append("missing_param:" + field)
     images = count("output_images")
     if (
         not images

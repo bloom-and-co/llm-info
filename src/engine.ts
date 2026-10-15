@@ -28,7 +28,7 @@ export function surchargeMultiplier(model: Model): number {
 const dated = /(?:-(?:20\d{6}|20\d{2}-\d{2}-\d{2})|@20\d{6}|-00[12])$/i;
 export function findModel(models: Model[], provider: string, name: string): Model | undefined {
   const raw = name
-    .replace(/^(?:openai|anthropic|gemini|models|google|xai|x-ai)\//i, '')
+    .replace(/^(?:openai|anthropic|gemini|models|google|xai|x-ai|elevenlabs)\//i, '')
     .toLowerCase();
   const rows = models.filter((m) => m.provider.toLowerCase() === provider.toLowerCase());
   const direct = rows.find((m) => m.id.toLowerCase() === raw);
@@ -319,6 +319,27 @@ export function calculate(
   inputCost = (inputCost * multiplier) / 1e6;
   outputCost = (outputCost * multiplier) / 1e6;
   let extra = 0;
+  const unitBuckets = [
+    ['characters', 'per_character'],
+    ['input_audio_seconds', 'per_input_audio_second'],
+    ['output_audio_seconds', 'per_output_audio_second'],
+  ];
+  for (const [field, key] of unitBuckets) {
+    const amount = count(field);
+    if (amount) {
+      let unitRate = prices[key];
+      if (typeof unitRate !== 'number') {
+        const candidates = unitBuckets
+          .map(([, k]) => prices[k])
+          .filter((v): v is number => typeof v === 'number');
+        warnings.push((candidates.length ? 'fallback_price:' : 'missing_price:') + key);
+        unitRate = Math.max(highest / 1e6, ...candidates);
+      }
+      extra += amount * unitRate * multiplier;
+    } else if (prices[key] > 0 && usage?.[field] == null) {
+      warnings.push('missing_param:' + field);
+    }
+  }
   const images =
     count('output_images') ||
     (prices.per_image !== undefined && !output && !count('output_image_tokens')
