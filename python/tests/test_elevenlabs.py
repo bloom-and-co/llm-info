@@ -120,7 +120,9 @@ def test_legacy_usd_cache_requires_refresh():
 def test_realtime_catalog_mode():
     info = LlmInfo(store=MemoryStore(), fetch=lambda u, e: (200, None, DATA))
     info.load()
-    model = next(m for m in info.models("elevenlabs") if m["id"] == "scribe_v2_realtime")
+    model = next(
+        m for m in info.models("elevenlabs") if m["id"] == "scribe_v2_realtime"
+    )
     assert model["mode"] == "realtime"
     assert model["price_unit"] == "credit"
     capabilities = info.capabilities("elevenlabs", "scribe_v2_realtime")
