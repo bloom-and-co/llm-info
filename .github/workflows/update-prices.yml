@@ -8,7 +8,21 @@ concurrency:
   cancel-in-progress: false
 permissions:
   contents: write
+env:
+  LLM_PRICE_WATCH_URL: ${{ vars.LLM_PRICE_WATCH_URL || 'https://llm-price-watch.hangar.fctry.jp/prices.json' }}
 jobs:
+  monitor-price-watch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - run: node scripts/check-price-watch.mjs
   update:
     runs-on: ubuntu-latest
     steps:

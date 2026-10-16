@@ -18,7 +18,7 @@ async function get(url) {
 const [l, m, watch] = await Promise.all([
   get(URLs.litellm),
   get(URLs.models_dev),
-  optionalPriceWatch(process.env.LLM_PRICE_WATCH_URL),
+  optionalPriceWatch(process.env.LLM_PRICE_WATCH_URL || undefined),
 ]);
 console.log(`builder: checked litellm=${l.fetched_at} models_dev=${m.fetched_at}`);
 const previous = await fs

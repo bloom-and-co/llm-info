@@ -94,3 +94,13 @@ export function priceWatchMetadata(feed, previous, previousIds) {
     models: data.models.map(({ id, feature, verified_at }) => ({ id, feature, verified_at })),
   };
 }
+
+export function checkPriceWatchFreshness(data, now = Date.now()) {
+  validatePriceWatch(data);
+  if (data.verified_at === null) throw Error('price-watch has no verified prices');
+  const ageMs = now - Date.parse(data.verified_at);
+  const maxAgeMs = 72 * 60 * 60 * 1000;
+  if (ageMs < 0 || ageMs > maxAgeMs)
+    throw Error(`price-watch verification age ${ageMs}ms is outside 0..${maxAgeMs}ms`);
+  return ageMs;
+}
