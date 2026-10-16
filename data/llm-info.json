@@ -20700,6 +20700,52 @@
         "release_date": null,
         "endpoints": null
       }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "scribe_v2_medical",
+      "mode": "audio_transcription",
+      "price_unit": "credit",
+      "name": "scribe_v2_medical",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "scribe_v2_medical"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.4444444444444444,
+        "per_output_audio_second": 0
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "audio"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/speech-to-text"
+        ]
+      }
     }
   ],
   "skipped": [
@@ -20784,6 +20830,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-16T00:57:34.904Z",
-  "version": "2026-10-16T00:57:34.904Z-0d5e24de5d2a"
+  "generated_at": "2026-10-16T06:02:49.386Z",
+  "version": "2026-10-16T06:02:49.386Z-665f6dbcc768"
 }

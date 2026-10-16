@@ -718,7 +718,7 @@ it('ignores ElevenLabs USD feeds entirely, including higher prices, modes and un
   expect(JSON.stringify(lite)).toBe(before);
   expect(mergeSources(Object.fromEntries(Object.entries(lite).reverse()), {})).toEqual(merged);
 });
-it('seeds exactly twelve reviewed credit models and records provenance', async () => {
+it('seeds exactly thirteen reviewed credit models and records provenance', async () => {
   const { providerRules } = await import('./rules.mjs');
   const merged = mergeSources({}, {});
   const expected = [
@@ -731,7 +731,7 @@ it('seeds exactly twelve reviewed credit models and records provenance', async (
     ['eleven_turbo_v2_5', 'audio_speech', { per_character: 0.5 }],
     ['eleven_v3', 'audio_speech', { per_character: 1 }],
     ['forced-alignment', 'audio_alignment', { per_input_audio_second: 4 / 9 }],
-    ...['scribe_v1', 'scribe_v1_experimental', 'scribe_v2'].map((id) => [
+    ...['scribe_v1', 'scribe_v1_experimental', 'scribe_v2', 'scribe_v2_medical'].map((id) => [
       id,
       'audio_transcription',
       { per_input_audio_second: 4 / 9, per_output_audio_second: 0 },
@@ -748,7 +748,9 @@ it('seeds exactly twelve reviewed credit models and records provenance', async (
     expect(m.match).toEqual({ exact: [id], dated_suffix: false });
   }
   for (const rule of providerRules.filter((r: any) => r.provider === 'elevenlabs')) {
-    expect(rule.checked_at).toBe('2026-10-15');
+    expect(rule.checked_at).toBe(
+      rule.id === 'elevenlabs-scribe-medical' ? '2026-10-16' : '2026-10-15',
+    );
     expect(rule.source_url).toBe('https://elevenlabs.io/pricing');
     expect(rule.supporting_urls.length).toBeGreaterThan(0);
   }
@@ -782,11 +784,11 @@ it.each([null, -1, '0.002'])(
     ).toEqual(mergeSources({}, {}));
   },
 );
-it('freezes twelve ElevenLabs models and validates the published audio API kinds', async () => {
+it('freezes thirteen ElevenLabs models and validates the published audio API kinds', async () => {
   const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
   const snapshot = JSON.parse(await readFile('tests/fixtures/llm-info-snapshot.json', 'utf8'));
   const rows = d.models.filter((m: any) => m.provider === 'elevenlabs');
-  expect(snapshot.models.filter((m: any) => m.provider === 'elevenlabs')).toHaveLength(12);
+  expect(snapshot.models.filter((m: any) => m.provider === 'elevenlabs')).toHaveLength(13);
   expect(rows).toEqual(snapshot.models.filter((m: any) => m.provider === 'elevenlabs'));
   for (const model of rows) {
     expect(model.price_unit).toBe('credit');

@@ -50,7 +50,7 @@ it('merges credit feed increases with reviewed rules and never lowers a reviewed
     input: 1,
     output: 2,
   });
-  expect(merged.models.filter((row) => row.provider === 'elevenlabs')).toHaveLength(12);
+  expect(merged.models.filter((row) => row.provider === 'elevenlabs')).toHaveLength(13);
   expect(merged.conflicts).toContainEqual(
     expect.objectContaining({
       source_a: 'reviewed_rule',
@@ -199,7 +199,7 @@ it.each(['http', 'json', 'shape', 'network'])(
     expect(result).toBeNull();
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('skipped price_watch:'));
     const output = mergeSources({}, {}, result?.data);
-    expect(output.models).toHaveLength(12);
+    expect(output.models).toHaveLength(13);
     expect(output.models.find((row) => row.id === 'eleven_v3').prices.per_character).toBe(1);
   },
 );

@@ -415,6 +415,15 @@
     "warnings": []
   },
   {
+    "name": "scribe_v2_medical",
+    "model": "scribe_v2_medical",
+    "usage": {
+      "input_audio_seconds": 63
+    },
+    "expected": 28,
+    "warnings": []
+  },
+  {
     "name": "STT 8 seconds unrounded",
     "model": "scribe_v2",
     "usage": {

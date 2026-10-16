@@ -65,6 +65,32 @@ export const providerRules = [
     checked_at: '2026-10-15',
   },
   {
+    id: 'elevenlabs-scribe-medical',
+    provider: 'elevenlabs',
+    model_selector: {
+      description: 'Documented Scribe v2 Medical ID; same reviewed Scribe v2 credit rate',
+      ids: ['scribe_v2_medical'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_transcription',
+        price_unit: 'credit',
+        prices: { per_input_audio_second: 4 / 9, per_output_audio_second: 0 },
+        capabilities: {
+          input_modalities: ['audio'],
+          output_modalities: ['text'],
+          endpoints: ['/v1/speech-to-text'],
+        },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing',
+    supporting_urls: [
+      'https://elevenlabs.io/docs/overview/models',
+      'https://elevenlabs.io/pricing/api',
+    ],
+    checked_at: '2026-10-16',
+  },
+  {
     id: 'elevenlabs-forced-alignment',
     provider: 'elevenlabs',
     model_selector: {
