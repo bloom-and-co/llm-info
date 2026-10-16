@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import { IDS, finalize, mergeSources, normalizeId, providerOf, validate } from './core.mjs';
+import { optionalPriceWatch, priceWatchMetadata } from './price-watch.mjs';
 const URLs = {
   litellm:
     'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json',
@@ -14,7 +15,11 @@ async function get(url) {
     fetched_at: new Date().toISOString(),
   };
 }
-const [l, m] = await Promise.all(Object.values(URLs).map(get));
+const [l, m, watch] = await Promise.all([
+  get(URLs.litellm),
+  get(URLs.models_dev),
+  optionalPriceWatch(process.env.LLM_PRICE_WATCH_URL),
+]);
 console.log(`builder: checked litellm=${l.fetched_at} models_dev=${m.fetched_at}`);
 const previous = await fs
   .readFile('data/llm-info.json', 'utf8')
@@ -23,7 +28,7 @@ const previous = await fs
 const previousIds = new Set(
   (previous?.models ?? []).map((model) => `${model.provider}\0${model.id}`),
 );
-const merged = mergeSources(l.data, m.data);
+const merged = mergeSources(l.data, m.data, watch?.data);
 for (const applied of merged.applied_rules)
   console.log('provider_rule: ' + JSON.stringify(applied));
 const publishedIds = new Set(merged.models.map((model) => `${model.provider}\0${model.id}`));
@@ -64,6 +69,9 @@ const doc = {
       etag: m.etag ?? 'unknown',
       latest_new_model_at: latest('models_dev', newModels),
     },
+    ...(watch
+      ? { price_watch: priceWatchMetadata(watch, previous?.sources?.price_watch, previousIds) }
+      : {}),
   },
   models: merged.models,
   skipped: merged.skipped,
@@ -71,7 +79,9 @@ const doc = {
 validate(doc, previous);
 const out = finalize(doc, previous);
 if (out !== previous) {
-  const oneLineSources = `  "sources": {\n    "litellm": ${JSON.stringify(out.sources.litellm)},\n    "models_dev": ${JSON.stringify(out.sources.models_dev)}\n  },\n  "models":`;
+  const oneLineSources = `  "sources": {\n${Object.entries(out.sources)
+    .map(([name, source]) => `    ${JSON.stringify(name)}: ${JSON.stringify(source)}`)
+    .join(',\n')}\n  },\n  "models":`;
   const json = JSON.stringify(out, null, 2).replace(
     /  "sources": \{[\s\S]*?\n  \},\n  "models":/,
     oneLineSources,

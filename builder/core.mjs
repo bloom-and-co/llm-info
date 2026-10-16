@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { providerRules } from './rules.mjs';
+import { validatePriceWatch } from './price-watch.mjs';
 
 export const IDS = ['openai', 'anthropic', 'google', 'x-ai', 'elevenlabs'];
 const unitPrices = {
@@ -361,7 +362,7 @@ function mergePrice(a, b, meta, conflicts) {
 function escaped(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
-export function mergeSources(lite, models) {
+export function mergeSources(lite, models, priceWatch = null) {
   const map = new Map(),
     conflicts = [],
     capability_conflicts = [],
@@ -505,7 +506,7 @@ export function mergeSources(lite, models) {
     if (v && typeof v === 'object') {
       const p = providerOf(v, id);
       if (!p) continue;
-      // ElevenLabs feed prices are USD. Only reviewed credit rules may publish rows.
+      // ElevenLabs LiteLLM prices are USD; reviewed rules and the credit feed are separate.
       if (p === 'elevenlabs') continue;
       const sized = id.match(/^(?:(low|medium|high|standard|hd)\/)?(\d+)-x-(\d+)\/(.+)$/);
       if (sized && v.mode === 'image_generation') {
@@ -626,6 +627,29 @@ export function mergeSources(lite, models) {
         });
       }
       map.set(key, model);
+    }
+  }
+  if (priceWatch) {
+    for (const row of validatePriceWatch(priceWatch).models) {
+      const model = map.get('elevenlabs\0' + row.id);
+      // The validated whitelist is seeded by reviewed credit rules above.
+      for (const [field, value] of Object.entries(row.prices)) {
+        const changes = [];
+        model.x_extra_prices[field] = mergePrice(
+          model.x_extra_prices[field],
+          value,
+          { provider: 'elevenlabs', model: row.id, field: `prices.${field}` },
+          changes,
+        );
+        for (const { litellm: prior, models_dev: candidate, ...meta } of changes)
+          conflicts.push({
+            ...meta,
+            source_a: 'reviewed_rule',
+            source_b: 'price_watch',
+            prior,
+            candidate,
+          });
+      }
     }
   }
   const modelsOut = [];
@@ -926,9 +950,21 @@ export function validate(doc, previous) {
       throw Error('missing flagship ' + id);
 }
 export function stableContent(doc) {
+  const watch = doc.sources?.price_watch;
   return JSON.stringify({
     models: doc.models,
     skipped: doc.skipped,
+    // Publish verified feed provenance even when reviewed rules already supply the same price.
+    ...(watch
+      ? {
+          price_watch: {
+            url: watch.url,
+            source_url: watch.source_url,
+            verified_at: watch.verified_at,
+            models: watch.models,
+          },
+        }
+      : {}),
   });
 }
 export function finalize(doc, previous, now = new Date().toISOString()) {
