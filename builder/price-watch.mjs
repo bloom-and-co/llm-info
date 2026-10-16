@@ -1,6 +1,7 @@
 import { providerRules } from './rules.mjs';
 
 export const PRICE_WATCH_URL = 'https://llm-price-watch.hangar.fctry.jp/prices.json';
+export const PRICE_WATCH_MAX_BYTES = 64 * 1024;
 const reviewed = new Map(
   providerRules
     .filter((rule) => rule.provider === 'elevenlabs' && rule.effect.supplement)
@@ -42,7 +43,7 @@ export function validatePriceWatch(data) {
           !Object.hasOwn(rule.prices, key) ||
           typeof value !== 'number' ||
           !Number.isFinite(value) ||
-          value < 0,
+          value <= 0,
       )
     )
       throw Error('invalid price-watch model: ' + String(row?.id));
@@ -58,9 +59,36 @@ export function validatePriceWatch(data) {
 
 export async function fetchPriceWatch(url = PRICE_WATCH_URL, fetcher = fetch) {
   const response = await fetcher(url, { signal: AbortSignal.timeout(30_000) });
-  if (!response.ok) throw Error(`${url}: HTTP ${response.status}`);
+  if (!response.ok) {
+    await response.body?.cancel();
+    throw Error(`${url}: HTTP ${response.status}`);
+  }
+  const declared = Number(response.headers.get('content-length'));
+  if (declared > PRICE_WATCH_MAX_BYTES) {
+    await response.body?.cancel();
+    throw Error(`price-watch body ${declared} bytes exceeds ${PRICE_WATCH_MAX_BYTES} bytes`);
+  }
+  if (!response.body) throw Error('price-watch body is empty');
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let size = 0;
+  let text = '';
+  try {
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > PRICE_WATCH_MAX_BYTES)
+        throw Error(`price-watch body ${size} bytes exceeds ${PRICE_WATCH_MAX_BYTES} bytes`);
+      text += decoder.decode(value, { stream: true });
+    }
+    text += decoder.decode();
+  } finally {
+    await reader.cancel().catch(() => undefined);
+    reader.releaseLock();
+  }
   return {
-    data: validatePriceWatch(await response.json()),
+    data: validatePriceWatch(JSON.parse(text)),
     url,
     fetched_at: new Date().toISOString(),
     etag: response.headers.get('etag') ?? 'unknown',

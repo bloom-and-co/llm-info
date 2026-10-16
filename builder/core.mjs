@@ -960,8 +960,9 @@ export function stableContent(doc) {
           price_watch: {
             url: watch.url,
             source_url: watch.source_url,
-            verified_at: watch.verified_at,
-            models: watch.models,
+            // Monitor checks feed freshness directly; verification-only changes
+            // must not create a new dataset version.
+            models: watch.models.map(({ id, feature }) => ({ id, feature })),
           },
         }
       : {}),

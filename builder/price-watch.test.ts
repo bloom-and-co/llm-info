@@ -6,6 +6,8 @@ import {
   priceWatchMetadata,
   validatePriceWatch,
   PRICE_WATCH_URL,
+  PRICE_WATCH_MAX_BYTES,
+  fetchPriceWatch,
 } from './price-watch.mjs';
 
 const verified_at = '2026-10-16T00:00:00.000Z';
@@ -65,7 +67,14 @@ it('accepts all reviewed exact IDs and compatible credit keys, including partial
   const rows = providerRules
     .filter((rule) => rule.provider === 'elevenlabs')
     .flatMap((rule) =>
-      rule.model_selector.ids.map((id) => model(id, rule.effect.supplement.prices)),
+      rule.model_selector.ids.map((id) =>
+        model(
+          id,
+          Object.fromEntries(
+            Object.entries(rule.effect.supplement.prices).filter(([, value]) => value > 0),
+          ),
+        ),
+      ),
     );
   expect(validatePriceWatch(feed(rows))).toHaveProperty('models', rows);
   expect(validatePriceWatch(feed([])).verified_at).toBeNull();
@@ -109,6 +118,12 @@ it.each([
     'wrong unit',
     (d) => {
       d.models[0].prices = { per_output_audio_second: 20 };
+    },
+  ],
+  [
+    'zero',
+    (d) => {
+      d.models[0].prices.per_character = 0;
     },
   ],
   [
@@ -218,4 +233,50 @@ it('fetches the configurable URL and preserves source provenance even for unchan
     ),
   ).toBe(published);
   expect(PRICE_WATCH_URL).toBe('https://llm-price-watch.hangar.fctry.jp/prices.json');
+});
+
+it.each(['declared', 'chunked', 'lying-header'])(
+  'bounds %s feed bytes and cancels the body',
+  async (kind) => {
+    const cancel = vi.fn();
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new Uint8Array(PRICE_WATCH_MAX_BYTES + 1));
+      },
+      cancel,
+    });
+    const headers =
+      kind === 'declared'
+        ? { 'content-length': String(PRICE_WATCH_MAX_BYTES + 1) }
+        : kind === 'lying-header'
+          ? { 'content-length': '1' }
+          : {};
+    await expect(
+      fetchPriceWatch(undefined, async () => new Response(stream, { headers })),
+    ).rejects.toThrow(`exceeds ${PRICE_WATCH_MAX_BYTES} bytes`);
+    expect(cancel).toHaveBeenCalledOnce();
+  },
+);
+it('does not publish data for verification-only changes but retains price and source changes', () => {
+  const previous = {
+    models: mergeSources({}, {}).models,
+    skipped: [],
+    sources: {
+      price_watch: {
+        url: PRICE_WATCH_URL,
+        source_url: 'https://elevenlabs.io/pricing',
+        verified_at,
+        models: [{ id: 'eleven_v3', feature: 'Text to Speech', verified_at }],
+      },
+    },
+  };
+  const next = structuredClone(previous);
+  next.sources.price_watch.verified_at = '2026-10-17T00:00:00.000Z';
+  next.sources.price_watch.models[0].verified_at = '2026-10-17T00:00:00.000Z';
+  expect(finalize(next, previous)).toBe(previous);
+  const changed = structuredClone(next);
+  changed.models.find((row) => row.id === 'eleven_v3').prices.per_character = 1.1;
+  expect(finalize(changed, previous)).not.toBe(previous);
+  next.sources.price_watch.models[0].feature = 'Updated source name';
+  expect(finalize(next, previous)).not.toBe(previous);
 });
