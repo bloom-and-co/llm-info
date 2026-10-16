@@ -64,7 +64,7 @@ it.each(['valid', 'http', 'malformed'])(
         },
       );
       const out = JSON.parse(await readFile(join(cwd, 'data/llm-info.json'), 'utf8'));
-      expect(out.models).toHaveLength(16);
+      expect(out.models).toHaveLength(17);
       expect(out.sources.litellm).toHaveProperty('fetched_at');
       expect(out.sources.models_dev).toHaveProperty('fetched_at');
       const eleven = out.models.find((row) => row.id === 'eleven_v3');
