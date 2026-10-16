@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-15T05:54:03.294Z","ref":"W/\"619cfca2314cd3c203fafbb9812c257918e02f7b4e28e03873fc95bc94af3ba5\"","latest_new_model_at":"2026-10-15T02:57:06.925Z"},
-    "models_dev": {"fetched_at":"2026-10-15T05:54:03.493Z","etag":"W/\"a819b0deb7424bb618b9d1bacc5ce11e\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
+    "litellm": {"fetched_at":"2026-10-16T00:57:34.552Z","ref":"W/\"111e53466c1e4370131167d63d1880aaada24bd3b6b4edf6181d9e2e2b62be75\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
+    "models_dev": {"fetched_at":"2026-10-16T00:57:34.768Z","etag":"W/\"cd3759d47942b31a231e3c14869a70e3\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
   },
   "models": [
     {
@@ -5567,6 +5567,48 @@
       "match": {
         "exact": [
           "gpt-5.5-cyber"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 12.5,
+        "output": 75,
+        "cache_read": 1.25
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-5.5-cyber-preview",
+      "mode": "chat",
+      "name": "gpt-5.5-cyber-preview",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-5.5-cyber-preview"
         ],
         "dated_suffix": true
       },
@@ -20742,6 +20784,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-15T05:54:03.534Z",
-  "version": "2026-10-15T05:54:03.534Z-3718a88807f8"
+  "generated_at": "2026-10-16T00:57:34.904Z",
+  "version": "2026-10-16T00:57:34.904Z-0d5e24de5d2a"
 }
