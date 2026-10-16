@@ -50,7 +50,7 @@ it('merges credit feed increases with reviewed rules and never lowers a reviewed
     input: 1,
     output: 2,
   });
-  expect(merged.models.filter((row) => row.provider === 'elevenlabs')).toHaveLength(13);
+  expect(merged.models.filter((row) => row.provider === 'elevenlabs')).toHaveLength(14);
   expect(merged.conflicts).toContainEqual(
     expect.objectContaining({
       source_a: 'reviewed_rule',
@@ -76,6 +76,7 @@ it('accepts all reviewed exact IDs and compatible credit keys, including partial
         ),
       ),
     );
+  expect(rows).toHaveLength(14);
   expect(validatePriceWatch(feed(rows))).toHaveProperty('models', rows);
   expect(validatePriceWatch(feed([])).verified_at).toBeNull();
   expect(
@@ -199,7 +200,7 @@ it.each(['http', 'json', 'shape', 'network'])(
     expect(result).toBeNull();
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('skipped price_watch:'));
     const output = mergeSources({}, {}, result?.data);
-    expect(output.models).toHaveLength(13);
+    expect(output.models).toHaveLength(14);
     expect(output.models.find((row) => row.id === 'eleven_v3').prices.per_character).toBe(1);
   },
 );
@@ -279,4 +280,27 @@ it('does not publish data for verification-only changes but retains price and so
   expect(finalize(changed, previous)).not.toBe(previous);
   next.sources.price_watch.models[0].feature = 'Updated source name';
   expect(finalize(next, previous)).not.toBe(previous);
+});
+
+it.each([0.5, 1, 1.5])(
+  'merges realtime input-audio credits at %s times the reviewed rate',
+  (ratio) => {
+    const rate = (4 / 9) * (0.39 / 0.22);
+    const input = feed([model('scribe_v2_realtime', { per_input_audio_second: rate * ratio })]);
+    expect(validatePriceWatch(input)).toBe(input);
+    const merged = mergeSources({}, {}, input);
+    expect(merged.models.find((row) => row.id === 'scribe_v2_realtime')).toMatchObject({
+      mode: 'realtime',
+      price_unit: 'credit',
+      prices: { per_input_audio_second: rate * Math.max(1, ratio) },
+      capabilities: { endpoints: ['/v1/speech-to-text/realtime'] },
+    });
+  },
+);
+it.each([
+  ['scribe_v2_realtime-latest', { per_input_audio_second: 1 }],
+  ['scribe_v2_realtime', { per_output_audio_second: 1 }],
+  ['scribe_v2_realtime', { per_character: 1 }],
+])('rejects unreviewed realtime aliases or dimensions: %s %j', (id, prices) => {
+  expect(() => validatePriceWatch(feed([model(id, prices)]))).toThrow('invalid price-watch model:');
 });

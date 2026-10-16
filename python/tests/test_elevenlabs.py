@@ -115,3 +115,18 @@ def test_legacy_usd_cache_requires_refresh():
     assert result["total_credits"] == 1000
     assert result["total_usd"] is None
     assert result["price_unit"] == "credit"
+
+
+def test_realtime_catalog_mode():
+    info = LlmInfo(store=MemoryStore(), fetch=lambda u, e: (200, None, DATA))
+    info.load()
+    model = next(m for m in info.models("elevenlabs") if m["id"] == "scribe_v2_realtime")
+    assert model["mode"] == "realtime"
+    assert model["price_unit"] == "credit"
+    capabilities = info.capabilities("elevenlabs", "scribe_v2_realtime")
+    assert capabilities["mode"] == "realtime"
+    assert capabilities["price_unit"] == "credit"
+    assert capabilities["input_modalities"] == ["audio"]
+    assert capabilities["output_modalities"] == ["text"]
+    assert capabilities["endpoints"] == ["/v1/speech-to-text/realtime"]
+    assert info.capabilities("elevenlabs", "scribe_v2")["mode"] == "audio_transcription"

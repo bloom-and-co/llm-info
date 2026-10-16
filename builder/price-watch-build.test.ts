@@ -42,6 +42,14 @@ it.each(['valid', 'http', 'malformed'])(
             prices: { per_character: 1.5 },
             verified_at,
           },
+          {
+            provider: 'elevenlabs',
+            id: 'scribe_v2_realtime',
+            feature: 'Scribe v2 Realtime',
+            price_unit: 'credit',
+            prices: { per_input_audio_second: 1 },
+            verified_at,
+          },
         ],
       };
       const bootstrap = `globalThis.fetch = async (url) => {
@@ -64,18 +72,26 @@ it.each(['valid', 'http', 'malformed'])(
         },
       );
       const out = JSON.parse(await readFile(join(cwd, 'data/llm-info.json'), 'utf8'));
-      expect(out.models).toHaveLength(17);
+      expect(out.models).toHaveLength(18);
       expect(out.sources.litellm).toHaveProperty('fetched_at');
       expect(out.sources.models_dev).toHaveProperty('fetched_at');
       const eleven = out.models.find((row) => row.id === 'eleven_v3');
       expect(eleven.price_unit).toBe('credit');
       expect(eleven.prices.per_character).toBe(kind === 'valid' ? 1.5 : 1);
+      expect(out.models.find((row) => row.id === 'scribe_v2_realtime')).toMatchObject({
+        mode: 'realtime',
+        price_unit: 'credit',
+        prices: { per_input_audio_second: kind === 'valid' ? 1 : (4 / 9) * (0.39 / 0.22) },
+      });
       if (kind === 'valid')
         expect(out.sources.price_watch).toMatchObject({
           url: 'https://configured.example/prices.json',
           source_url: data.source_url,
           verified_at,
-          models: [{ id: 'eleven_v3', feature: 'Text to Speech', verified_at }],
+          models: [
+            { id: 'eleven_v3', feature: 'Text to Speech', verified_at },
+            { id: 'scribe_v2_realtime', feature: 'Scribe v2 Realtime', verified_at },
+          ],
         });
       else expect(out.sources).not.toHaveProperty('price_watch');
     } finally {

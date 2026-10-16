@@ -99,11 +99,14 @@ The builder ignores **all ElevenLabs LiteLLM USD rows**, including higher prices
 | `eleven_v3`, `eleven_multilingual_v2` | `audio_speech` | `per_character: 1` |
 | `eleven_flash_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2`, `eleven_turbo_v2_5` | `audio_speech` | `per_character: 0.5` |
 | `scribe_v1`, `scribe_v1_experimental`, `scribe_v2`, `scribe_v2_medical` | `audio_transcription` | `per_input_audio_second: 4/9` (1,600/hour); output seconds cost zero |
+| `scribe_v2_realtime` | `realtime` | `per_input_audio_second: (4/9) × (0.39/0.22)` (estimate; not measured) |
 | `forced-alignment` | `audio_alignment` | `per_input_audio_second: 4/9` (1,600/hour) |
 | `audio-isolation` | `audio_isolation` | `per_input_audio_second: 1000/60` (1,000/minute) |
 | `eleven_text_to_sound_v2` | `audio_generation` | `per_output_audio_second: 10` |
 
 The `scribe_v2_medical` model ID was checked against the [official model list](https://elevenlabs.io/docs/overview/models) on **2026-10-16**. It uses the same 4/9 credit/input-second reviewed rule as Scribe v2; its API price card is also $0.22/hour.
+
+The `scribe_v2_realtime` rate is **not measured**: it estimates credits from Scribe v2's measured 4/9 credit/input-second rate multiplied by the [API pricing page](https://elevenlabs.io/pricing/api)'s USD ratio, $0.39/hour for Realtime divided by $0.22/hour for v2, checked **2026-10-16**. Its primary API kind is `realtime`, consistent with the other providers' realtime models. Its [WebSocket endpoint](https://elevenlabs.io/docs/api-reference/speech-to-text/v-1-speech-to-text-realtime) is `/v1/speech-to-text/realtime`; it is not a synchronous transcription model.
 
 The pricing page describes Multilingual v2 at 1 credit/character and Flash/Turbo API usage at 0.5–1 credit/character. The 0.5 rate here and the audio rates above are reviewed rules based on the supplied production reconciliation; the public FAQ's approximate STT and sound-effect product costs differ. Observed usage was STT/alignment 63 seconds → 28 credits and 8 seconds → 3.5; isolation 5 seconds → 83; sound effects 1 second → 10 (one observation). Calculations use the specified linear rates without rounding to the usage screen's display precision: 8 seconds at 4/9 gives about 3.5556 credits, and 5 seconds at 1000/60 gives about 83.3333. These are estimates, not a reproduction of invoice rounding.
 

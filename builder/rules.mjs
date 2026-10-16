@@ -91,6 +91,33 @@ export const providerRules = [
     checked_at: '2026-10-16',
   },
   {
+    id: 'elevenlabs-scribe-realtime',
+    provider: 'elevenlabs',
+    model_selector: {
+      // Not measured: Scribe v2's measured credit rate × /pricing/api USD ratio ($0.39/$0.22).
+      description: 'Documented Scribe v2 Realtime ID; estimated from measured v2 × API USD ratio',
+      ids: ['scribe_v2_realtime'],
+    },
+    effect: {
+      supplement: {
+        mode: 'realtime',
+        price_unit: 'credit',
+        prices: { per_input_audio_second: (4 / 9) * (0.39 / 0.22) },
+        capabilities: {
+          input_modalities: ['audio'],
+          output_modalities: ['text'],
+          endpoints: ['/v1/speech-to-text/realtime'],
+        },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing',
+    supporting_urls: [
+      'https://elevenlabs.io/pricing/api',
+      'https://elevenlabs.io/docs/api-reference/speech-to-text/v-1-speech-to-text-realtime',
+    ],
+    checked_at: '2026-10-16',
+  },
+  {
     id: 'elevenlabs-forced-alignment',
     provider: 'elevenlabs',
     model_selector: {

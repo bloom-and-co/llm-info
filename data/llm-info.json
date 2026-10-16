@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-16T00:57:34.552Z","ref":"W/\"111e53466c1e4370131167d63d1880aaada24bd3b6b4edf6181d9e2e2b62be75\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
-    "models_dev": {"fetched_at":"2026-10-16T00:57:34.768Z","etag":"W/\"cd3759d47942b31a231e3c14869a70e3\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
+    "litellm": {"fetched_at":"2026-10-16T06:18:48.407Z","ref":"W/\"b1383f81fba0c95711b598ddbe36ec3ca5b9c080e01f2ff81eb5d0e681a6bdbd\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
+    "models_dev": {"fetched_at":"2026-10-16T06:18:48.577Z","etag":"W/\"3e8067a6e807ddb72704ab41e767dda3\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
   },
   "models": [
     {
@@ -20746,6 +20746,51 @@
           "/v1/speech-to-text"
         ]
       }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "scribe_v2_realtime",
+      "mode": "realtime",
+      "price_unit": "credit",
+      "name": "scribe_v2_realtime",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "scribe_v2_realtime"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.7878787878787878
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "audio"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/speech-to-text/realtime"
+        ]
+      }
     }
   ],
   "skipped": [
@@ -20830,6 +20875,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-16T06:02:49.386Z",
-  "version": "2026-10-16T06:02:49.386Z-665f6dbcc768"
+  "generated_at": "2026-10-16T06:18:48.630Z",
+  "version": "2026-10-16T06:18:48.630Z-e79b46c52ed4"
 }

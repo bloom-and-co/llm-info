@@ -109,6 +109,30 @@ it('preserves USD output shapes for the original four providers', async () => {
     'credit',
   );
 });
+it('exposes realtime API kind separately from synchronous transcription in the public catalog', async () => {
+  const info = createLlmInfo({
+    store: memoryStore(),
+    fetch: async () => new Response(JSON.stringify(data)),
+  });
+  await info.load();
+  expect(
+    info.models({ provider: 'elevenlabs' }).find((m) => m.id === 'scribe_v2_realtime'),
+  ).toMatchObject({
+    mode: 'realtime',
+    price_unit: 'credit',
+  });
+  expect(info.capabilities({ provider: 'elevenlabs', model: 'scribe_v2_realtime' })).toMatchObject({
+    mode: 'realtime',
+    price_unit: 'credit',
+    input_modalities: ['audio'],
+    output_modalities: ['text'],
+    endpoints: ['/v1/speech-to-text/realtime'],
+  });
+  expect(info.capabilities({ provider: 'elevenlabs', model: 'scribe_v2' })).toHaveProperty(
+    'mode',
+    'audio_transcription',
+  );
+});
 it('refuses legacy ElevenLabs USD caches until refreshed', async () => {
   const old = structuredClone(data);
   const row = old.models.find((m: any) => m.provider === 'elevenlabs' && m.id === 'eleven_v3');

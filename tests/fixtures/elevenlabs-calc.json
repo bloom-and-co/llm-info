@@ -449,5 +449,22 @@
     },
     "expected": 10,
     "warnings": []
+  },
+  {
+    "name": "scribe_v2_realtime estimated input-second credits",
+    "model": "scribe_v2_realtime",
+    "usage": {
+      "input_audio_seconds": 99
+    },
+    "expected": 78,
+    "warnings": []
+  },
+  {
+    "name": "unreviewed realtime alias",
+    "model": "scribe_v2_realtime-latest",
+    "usage": {
+      "input_audio_seconds": 99
+    },
+    "expected": null
   }
 ]
