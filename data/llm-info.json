@@ -1,8 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-16T06:18:48.407Z","ref":"W/\"b1383f81fba0c95711b598ddbe36ec3ca5b9c080e01f2ff81eb5d0e681a6bdbd\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
-    "models_dev": {"fetched_at":"2026-10-16T06:18:48.577Z","etag":"W/\"3e8067a6e807ddb72704ab41e767dda3\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"}
+    "litellm": {"fetched_at":"2026-10-16T11:04:42.020Z","ref":"W/\"b1383f81fba0c95711b598ddbe36ec3ca5b9c080e01f2ff81eb5d0e681a6bdbd\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
+    "models_dev": {"fetched_at":"2026-10-16T11:04:42.202Z","etag":"W/\"18bc7a92c77d04d1037164f8f1844dcf\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-16T11:04:42.525Z","etag":"unknown","verified_at":"2026-10-16T11:03:53.266Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-16T11:03:53.266Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-16T11:03:53.266Z"}]}
   },
   "models": [
     {
@@ -20875,6 +20876,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-16T06:18:48.630Z",
-  "version": "2026-10-16T06:18:48.630Z-e79b46c52ed4"
+  "generated_at": "2026-10-16T11:04:42.644Z",
+  "version": "2026-10-16T11:04:42.644Z-ed62b56e3322"
 }
