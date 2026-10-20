@@ -1,9 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-20T01:00:11.356Z","ref":"W/\"1ba3c40de64727743fa15596edb1e0f3eb0cde4282709121a8b0813555b327b8\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
-    "models_dev": {"fetched_at":"2026-10-20T01:00:11.674Z","etag":"W/\"c14961b6b1e784a77e8e01e49e0adcca\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
-    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-20T01:00:11.948Z","etag":"unknown","verified_at":"2026-10-19T02:17:36.339Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-19T02:17:36.339Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-19T02:17:36.339Z"}]}
+    "litellm": {"fetched_at":"2026-10-20T18:35:11.910Z","ref":"W/\"877fd9a69b1ecfec793343a0bc932bd6168e1f66c5bb18b783443f52b79e8693\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
+    "models_dev": {"fetched_at":"2026-10-20T18:35:12.136Z","etag":"W/\"176667820b3633ec031edf8f43875100\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-20T18:35:12.440Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
   },
   "models": [
     {
@@ -15623,7 +15623,7 @@
       "provider": "google",
       "id": "gemini-pro-latest",
       "mode": "chat",
-      "name": "gemini-pro-latest",
+      "name": "Gemini Pro Latest",
       "aliases": [],
       "match": {
         "exact": [
@@ -15682,7 +15682,11 @@
       "region_uplift": {},
       "capabilities": {
         "reasoning": true,
-        "reasoning_efforts": null,
+        "reasoning_efforts": [
+          "low",
+          "medium",
+          "high"
+        ],
         "default_reasoning_effort": null,
         "tool_call": true,
         "parallel_tool_calls": null,
@@ -15691,20 +15695,21 @@
         "input_modalities": [
           "audio",
           "image",
+          "pdf",
           "text",
           "video"
         ],
         "output_modalities": [
           "text"
         ],
-        "temperature": null,
+        "temperature": true,
         "prompt_caching": true,
         "computer_use": null,
-        "context_window": null,
+        "context_window": 1048576,
         "max_input_tokens": 1048576,
         "max_output_tokens": 65536,
-        "knowledge_cutoff": null,
-        "release_date": null,
+        "knowledge_cutoff": "2025-01",
+        "release_date": "2026-02-19",
         "endpoints": [
           "/v1/chat/completions",
           "/v1/completions",
@@ -20869,6 +20874,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-20T01:00:12.074Z",
-  "version": "2026-10-20T01:00:12.074Z-c9f0aa017178"
+  "generated_at": "2026-10-20T18:35:12.582Z",
+  "version": "2026-10-20T18:35:12.582Z-13454b27dd60"
 }
