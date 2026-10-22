@@ -1,9 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-21T01:00:05.686Z","ref":"W/\"6bb8e1ac28c1308ecd70e451f53612c11718ce40bc1ecb999fecab8ea648b5c2\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
-    "models_dev": {"fetched_at":"2026-10-21T01:00:05.932Z","etag":"W/\"5966e7d603a6a9cfc003bf71d3cbf168\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
-    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-21T01:00:06.188Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-20T02:17:36.659Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
+    "litellm": {"fetched_at":"2026-10-22T06:46:31.015Z","ref":"W/\"d8569bcdf73d18ba94c603f672ac129e3d3a000433d92b3b241a2092f3b488c9\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
+    "models_dev": {"fetched_at":"2026-10-22T06:46:31.286Z","etag":"W/\"b76f2e1fbb2f155f7a0bd8d42455528c\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-22T06:46:31.711Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
   },
   "models": [
     {
@@ -11844,7 +11844,7 @@
       },
       "region_uplift": {},
       "capabilities": {
-        "reasoning": true,
+        "reasoning": false,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": true,
@@ -20867,6 +20867,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-21T01:00:06.328Z",
-  "version": "2026-10-21T01:00:06.328Z-6facc4af7e5c"
+  "generated_at": "2026-10-22T06:46:31.879Z",
+  "version": "2026-10-22T06:46:31.879Z-3dc79754bfd8"
 }
