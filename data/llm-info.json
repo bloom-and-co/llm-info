@@ -1,9 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-22T06:46:31.015Z","ref":"W/\"d8569bcdf73d18ba94c603f672ac129e3d3a000433d92b3b241a2092f3b488c9\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
-    "models_dev": {"fetched_at":"2026-10-22T06:46:31.286Z","etag":"W/\"b76f2e1fbb2f155f7a0bd8d42455528c\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
-    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-22T06:46:31.711Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
+    "litellm": {"fetched_at":"2026-10-22T18:34:31.823Z","ref":"W/\"d8569bcdf73d18ba94c603f672ac129e3d3a000433d92b3b241a2092f3b488c9\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
+    "models_dev": {"fetched_at":"2026-10-22T18:34:32.187Z","etag":"W/\"272edebcc5b4b9f0869ea0b11f8c7943\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-22T18:34:32.395Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
   },
   "models": [
     {
@@ -16646,7 +16646,7 @@
       "provider": "google",
       "id": "veo-3.1-fast-generate-preview",
       "mode": "video_generation",
-      "name": "Veo 3.1 fast",
+      "name": "veo-3.1-fast-generate-preview",
       "aliases": [],
       "match": {
         "exact": [
@@ -16672,21 +16672,19 @@
         "structured_output": false,
         "web_search": null,
         "input_modalities": [
-          "image",
-          "text",
-          "video"
+          "text"
         ],
         "output_modalities": [
           "video"
         ],
-        "temperature": false,
+        "temperature": null,
         "prompt_caching": null,
         "computer_use": null,
-        "context_window": 480,
+        "context_window": null,
         "max_input_tokens": 1024,
         "max_output_tokens": null,
         "knowledge_cutoff": null,
-        "release_date": "2025-10-15",
+        "release_date": null,
         "endpoints": null
       }
     },
@@ -16739,7 +16737,7 @@
       "provider": "google",
       "id": "veo-3.1-generate-preview",
       "mode": "video_generation",
-      "name": "Veo 3.1",
+      "name": "veo-3.1-generate-preview",
       "aliases": [],
       "match": {
         "exact": [
@@ -16764,20 +16762,19 @@
         "structured_output": false,
         "web_search": null,
         "input_modalities": [
-          "image",
           "text"
         ],
         "output_modalities": [
           "video"
         ],
-        "temperature": false,
+        "temperature": null,
         "prompt_caching": null,
         "computer_use": null,
-        "context_window": 480,
+        "context_window": null,
         "max_input_tokens": 1024,
         "max_output_tokens": null,
         "knowledge_cutoff": null,
-        "release_date": "2025-10-15",
+        "release_date": null,
         "endpoints": null
       }
     },
@@ -16831,7 +16828,7 @@
       "provider": "google",
       "id": "veo-3.1-lite-generate-preview",
       "mode": "video_generation",
-      "name": "Veo 3.1 lite",
+      "name": "veo-3.1-lite-generate-preview",
       "aliases": [],
       "match": {
         "exact": [
@@ -16856,20 +16853,19 @@
         "structured_output": false,
         "web_search": null,
         "input_modalities": [
-          "image",
           "text"
         ],
         "output_modalities": [
           "video"
         ],
-        "temperature": false,
+        "temperature": null,
         "prompt_caching": null,
         "computer_use": null,
-        "context_window": 480,
+        "context_window": null,
         "max_input_tokens": 1024,
         "max_output_tokens": null,
         "knowledge_cutoff": null,
-        "release_date": "2026-03-31",
+        "release_date": null,
         "endpoints": null
       }
     },
@@ -20867,6 +20863,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-22T06:46:31.879Z",
-  "version": "2026-10-22T06:46:31.879Z-3dc79754bfd8"
+  "generated_at": "2026-10-22T18:34:32.478Z",
+  "version": "2026-10-22T18:34:32.478Z-c1e17549d4ae"
 }
