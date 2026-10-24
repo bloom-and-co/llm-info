@@ -1,9 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-22T18:34:31.823Z","ref":"W/\"d8569bcdf73d18ba94c603f672ac129e3d3a000433d92b3b241a2092f3b488c9\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
-    "models_dev": {"fetched_at":"2026-10-22T18:34:32.187Z","etag":"W/\"272edebcc5b4b9f0869ea0b11f8c7943\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
-    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-22T18:34:32.395Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-22T02:17:47.695Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-21T02:17:36.662Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
+    "litellm": {"fetched_at":"2026-10-24T18:31:46.688Z","ref":"W/\"7f7c84ba6f4c93e3c5a2a5fa3a3aa014e133695c8bed52284035670e9995f32d\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
+    "models_dev": {"fetched_at":"2026-10-24T18:31:46.955Z","etag":"W/\"21a79a91139fce1a75ffdcfcbfe8249f\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-24T18:31:47.410Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-24T02:17:38.356Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-24T02:17:38.356Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
   },
   "models": [
     {
@@ -11748,14 +11748,17 @@
             "input": 0.54,
             "output": 4.5,
             "cache_read": 0.054,
-            "input_audio": 1.8
+            "input_audio": 1.8,
+            "cache_audio_read": 0.18
           }
         },
         "flex": {
           "prices": {
             "input": 0.15,
             "output": 1.25,
-            "cache_read": 0.03
+            "cache_read": 0.03,
+            "input_audio": 0.5,
+            "cache_audio_read": 0.1
           }
         },
         "batch": {
@@ -11763,7 +11766,8 @@
             "input": 0.15,
             "output": 1.25,
             "input_audio": 0.5,
-            "cache_read": 0.03
+            "cache_read": 0.03,
+            "cache_audio_read": 0.1
           }
         }
       },
@@ -11904,14 +11908,17 @@
             "input": 0.18,
             "output": 0.72,
             "cache_read": 0.018,
-            "input_audio": 0.54
+            "input_audio": 0.54,
+            "cache_audio_read": 0.054
           }
         },
         "flex": {
           "prices": {
             "input": 0.05,
             "output": 0.2,
-            "cache_read": 0.01
+            "cache_read": 0.01,
+            "input_audio": 0.15,
+            "cache_audio_read": 0.03
           }
         },
         "batch": {
@@ -11919,7 +11926,8 @@
             "input": 0.05,
             "output": 0.2,
             "input_audio": 0.15,
-            "cache_read": 0.01
+            "cache_read": 0.01,
+            "cache_audio_read": 0.03
           }
         }
       },
@@ -12578,14 +12586,17 @@
             "input": 0.9,
             "output": 5.4,
             "cache_read": 0.09,
-            "input_audio": 1.8
+            "input_audio": 1.8,
+            "cache_audio_read": 0.18
           }
         },
         "flex": {
           "prices": {
             "input": 0.25,
             "output": 1.5,
-            "cache_read": 0.05
+            "cache_read": 0.05,
+            "input_audio": 0.5,
+            "cache_audio_read": 0.1
           }
         },
         "batch": {
@@ -12593,7 +12604,8 @@
             "input": 0.25,
             "output": 1.5,
             "input_audio": 0.5,
-            "cache_read": 0.05
+            "cache_read": 0.05,
+            "cache_audio_read": 0.1
           }
         }
       },
@@ -13092,14 +13104,17 @@
             "input": 0.45,
             "output": 2.7,
             "cache_read": 0.045,
-            "input_audio": 0.9
+            "input_audio": 0.9,
+            "cache_audio_read": 0.09
           }
         },
         "flex": {
           "prices": {
             "input": 0.125,
             "output": 0.75,
-            "cache_read": 0.0125
+            "cache_read": 0.0125,
+            "input_audio": 0.25,
+            "cache_audio_read": 0.025
           }
         },
         "batch": {
@@ -13107,7 +13122,8 @@
             "input": 0.125,
             "output": 0.75,
             "cache_read": 0.0125,
-            "input_audio": 0.25
+            "input_audio": 0.25,
+            "cache_audio_read": 0.025
           }
         }
       },
@@ -20863,6 +20879,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-22T18:34:32.478Z",
-  "version": "2026-10-22T18:34:32.478Z-c1e17549d4ae"
+  "generated_at": "2026-10-24T18:31:47.572Z",
+  "version": "2026-10-24T18:31:47.572Z-f8f64a981f44"
 }
