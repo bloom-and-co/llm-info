@@ -1,9 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-24T18:31:46.688Z","ref":"W/\"7f7c84ba6f4c93e3c5a2a5fa3a3aa014e133695c8bed52284035670e9995f32d\"","latest_new_model_at":"2026-10-16T00:57:34.552Z"},
-    "models_dev": {"fetched_at":"2026-10-24T18:31:46.955Z","etag":"W/\"21a79a91139fce1a75ffdcfcbfe8249f\"","latest_new_model_at":"2026-10-13T18:39:25.680Z"},
-    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-24T18:31:47.410Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-24T02:17:38.356Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-24T02:17:38.356Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-23T02:17:37.360Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
+    "litellm": {"fetched_at":"2026-10-26T18:45:01.648Z","ref":"W/\"6b748292aa732802adc15a62ca60b7249b0c09acc7cc4cb3b1f828dbd351d3ad\"","latest_new_model_at":"2026-10-26T18:45:01.648Z"},
+    "models_dev": {"fetched_at":"2026-10-26T18:45:01.819Z","etag":"W/\"122c03ff5021acbdfdc1d51ed02c9689\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/prices.json","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-26T18:45:02.107Z","etag":"unknown","verified_at":"2026-10-20T02:17:36.659Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"eleven_v3","feature":"Text to Speech","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"scribe_v1","feature":"Scribe v2","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"scribe_v2","feature":"Scribe v2","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","verified_at":"2026-10-26T02:17:39.537Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","verified_at":"2026-10-20T02:17:36.659Z"}]}
   },
   "models": [
     {
@@ -7016,6 +7016,150 @@
         "max_output_tokens": 128000,
         "knowledge_cutoff": "2026-04-30",
         "release_date": "2026-09-29",
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/batch",
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-6.1-terra",
+      "mode": "chat",
+      "name": "GPT-6.1 Terra",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6.1-terra"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 1,
+        "output": 5,
+        "cache_read": 0.05,
+        "cache_write": 1.25,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 2,
+              "output": 7.5,
+              "cache_read": 0.1,
+              "cache_write": 2.5
+            }
+          }
+        ],
+        "per_web_search": 0.01
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "cache_write": 2.5,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 4,
+                  "output": 15,
+                  "cache_read": 0.2,
+                  "cache_write": 5
+                }
+              }
+            ]
+          }
+        },
+        "flex": {
+          "prices": {
+            "input": 0.5,
+            "output": 2.5,
+            "cache_read": 0.025,
+            "cache_write": 0.625,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 1,
+                  "output": 3.75,
+                  "cache_read": 0.05,
+                  "cache_write": 1.25
+                }
+              }
+            ]
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 0.5,
+            "output": 2.5,
+            "cache_read": 0.025,
+            "cache_write": 0.625,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 1,
+                  "output": 3.75,
+                  "cache_read": 0.05,
+                  "cache_write": 1.25
+                }
+              }
+            ]
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 2,
+            "output": 10,
+            "cache_read": 0.1,
+            "cache_write": 2.5
+          },
+          "request": {
+            "body": {
+              "service_tier": "priority"
+            }
+          }
+        }
+      },
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "none",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "pdf",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": false,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": 1050000,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": "2026-06-01",
+        "release_date": "2026-10-26",
         "endpoints": [
           "/v1/chat/completions",
           "/v1/batch",
@@ -20879,6 +21023,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-24T18:31:47.572Z",
-  "version": "2026-10-24T18:31:47.572Z-f8f64a981f44"
+  "generated_at": "2026-10-26T18:45:02.198Z",
+  "version": "2026-10-26T18:45:02.198Z-e53abcb2882a"
 }
