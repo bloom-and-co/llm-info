@@ -1,6 +1,6 @@
 import { providerRules } from './rules.mjs';
 
-export const PRICE_WATCH_URL = 'https://llm-price-watch.hangar.fctry.jp/prices.json';
+export const PRICE_WATCH_URL = 'https://llm-price-watch.hangar.fctry.jp/verify';
 export const PRICE_WATCH_MAX_BYTES = 64 * 1024;
 const reviewed = new Map(
   providerRules
@@ -57,12 +57,7 @@ export function validatePriceWatch(data) {
   return data;
 }
 
-export async function fetchPriceWatch(url = PRICE_WATCH_URL, fetcher = fetch) {
-  const response = await fetcher(url, { signal: AbortSignal.timeout(30_000) });
-  if (!response.ok) {
-    await response.body?.cancel();
-    throw Error(`${url}: HTTP ${response.status}`);
-  }
+async function readLimited(response) {
   const declared = Number(response.headers.get('content-length'));
   if (declared > PRICE_WATCH_MAX_BYTES) {
     await response.body?.cancel();
@@ -87,39 +82,103 @@ export async function fetchPriceWatch(url = PRICE_WATCH_URL, fetcher = fetch) {
     await reader.cancel().catch(() => undefined);
     reader.releaseLock();
   }
+  return text;
+}
+
+// The Hangar app holds no state: llm-info's git is the only copy of the adopted prices.
+export async function verifyPriceWatch(url, token, previous, fetcher = fetch) {
+  const response = await fetcher(url, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ previous }),
+    signal: AbortSignal.timeout(180_000),
+  });
+  if (!response.ok) {
+    await response.body?.cancel();
+    throw Error(`${url}: HTTP ${response.status}`);
+  }
+  const body = JSON.parse(await readLimited(response));
+  if (
+    !object(body) ||
+    !Array.isArray(body.events) ||
+    body.events.some((event) => !object(event) || typeof event.type !== 'string')
+  )
+    throw Error('invalid price-watch response');
   return {
-    data: validatePriceWatch(JSON.parse(text)),
+    data: validatePriceWatch(body.feed),
+    events: body.events,
     url,
     fetched_at: new Date().toISOString(),
-    etag: response.headers.get('etag') ?? 'unknown',
   };
 }
 
-export async function optionalPriceWatch(
+export function feedFromMetadata(meta) {
+  if (!object(meta) || !Array.isArray(meta.models)) return null;
+  return validatePriceWatch({
+    schema: 1,
+    verified_at: meta.verified_at,
+    source_url: meta.source_url,
+    models: meta.models.map(({ id, feature, prices, verified_at }) => ({
+      provider: 'elevenlabs',
+      id,
+      feature,
+      price_unit: 'credit',
+      prices,
+      verified_at,
+    })),
+  });
+}
+
+export function previousRows(data) {
+  return (data?.models ?? []).map(({ id, feature, prices, verified_at }) => {
+    const [[price_key, credit_price]] = Object.entries(prices);
+    return { model_id: id, feature, price_key, credit_price, verified_at };
+  });
+}
+
+// Verify runs ask Hangar; every other run, and a failed verify, keeps the feed stored in git.
+export async function resolvePriceWatch({
+  previous,
+  verify,
   url = PRICE_WATCH_URL,
+  token,
   fetcher = fetch,
   warn = console.warn,
-) {
+}) {
+  let stored = null;
   try {
-    return await fetchPriceWatch(url, fetcher);
+    const data = feedFromMetadata(previous);
+    if (data) stored = { data, url: previous.url, fetched_at: previous.fetched_at };
   } catch (error) {
-    warn(`builder: skipped price_watch: ${error.message}`);
-    return null;
+    warn(`builder: ignored stored price_watch: ${error.message}`);
+  }
+  if (!verify) return { feed: stored, events: [] };
+  try {
+    if (!token) throw Error('LLM_PRICE_WATCH_TOKEN is not set');
+    const feed = await verifyPriceWatch(url, token, previousRows(stored?.data), fetcher);
+    return { feed, events: feed.events };
+  } catch (error) {
+    warn(`builder: price_watch verification failed: ${error.message}`);
+    return { feed: stored, events: [{ type: 'request_failure', reason: error.message }] };
   }
 }
 
 export function priceWatchMetadata(feed, previous, previousIds) {
-  const { data, url, fetched_at, etag } = feed;
+  const { data, url, fetched_at } = feed;
   const hasNew = data.models.some((row) => !previousIds.has(`${row.provider}\0${row.id}`));
   return {
     url,
     source_url: data.source_url,
     fetched_at,
-    etag,
     verified_at: data.verified_at,
     latest_new_model_at:
       hasNew || !previous?.latest_new_model_at ? fetched_at : previous.latest_new_model_at,
-    models: data.models.map(({ id, feature, verified_at }) => ({ id, feature, verified_at })),
+    models: data.models.map(({ id, feature, prices, verified_at }) => ({
+      id,
+      feature,
+      prices,
+      verified_at,
+    })),
   };
 }
 

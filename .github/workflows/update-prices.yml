@@ -2,27 +2,15 @@ name: Update prices
 on:
   schedule:
     - cron: '17 */6 * * *'
+    # The daily run also asks the Hangar app to re-verify ElevenLabs credit prices.
+    - cron: '47 2 * * *'
   workflow_dispatch:
 concurrency:
   group: update-prices
   cancel-in-progress: false
 permissions:
   contents: write
-env:
-  LLM_PRICE_WATCH_URL: ${{ vars.LLM_PRICE_WATCH_URL || 'https://llm-price-watch.hangar.fctry.jp/prices.json' }}
 jobs:
-  monitor-price-watch:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: '22'
-      - run: node scripts/check-price-watch.mjs
   update:
     runs-on: ubuntu-latest
     steps:
@@ -36,6 +24,10 @@ jobs:
       - uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6 # v6.6.1
       - run: npm ci --ignore-scripts
       - run: npm run build:data
+        env:
+          LLM_PRICE_WATCH_VERIFY: ${{ (github.event_name == 'workflow_dispatch' || github.event.schedule == '47 2 * * *') && '1' || '' }}
+          LLM_PRICE_WATCH_TOKEN: ${{ secrets.LLM_PRICE_WATCH_TOKEN }}
+          LLM_PRICE_WATCH_EVENTS: ${{ runner.temp }}/price-watch-events.json
       - run: npm test
       - run: uv run --with pytest pytest -q python/tests
       - name: Commit changed prices
@@ -56,3 +48,8 @@ jobs:
         run: |
           auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
           git -c http.extraheader="AUTHORIZATION: basic $auth" push origin "HEAD:$REF_NAME"
+      - name: Check price-watch freshness and verification events
+        env:
+          EVENTS: ${{ runner.temp }}/price-watch-events.json
+          VERIFY: ${{ (github.event_name == 'workflow_dispatch' || github.event.schedule == '47 2 * * *') && '1' || '' }}
+        run: node scripts/check-price-watch.mjs data/llm-info.json ${VERIFY:+"$EVENTS"}

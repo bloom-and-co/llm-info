@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import { IDS, finalize, mergeSources, normalizeId, providerOf, validate } from './core.mjs';
-import { optionalPriceWatch, priceWatchMetadata } from './price-watch.mjs';
+import { priceWatchMetadata, resolvePriceWatch } from './price-watch.mjs';
 const URLs = {
   litellm:
     'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json',
@@ -15,16 +15,23 @@ async function get(url) {
     fetched_at: new Date().toISOString(),
   };
 }
-const [l, m, watch] = await Promise.all([
-  get(URLs.litellm),
-  get(URLs.models_dev),
-  optionalPriceWatch(process.env.LLM_PRICE_WATCH_URL || undefined),
-]);
-console.log(`builder: checked litellm=${l.fetched_at} models_dev=${m.fetched_at}`);
 const previous = await fs
   .readFile('data/llm-info.json', 'utf8')
   .then(JSON.parse)
   .catch(() => null);
+const [l, m, { feed: watch, events }] = await Promise.all([
+  get(URLs.litellm),
+  get(URLs.models_dev),
+  resolvePriceWatch({
+    previous: previous?.sources?.price_watch,
+    verify: process.env.LLM_PRICE_WATCH_VERIFY === '1',
+    url: process.env.LLM_PRICE_WATCH_URL || undefined,
+    token: process.env.LLM_PRICE_WATCH_TOKEN,
+  }),
+]);
+console.log(`builder: checked litellm=${l.fetched_at} models_dev=${m.fetched_at}`);
+if (process.env.LLM_PRICE_WATCH_EVENTS)
+  await fs.writeFile(process.env.LLM_PRICE_WATCH_EVENTS, JSON.stringify(events) + '\n');
 const previousIds = new Set(
   (previous?.models ?? []).map((model) => `${model.provider}\0${model.id}`),
 );
@@ -77,7 +84,13 @@ const doc = {
   skipped: merged.skipped,
 };
 validate(doc, previous);
-const out = finalize(doc, previous);
+let out = finalize(doc, previous);
+// Verification-only changes keep the dataset version but must still be stored in git.
+if (
+  out === previous &&
+  JSON.stringify(doc.sources.price_watch) !== JSON.stringify(previous.sources?.price_watch)
+)
+  out = { ...previous, sources: { ...previous.sources, price_watch: doc.sources.price_watch } };
 if (out !== previous) {
   const oneLineSources = `  "sources": {\n${Object.entries(out.sources)
     .map(([name, source]) => `    ${JSON.stringify(name)}: ${JSON.stringify(source)}`)
@@ -95,5 +108,5 @@ for (const conflict of [
 ])
   console.log('conflict: ' + JSON.stringify(conflict));
 console.log(
-  `builder: ${out === previous ? 'unchanged' : 'updated'}; models ${IDS.map((p) => p + '=' + doc.models.filter((m) => m.provider === p).length).join(' ')}; conflicts=${merged.conflicts.length + merged.capability_conflicts.length + merged.mode_conflicts.length}; skipped=${doc.skipped.length}`,
+  `builder: ${out === previous ? 'unchanged' : out.version === previous?.version ? 'verified' : 'updated'}; models ${IDS.map((p) => p + '=' + doc.models.filter((m) => m.provider === p).length).join(' ')}; conflicts=${merged.conflicts.length + merged.capability_conflicts.length + merged.mode_conflicts.length}; skipped=${doc.skipped.length}`,
 );

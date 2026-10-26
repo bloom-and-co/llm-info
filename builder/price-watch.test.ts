@@ -2,12 +2,14 @@ import { expect, it, vi } from 'vitest';
 import { mergeSources, finalize } from './core.mjs';
 import { providerRules } from './rules.mjs';
 import {
-  optionalPriceWatch,
+  feedFromMetadata,
+  previousRows,
   priceWatchMetadata,
+  resolvePriceWatch,
   validatePriceWatch,
+  verifyPriceWatch,
   PRICE_WATCH_URL,
   PRICE_WATCH_MAX_BYTES,
-  fetchPriceWatch,
 } from './price-watch.mjs';
 
 const verified_at = '2026-10-16T00:00:00.000Z';
@@ -187,41 +189,102 @@ it.each([
   expect(() => validatePriceWatch(data)).toThrow();
 });
 
-it.each(['http', 'json', 'shape', 'network'])(
-  'skips only the optional source on %s failure',
+const stored = () => ({
+  url: 'https://old.example/verify',
+  source_url: 'https://elevenlabs.io/pricing',
+  fetched_at: verified_at,
+  verified_at,
+  latest_new_model_at: verified_at,
+  models: [
+    { id: 'eleven_v3', feature: 'Text to Speech', prices: { per_character: 1.5 }, verified_at },
+  ],
+});
+const TOKEN = 'test-only-price-watch-token-0123456789abcdef';
+
+it('reads the stored feed back from git metadata and sends it as previous rows', () => {
+  const data = feedFromMetadata(stored());
+  expect(data).toEqual(feed());
+  expect(previousRows(data)).toEqual([
+    {
+      model_id: 'eleven_v3',
+      feature: 'Text to Speech',
+      price_key: 'per_character',
+      credit_price: 1.5,
+      verified_at,
+    },
+  ]);
+  expect(feedFromMetadata(undefined)).toBeNull();
+  const legacy: any = stored();
+  delete legacy.models[0].prices;
+  expect(() => feedFromMetadata(legacy)).toThrow('invalid price-watch model: eleven_v3');
+});
+
+it('uses the stored feed without calling Hangar outside verify runs', async () => {
+  const fetcher = vi.fn();
+  const result = await resolvePriceWatch({ previous: stored(), verify: false, fetcher });
+  expect(fetcher).not.toHaveBeenCalled();
+  expect(result).toEqual({
+    feed: { data: feed(), url: 'https://old.example/verify', fetched_at: verified_at },
+    events: [],
+  });
+});
+
+it('posts previous rows with the bearer token and returns the verified feed and events', async () => {
+  const later = '2026-10-17T00:00:00.000Z';
+  const events = [{ type: 'verification_failure', feature_key: 'tts', reason: 'missing_rate' }];
+  const fetcher = vi.fn(async () =>
+    Response.json({ ok: false, feed: { ...feed(), verified_at }, events }),
+  );
+  const result = await resolvePriceWatch({
+    previous: stored(),
+    verify: true,
+    url: 'https://custom.example/verify',
+    token: TOKEN,
+    fetcher,
+  });
+  const [url, init] = fetcher.mock.calls[0] as any;
+  expect(url).toBe('https://custom.example/verify');
+  expect(init.method).toBe('POST');
+  expect(init.headers.authorization).toBe('Bearer ' + TOKEN);
+  expect(JSON.parse(init.body)).toEqual({ previous: previousRows(feed()) });
+  expect(result.events).toEqual(events);
+  expect(result.feed).toMatchObject({ data: feed(), url: 'https://custom.example/verify' });
+  expect(result.feed.fetched_at > later).toBe(true);
+  expect(PRICE_WATCH_URL).toBe('https://llm-price-watch.hangar.fctry.jp/verify');
+});
+
+it.each(['token', 'http', 'json', 'events', 'feed', 'network'])(
+  'keeps the stored feed and reports a request failure on %s',
   async (kind) => {
     const fetcher = vi.fn(async () => {
       if (kind === 'network') throw Error('network unavailable');
-      if (kind === 'http') return new Response('', { status: 503 });
-      return new Response(kind === 'json' ? 'not JSON' : '{"schema":99}');
+      if (kind === 'http') return new Response('{"ok":false}', { status: 401 });
+      if (kind === 'json') return new Response('not JSON');
+      if (kind === 'events') return Response.json({ feed: feed(), events: [{}] });
+      return Response.json({ feed: { schema: 99 }, events: [] });
     });
     const warn = vi.fn();
-    const result = await optionalPriceWatch('https://custom.example/prices.json', fetcher, warn);
-    expect(result).toBeNull();
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('skipped price_watch:'));
-    const output = mergeSources({}, {}, result?.data);
-    expect(output.models).toHaveLength(14);
-    expect(output.models.find((row) => row.id === 'eleven_v3').prices.per_character).toBe(1);
+    const result = await resolvePriceWatch({
+      previous: stored(),
+      verify: true,
+      token: kind === 'token' ? undefined : TOKEN,
+      fetcher,
+      warn,
+    });
+    expect(fetcher).toHaveBeenCalledTimes(kind === 'token' ? 0 : 1);
+    expect(result.feed?.data).toEqual(feed());
+    expect(result.events).toEqual([{ type: 'request_failure', reason: expect.any(String) }]);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('verification failed:'));
   },
 );
 
-it('fetches the configurable URL and preserves source provenance even for unchanged prices', async () => {
-  const fetcher = vi.fn(
-    async () =>
-      new Response(JSON.stringify(feed([model('eleven_v3', { per_character: 1 })])), {
-        headers: { etag: 'feed-etag' },
-      }),
+it('stores prices and drops the old etag in the published metadata', () => {
+  const metadata = priceWatchMetadata(
+    { data: feed(), url: 'https://custom.example/verify', fetched_at: verified_at },
+    null,
+    new Set(),
   );
-  const result = await optionalPriceWatch('https://custom.example/prices.json', fetcher);
-  expect(fetcher.mock.calls[0][0]).toBe('https://custom.example/prices.json');
-  const metadata = priceWatchMetadata(result, null, new Set());
-  expect(metadata).toMatchObject({
-    url: 'https://custom.example/prices.json',
-    etag: 'feed-etag',
-    source_url: 'https://elevenlabs.io/pricing',
-    verified_at,
-    models: [{ id: 'eleven_v3', feature: 'Text to Speech', verified_at }],
-  });
+  expect(metadata).toEqual({ ...stored(), url: 'https://custom.example/verify' });
   const previous = { models: mergeSources({}, {}).models, skipped: [], sources: {} };
   const next = { ...previous, sources: { price_watch: metadata } };
   const published = finalize(next, previous, verified_at);
@@ -229,15 +292,14 @@ it('fetches the configurable URL and preserves source provenance even for unchan
   expect(published.sources.price_watch).toEqual(metadata);
   expect(
     finalize(
-      { ...published, sources: { price_watch: { ...metadata, fetched_at: 'later', etag: 'new' } } },
+      { ...published, sources: { price_watch: { ...metadata, fetched_at: 'later' } } },
       published,
     ),
   ).toBe(published);
-  expect(PRICE_WATCH_URL).toBe('https://llm-price-watch.hangar.fctry.jp/prices.json');
 });
 
 it.each(['declared', 'chunked', 'lying-header'])(
-  'bounds %s feed bytes and cancels the body',
+  'bounds %s response bytes and cancels the body',
   async (kind) => {
     const cancel = vi.fn();
     const stream = new ReadableStream({
@@ -253,7 +315,7 @@ it.each(['declared', 'chunked', 'lying-header'])(
           ? { 'content-length': '1' }
           : {};
     await expect(
-      fetchPriceWatch(undefined, async () => new Response(stream, { headers })),
+      verifyPriceWatch(PRICE_WATCH_URL, TOKEN, [], async () => new Response(stream, { headers })),
     ).rejects.toThrow(`exceeds ${PRICE_WATCH_MAX_BYTES} bytes`);
     expect(cancel).toHaveBeenCalledOnce();
   },
