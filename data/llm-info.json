@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-28T12:31:23.152Z","ref":"W/\"e9553cd2b519f7751ab69e02da66252738c7b848f77080e65462c3940ecbacd5\"","latest_new_model_at":"2026-10-26T18:45:01.648Z"},
-    "models_dev": {"fetched_at":"2026-10-28T12:31:23.362Z","etag":"W/\"ce5638c8932f9fa6cec30d5c856dc508\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-10-28T18:27:53.313Z","ref":"W/\"d8e8311fdfb13675a787342ecd92e3381e4f65a759236f20dc0362110caaf038\"","latest_new_model_at":"2026-10-26T18:45:01.648Z"},
+    "models_dev": {"fetched_at":"2026-10-28T18:27:54.112Z","etag":"W/\"a0af14e6709252ef4da167c43df2de19\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-28T02:48:57.263Z","verified_at":"2026-10-28T02:48:57.246Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-10-28T02:48:57.246Z"}]}
   },
   "models": [
@@ -7647,21 +7647,18 @@
         "parallel_tool_calls": null,
         "structured_output": false,
         "web_search": null,
-        "input_modalities": [
-          "image",
-          "text"
-        ],
+        "input_modalities": [],
         "output_modalities": [
           "image"
         ],
-        "temperature": false,
+        "temperature": null,
         "prompt_caching": null,
         "computer_use": null,
-        "context_window": 0,
-        "max_input_tokens": 0,
-        "max_output_tokens": 0,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
         "knowledge_cutoff": null,
-        "release_date": "2025-04-24",
+        "release_date": null,
         "endpoints": [
           "/v1/images/generations",
           "/v1/images/edits"
@@ -12886,7 +12883,7 @@
       "provider": "google",
       "id": "gemini-3-pro-image-preview",
       "mode": "image_generation",
-      "name": "Nano Banana Pro",
+      "name": "gemini-3-pro-image-preview",
       "aliases": [],
       "match": {
         "exact": [
@@ -12946,7 +12943,7 @@
       },
       "region_uplift": {},
       "capabilities": {
-        "reasoning": true,
+        "reasoning": false,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
@@ -12961,14 +12958,14 @@
           "image",
           "text"
         ],
-        "temperature": true,
+        "temperature": null,
         "prompt_caching": true,
         "computer_use": null,
-        "context_window": 131072,
+        "context_window": null,
         "max_input_tokens": 65536,
         "max_output_tokens": 32768,
-        "knowledge_cutoff": "2025-01",
-        "release_date": "2025-11-20",
+        "knowledge_cutoff": null,
+        "release_date": null,
         "endpoints": [
           "/v1/chat/completions",
           "/v1/images/generations",
@@ -13149,7 +13146,7 @@
       "provider": "google",
       "id": "gemini-3.1-flash-image-preview",
       "mode": "image_generation",
-      "name": "Nano Banana 2",
+      "name": "gemini-3.1-flash-image-preview",
       "aliases": [],
       "match": {
         "exact": [
@@ -13176,11 +13173,8 @@
       },
       "region_uplift": {},
       "capabilities": {
-        "reasoning": true,
-        "reasoning_efforts": [
-          "minimal",
-          "high"
-        ],
+        "reasoning": false,
+        "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
         "parallel_tool_calls": null,
@@ -13188,21 +13182,20 @@
         "web_search": true,
         "input_modalities": [
           "image",
-          "pdf",
           "text"
         ],
         "output_modalities": [
           "image",
           "text"
         ],
-        "temperature": true,
+        "temperature": null,
         "prompt_caching": true,
         "computer_use": null,
-        "context_window": 65536,
+        "context_window": null,
         "max_input_tokens": 65536,
         "max_output_tokens": 32768,
-        "knowledge_cutoff": "2025-01",
-        "release_date": "2026-02-26",
+        "knowledge_cutoff": null,
+        "release_date": null,
         "endpoints": [
           "/v1/chat/completions",
           "/v1/images/generations",
@@ -19412,6 +19405,23 @@
         ]
       },
       "modes": {
+        "batch": {
+          "prices": {
+            "input": 1.6,
+            "output": 4.8,
+            "cache_read": 0.4,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 3.2,
+                  "output": 9.6,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
+        },
         "priority": {
           "prices": {
             "input": 4,
@@ -21013,6 +21023,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-28T12:31:23.497Z",
-  "version": "2026-10-28T12:31:23.497Z-3d22ab84778c"
+  "generated_at": "2026-10-28T18:27:54.266Z",
+  "version": "2026-10-28T18:27:54.266Z-1422eb87ba24"
 }
