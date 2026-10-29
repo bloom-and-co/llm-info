@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-28T18:27:53.313Z","ref":"W/\"d8e8311fdfb13675a787342ecd92e3381e4f65a759236f20dc0362110caaf038\"","latest_new_model_at":"2026-10-26T18:45:01.648Z"},
-    "models_dev": {"fetched_at":"2026-10-28T18:27:54.112Z","etag":"W/\"a0af14e6709252ef4da167c43df2de19\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-10-29T00:47:54.332Z","ref":"W/\"ba929a67c00db2046c6e42a70e58bfb4d27aec4f9d8240db463e4cf11a927985\"","latest_new_model_at":"2026-10-26T18:45:01.648Z"},
+    "models_dev": {"fetched_at":"2026-10-29T00:47:54.951Z","etag":"W/\"6bc97ffeea224d5ed77e0f0f803c5318\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-28T02:48:57.263Z","verified_at":"2026-10-28T02:48:57.246Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-28T02:48:57.246Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-10-28T02:48:57.246Z"}]}
   },
   "models": [
@@ -11968,7 +11968,8 @@
         "batch": {
           "prices": {
             "input": 0.15,
-            "output": 1.25
+            "output": 1.25,
+            "output_image": 15
           }
         },
         "priority": {
@@ -12551,7 +12552,16 @@
           "prices": {
             "input": 0.625,
             "output": 5,
-            "cache_read": 0.125
+            "cache_read": 0.125,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 1.25,
+                  "output": 7.5
+                }
+              }
+            ]
           }
         }
       },
@@ -12931,7 +12941,8 @@
           "prices": {
             "input": 1,
             "output": 6,
-            "cache_read": 0.1
+            "cache_read": 0.1,
+            "output_image": 60
           }
         },
         "flex": {
@@ -13167,7 +13178,8 @@
           "prices": {
             "input": 0.25,
             "output": 1.5,
-            "cache_read": 0.025
+            "cache_read": 0.025,
+            "output_image": 30
           }
         }
       },
@@ -13331,7 +13343,8 @@
           "prices": {
             "input": 0.125,
             "output": 0.75,
-            "cache_read": 0.0125
+            "cache_read": 0.0125,
+            "output_image": 15
           }
         }
       },
@@ -13626,7 +13639,16 @@
           "prices": {
             "input": 1,
             "output": 6,
-            "cache_read": 0.2
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 2,
+                  "output": 9
+                }
+              }
+            ]
           }
         }
       },
@@ -15566,7 +15588,8 @@
           "prices": {
             "input": 0.75,
             "output": 3.75,
-            "cache_read": 0.075
+            "cache_read": 0.075,
+            "output_image": 15
           }
         }
       },
@@ -21023,6 +21046,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-28T18:27:54.266Z",
-  "version": "2026-10-28T18:27:54.266Z-1422eb87ba24"
+  "generated_at": "2026-10-29T00:47:55.069Z",
+  "version": "2026-10-29T00:47:55.069Z-8b689bea92be"
 }
