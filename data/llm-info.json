@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-29T00:47:54.332Z","ref":"W/\"ba929a67c00db2046c6e42a70e58bfb4d27aec4f9d8240db463e4cf11a927985\"","latest_new_model_at":"2026-10-26T18:45:01.648Z"},
-    "models_dev": {"fetched_at":"2026-10-29T00:47:54.951Z","etag":"W/\"6bc97ffeea224d5ed77e0f0f803c5318\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-10-30T18:23:19.109Z","ref":"W/\"267d2ad83e06345bf722fdd9b52e7cb81061150a6c7bc107f1f257fbf3d5cb0e\"","latest_new_model_at":"2026-10-26T18:45:01.648Z"},
+    "models_dev": {"fetched_at":"2026-10-30T18:23:19.353Z","etag":"W/\"c034f354d63bebb767427b6f3485b5da\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-10-30T02:49:28.978Z","verified_at":"2026-10-30T02:49:28.956Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-10-30T02:49:28.956Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-10-30T02:49:28.956Z"}]}
   },
   "models": [
@@ -12558,7 +12558,8 @@
                 "above_input_tokens": 200000,
                 "prices": {
                   "input": 1.25,
-                  "output": 7.5
+                  "output": 7.5,
+                  "cache_read": 0.25
                 }
               }
             ]
@@ -12776,7 +12777,7 @@
         ],
         "temperature": true,
         "prompt_caching": true,
-        "computer_use": null,
+        "computer_use": true,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
         "max_output_tokens": 65535,
@@ -13645,7 +13646,8 @@
                 "above_input_tokens": 200000,
                 "prices": {
                   "input": 2,
-                  "output": 9
+                  "output": 9,
+                  "cache_read": 0.4
                 }
               }
             ]
@@ -13726,7 +13728,17 @@
           "prices": {
             "input": 1,
             "output": 6,
-            "cache_read": 0.2
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 2,
+                  "output": 9,
+                  "cache_read": 0.4
+                }
+              }
+            ]
           }
         },
         "priority": {
@@ -13943,7 +13955,7 @@
         ],
         "temperature": true,
         "prompt_caching": true,
-        "computer_use": null,
+        "computer_use": true,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
         "max_output_tokens": 65536,
@@ -14421,7 +14433,7 @@
         ],
         "temperature": true,
         "prompt_caching": true,
-        "computer_use": null,
+        "computer_use": true,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
         "max_output_tokens": 65536,
@@ -14815,7 +14827,7 @@
         ],
         "temperature": true,
         "prompt_caching": true,
-        "computer_use": null,
+        "computer_use": true,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
         "max_output_tokens": 32768,
@@ -21046,6 +21058,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-29T00:47:55.069Z",
-  "version": "2026-10-29T00:47:55.069Z-8b689bea92be"
+  "generated_at": "2026-10-30T18:23:19.453Z",
+  "version": "2026-10-30T18:23:19.453Z-d06bccc3df5a"
 }
