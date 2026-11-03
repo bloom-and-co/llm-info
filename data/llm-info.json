@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-10-31T18:22:42.244Z","ref":"W/\"ed3803bbae69ada47e5bb73a68210086815665ce42ccb5a6e94d87f6b15d5270\"","latest_new_model_at":"2026-10-31T18:22:42.244Z"},
-    "models_dev": {"fetched_at":"2026-10-31T18:22:42.395Z","etag":"W/\"ff2265c652d645d65cbc9e356a62a051\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-11-03T00:40:33.393Z","ref":"W/\"76e736dd6a02604687aa34b45e1201a262fb496493e715d0509954403e5b3d8e\"","latest_new_model_at":"2026-10-31T18:22:42.244Z"},
+    "models_dev": {"fetched_at":"2026-11-03T00:40:33.728Z","etag":"W/\"a780f57d1a997cad6e1d1bcd6bedd109\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-02T02:49:12.666Z","verified_at":"2026-11-02T02:49:12.640Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-02T02:49:12.640Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-11-02T02:49:12.640Z"}]}
   },
   "models": [
@@ -20101,7 +20101,7 @@
       "provider": "x-ai",
       "id": "grok-imagine-image-quality",
       "mode": "image_generation",
-      "name": "Grok Imagine Image Quality",
+      "name": "grok-imagine-image-quality",
       "aliases": [],
       "match": {
         "exact": [
@@ -20129,14 +20129,14 @@
         "output_modalities": [
           "image"
         ],
-        "temperature": false,
+        "temperature": null,
         "prompt_caching": null,
         "computer_use": null,
-        "context_window": 16000,
+        "context_window": null,
         "max_input_tokens": null,
-        "max_output_tokens": 0,
+        "max_output_tokens": null,
         "knowledge_cutoff": null,
-        "release_date": "2026-04-03",
+        "release_date": null,
         "endpoints": [
           "/v1/images/generations"
         ]
@@ -21175,6 +21175,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-10-31T18:22:42.475Z",
-  "version": "2026-10-31T18:22:42.475Z-1857ba7b95b4"
+  "generated_at": "2026-11-03T00:40:33.863Z",
+  "version": "2026-11-03T00:40:33.863Z-0985c244023e"
 }
