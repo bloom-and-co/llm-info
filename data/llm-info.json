@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-03T18:23:48.399Z","ref":"W/\"ea5e7f34d60530b92ab38001b8f6ea9062882c1b7c2ef45c04d4a1507381d977\"","latest_new_model_at":"2026-10-31T18:22:42.244Z"},
-    "models_dev": {"fetched_at":"2026-11-03T18:23:48.642Z","etag":"W/\"d0f97edb912557980bbd870f3d9e4dcc\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-11-04T00:39:59.465Z","ref":"W/\"f61837cbd69945a57975a0b64f021e08fcc0be342996e3f90238da88c4b452ce\"","latest_new_model_at":"2026-10-31T18:22:42.244Z"},
+    "models_dev": {"fetched_at":"2026-11-04T00:39:59.672Z","etag":"W/\"3ed8e428993a6ff29a9a15696139c321\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-03T02:49:16.796Z","verified_at":"2026-11-03T02:49:16.768Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-03T02:49:16.768Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-11-03T02:49:16.768Z"}]}
   },
   "models": [
@@ -11818,52 +11818,6 @@
     },
     {
       "provider": "google",
-      "id": "gemini-2.0-flash-exp-image-generation",
-      "mode": "image_generation",
-      "name": "gemini-2.0-flash-exp-image-generation",
-      "aliases": [],
-      "match": {
-        "exact": [
-          "gemini-2.0-flash-exp-image-generation"
-        ],
-        "dated_suffix": true
-      },
-      "prices": {
-        "input": 0,
-        "output": 0,
-        "per_image": 0.039
-      },
-      "modes": {},
-      "region_uplift": {},
-      "capabilities": {
-        "reasoning": false,
-        "reasoning_efforts": null,
-        "default_reasoning_effort": null,
-        "tool_call": false,
-        "parallel_tool_calls": null,
-        "structured_output": false,
-        "web_search": null,
-        "input_modalities": [
-          "image",
-          "text"
-        ],
-        "output_modalities": [
-          "image",
-          "text"
-        ],
-        "temperature": null,
-        "prompt_caching": null,
-        "computer_use": null,
-        "context_window": null,
-        "max_input_tokens": 32768,
-        "max_output_tokens": 32768,
-        "knowledge_cutoff": null,
-        "release_date": null,
-        "endpoints": null
-      }
-    },
-    {
-      "provider": "google",
       "id": "gemini-2.0-flash-lite",
       "mode": "chat",
       "name": "gemini-2.0-flash-lite",
@@ -11987,6 +11941,14 @@
         "cache_read": 0.03,
         "input_audio": 1,
         "cache_audio_read": 0.1,
+        "tiers": [
+          {
+            "above_input_tokens": 200000,
+            "prices": {
+              "input_audio": 1
+            }
+          }
+        ],
         "per_web_search": 0.035
       },
       "modes": {
@@ -11996,7 +11958,15 @@
             "output": 4.5,
             "cache_read": 0.054,
             "input_audio": 1.8,
-            "cache_audio_read": 0.18
+            "cache_audio_read": 0.18,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 1.8
+                }
+              }
+            ]
           }
         },
         "flex": {
@@ -12005,7 +11975,15 @@
             "output": 1.25,
             "cache_read": 0.03,
             "input_audio": 0.5,
-            "cache_audio_read": 0.1
+            "cache_audio_read": 0.1,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.5
+                }
+              }
+            ]
           }
         },
         "batch": {
@@ -12014,7 +11992,15 @@
             "output": 1.25,
             "input_audio": 0.5,
             "cache_read": 0.03,
-            "cache_audio_read": 0.1
+            "cache_audio_read": 0.1,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.5
+                }
+              }
+            ]
           }
         }
       },
@@ -12149,6 +12135,14 @@
         "cache_read": 0.01,
         "input_audio": 0.3,
         "cache_audio_read": 0.03,
+        "tiers": [
+          {
+            "above_input_tokens": 200000,
+            "prices": {
+              "input_audio": 0.3
+            }
+          }
+        ],
         "per_web_search": 0.035
       },
       "modes": {
@@ -12158,7 +12152,15 @@
             "output": 0.72,
             "cache_read": 0.018,
             "input_audio": 0.54,
-            "cache_audio_read": 0.054
+            "cache_audio_read": 0.054,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.54
+                }
+              }
+            ]
           }
         },
         "flex": {
@@ -12167,7 +12169,15 @@
             "output": 0.2,
             "cache_read": 0.01,
             "input_audio": 0.15,
-            "cache_audio_read": 0.03
+            "cache_audio_read": 0.03,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.15
+                }
+              }
+            ]
           }
         },
         "batch": {
@@ -12176,7 +12186,15 @@
             "output": 0.2,
             "input_audio": 0.15,
             "cache_read": 0.01,
-            "cache_audio_read": 0.03
+            "cache_audio_read": 0.03,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.15
+                }
+              }
+            ]
           }
         }
       },
@@ -12662,7 +12680,16 @@
           "prices": {
             "input": 0.625,
             "output": 5,
-            "cache_read": 0.125
+            "cache_read": 0.125,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 1.25,
+                  "output": 7.5
+                }
+              }
+            ]
           }
         },
         "batch": {
@@ -12837,6 +12864,14 @@
         "cache_read": 0.05,
         "input_audio": 1,
         "cache_audio_read": 0.1,
+        "tiers": [
+          {
+            "above_input_tokens": 200000,
+            "prices": {
+              "input_audio": 1
+            }
+          }
+        ],
         "per_web_search": 0.014
       },
       "modes": {
@@ -12846,16 +12881,32 @@
             "output": 5.4,
             "cache_read": 0.09,
             "input_audio": 1.8,
-            "cache_audio_read": 0.18
+            "cache_audio_read": 0.18,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 1.8
+                }
+              }
+            ]
           }
         },
         "flex": {
           "prices": {
             "input": 0.25,
             "output": 1.5,
-            "cache_read": 0.05,
             "input_audio": 0.5,
-            "cache_audio_read": 0.1
+            "cache_read": 0.05,
+            "cache_audio_read": 0.1,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.5
+                }
+              }
+            ]
           }
         },
         "batch": {
@@ -12864,7 +12915,15 @@
             "output": 1.5,
             "input_audio": 0.5,
             "cache_read": 0.05,
-            "cache_audio_read": 0.1
+            "cache_audio_read": 0.1,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.5
+                }
+              }
+            ]
           }
         }
       },
@@ -12943,6 +13002,7 @@
             "input": 3.6,
             "output": 21.6,
             "cache_read": 0.36,
+            "output_image": 216,
             "tiers": [
               {
                 "above_input_tokens": 200000,
@@ -13043,6 +13103,7 @@
             "input": 3.6,
             "output": 21.6,
             "cache_read": 0.36,
+            "output_image": 216,
             "tiers": [
               {
                 "above_input_tokens": 200000,
@@ -13214,7 +13275,8 @@
           "prices": {
             "input": 0.9,
             "output": 5.4,
-            "cache_read": 0.09
+            "cache_read": 0.09,
+            "output_image": 108
           }
         },
         "flex": {
@@ -13292,6 +13354,11 @@
         "per_web_search": 0.014
       },
       "modes": {
+        "priority": {
+          "prices": {
+            "output_image": 108
+          }
+        },
         "batch": {
           "prices": {
             "input": 0.25,
@@ -13353,6 +13420,14 @@
         "cache_read": 0.025,
         "input_audio": 0.5,
         "cache_audio_read": 0.05,
+        "tiers": [
+          {
+            "above_input_tokens": 200000,
+            "prices": {
+              "input_audio": 0.5
+            }
+          }
+        ],
         "per_web_search": 0.014
       },
       "modes": {
@@ -13362,7 +13437,15 @@
             "output": 2.7,
             "cache_read": 0.045,
             "input_audio": 0.9,
-            "cache_audio_read": 0.09
+            "cache_audio_read": 0.09,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.9
+                }
+              }
+            ]
           }
         },
         "flex": {
@@ -13371,7 +13454,15 @@
             "output": 0.75,
             "cache_read": 0.0125,
             "input_audio": 0.25,
-            "cache_audio_read": 0.025
+            "cache_audio_read": 0.025,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.25
+                }
+              }
+            ]
           }
         },
         "batch": {
@@ -13380,7 +13471,15 @@
             "output": 0.75,
             "cache_read": 0.0125,
             "input_audio": 0.25,
-            "cache_audio_read": 0.025
+            "cache_audio_read": 0.025,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input_audio": 0.25
+                }
+              }
+            ]
           }
         }
       },
@@ -13447,7 +13546,8 @@
           "prices": {
             "input": 0.45,
             "output": 2.7,
-            "cache_read": 0.045
+            "cache_read": 0.045,
+            "output_image": 54
           }
         },
         "flex": {
@@ -13750,7 +13850,16 @@
           "prices": {
             "input": 1,
             "output": 6,
-            "cache_read": 0.2
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 2,
+                  "output": 9
+                }
+              }
+            ]
           }
         },
         "batch": {
@@ -15710,7 +15819,8 @@
           "prices": {
             "input": 2.7,
             "output": 13.5,
-            "cache_read": 0.27
+            "cache_read": 0.27,
+            "output_image": 54
           }
         },
         "batch": {
@@ -15847,7 +15957,7 @@
         "prompt_caching": null,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": 57920,
+        "max_input_tokens": 131072,
         "max_output_tokens": 57920,
         "knowledge_cutoff": null,
         "release_date": null,
@@ -15899,7 +16009,7 @@
         "computer_use": null,
         "context_window": 131072,
         "max_input_tokens": 131072,
-        "max_output_tokens": 65535,
+        "max_output_tokens": 57920,
         "knowledge_cutoff": null,
         "release_date": "2026-06-30",
         "endpoints": [
@@ -21174,6 +21284,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-03T18:23:48.781Z",
-  "version": "2026-11-03T18:23:48.781Z-ccacda491f67"
+  "generated_at": "2026-11-04T00:39:59.809Z",
+  "version": "2026-11-04T00:39:59.809Z-bf0da9d2eaf7"
 }
