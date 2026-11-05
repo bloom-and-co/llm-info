@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-04T00:39:59.465Z","ref":"W/\"f61837cbd69945a57975a0b64f021e08fcc0be342996e3f90238da88c4b452ce\"","latest_new_model_at":"2026-10-31T18:22:42.244Z"},
-    "models_dev": {"fetched_at":"2026-11-04T00:39:59.672Z","etag":"W/\"3ed8e428993a6ff29a9a15696139c321\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-11-05T00:40:52.714Z","ref":"W/\"ebd121b7adca64ff6dd43923aac4faa63751e799f17df3dcf8929c2c98003322\"","latest_new_model_at":"2026-11-05T00:40:52.714Z"},
+    "models_dev": {"fetched_at":"2026-11-05T00:40:53.004Z","etag":"W/\"549b05a06ae12a186875c3c6667ada50\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-04T02:48:38.952Z","verified_at":"2026-11-04T02:48:38.926Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-04T02:48:38.926Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-11-04T02:48:38.926Z"}]}
   },
   "models": [
@@ -319,7 +319,7 @@
         "prompt_caching": true,
         "computer_use": true,
         "context_window": null,
-        "max_input_tokens": 400000,
+        "max_input_tokens": 272000,
         "max_output_tokens": 128000,
         "knowledge_cutoff": null,
         "release_date": null,
@@ -5996,7 +5996,7 @@
         "prompt_caching": true,
         "computer_use": true,
         "context_window": null,
-        "max_input_tokens": 400000,
+        "max_input_tokens": 272000,
         "max_output_tokens": 128000,
         "knowledge_cutoff": null,
         "release_date": null,
@@ -8227,6 +8227,100 @@
       "match": {
         "exact": [
           "gpt-image-2.5-sunburst-2026-09-08"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 5,
+        "cache_read": 1.25,
+        "input_image": 8,
+        "output_image": 30,
+        "cache_image_read": 2
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [],
+        "output_modalities": [
+          "image"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/images/generations",
+          "/v1/images/edits"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-image-2.6-flare",
+      "mode": "image_generation",
+      "name": "gpt-image-2.6-flare",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-image-2.6-flare"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 5,
+        "cache_read": 1.25,
+        "input_image": 8,
+        "output_image": 30,
+        "cache_image_read": 2
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [],
+        "output_modalities": [
+          "image"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/images/generations",
+          "/v1/images/edits"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-image-2.6-sunburst",
+      "mode": "image_generation",
+      "name": "gpt-image-2.6-sunburst",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-image-2.6-sunburst"
         ],
         "dated_suffix": true
       },
@@ -21284,6 +21378,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-04T00:39:59.809Z",
-  "version": "2026-11-04T00:39:59.809Z-bf0da9d2eaf7"
+  "generated_at": "2026-11-05T00:40:53.109Z",
+  "version": "2026-11-05T00:40:53.109Z-7110863d740f"
 }
