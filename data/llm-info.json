@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-05T02:49:00.540Z","ref":"W/\"0d292e8ce0a31757454f4e8769da17b6ccf77689e37351e1d5a02b5ce82df26b\"","latest_new_model_at":"2026-11-05T00:40:52.714Z"},
-    "models_dev": {"fetched_at":"2026-11-05T02:49:00.743Z","etag":"W/\"e122c744edb771fad73511d88c643c9f\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-11-05T18:25:35.256Z","ref":"W/\"2d1f7b23a8fcf0d677b73b2bde134d868c777ae02cb841523690d7123ef5b042\"","latest_new_model_at":"2026-11-05T18:25:35.256Z"},
+    "models_dev": {"fetched_at":"2026-11-05T18:25:35.566Z","etag":"W/\"1a11a43460f0ead63940d197dbafed37\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-05T02:49:09.203Z","verified_at":"2026-11-05T02:49:09.184Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-11-05T02:49:09.184Z"}]}
   },
   "models": [
@@ -13805,7 +13805,8 @@
         "output": 4.5,
         "input_audio": 3,
         "output_audio": 12,
-        "input_image": 1
+        "input_image": 1,
+        "per_web_search": 0.014
       },
       "modes": {},
       "region_uplift": {},
@@ -14089,7 +14090,16 @@
           "prices": {
             "input": 1,
             "output": 6,
-            "cache_read": 0.2
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 2,
+                  "output": 9
+                }
+              }
+            ]
           }
         }
       },
@@ -14997,7 +15007,8 @@
         "output": 4.5,
         "input_audio": 3,
         "output_audio": 12,
-        "input_image": 1
+        "input_image": 1,
+        "per_web_search": 0.014
       },
       "modes": {},
       "region_uplift": {},
@@ -15049,7 +15060,8 @@
         "output": 4.5,
         "input_audio": 3,
         "output_audio": 12,
-        "input_image": 1
+        "input_image": 1,
+        "per_web_search": 0.014
       },
       "modes": {},
       "region_uplift": {},
@@ -16060,6 +16072,55 @@
         "context_window": null,
         "max_input_tokens": 131072,
         "max_output_tokens": 57920,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1beta/interactions"
+        ]
+      }
+    },
+    {
+      "provider": "google",
+      "id": "gemini-omni-1.2-flash",
+      "mode": "chat",
+      "name": "gemini-omni-1.2-flash",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gemini-omni-1.2-flash"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 1.5,
+        "output": 9,
+        "reasoning": 9
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": false,
+        "input_modalities": [
+          "image",
+          "text",
+          "video"
+        ],
+        "output_modalities": [
+          "text",
+          "video"
+        ],
+        "temperature": null,
+        "prompt_caching": false,
+        "computer_use": false,
+        "context_window": null,
+        "max_input_tokens": 131072,
+        "max_output_tokens": 260640,
         "knowledge_cutoff": null,
         "release_date": null,
         "endpoints": [
@@ -21385,6 +21446,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-05T02:49:09.323Z",
-  "version": "2026-11-05T02:49:09.323Z-507284372e31"
+  "generated_at": "2026-11-05T18:25:35.652Z",
+  "version": "2026-11-05T18:25:35.652Z-cfa60919987e"
 }
