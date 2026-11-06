@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-05T18:25:35.256Z","ref":"W/\"2d1f7b23a8fcf0d677b73b2bde134d868c777ae02cb841523690d7123ef5b042\"","latest_new_model_at":"2026-11-05T18:25:35.256Z"},
-    "models_dev": {"fetched_at":"2026-11-05T18:25:35.566Z","etag":"W/\"1a11a43460f0ead63940d197dbafed37\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-11-06T00:40:43.925Z","ref":"W/\"9d2fbc7b27021f48124849e66213a541ff837123ae921fca448c28cb8e59e2a0\"","latest_new_model_at":"2026-11-06T00:40:43.925Z"},
+    "models_dev": {"fetched_at":"2026-11-06T00:40:44.352Z","etag":"W/\"02c577625d3cfbc07479cab42f124402\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-05T02:49:09.203Z","verified_at":"2026-11-05T02:49:09.184Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-05T02:49:09.184Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-11-05T02:49:09.184Z"}]}
   },
   "models": [
@@ -6634,6 +6634,55 @@
         "endpoints": [
           "/v1/chat/completions",
           "/v1/batch",
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-6-cyber",
+      "mode": "chat",
+      "name": "gpt-6-cyber",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6-cyber"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 20,
+        "output": 100,
+        "cache_read": 2,
+        "cache_write": 25
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": null,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/chat/completions",
           "/v1/responses"
         ]
       }
@@ -16021,7 +16070,7 @@
         "prompt_caching": null,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": 1048576,
+        "max_input_tokens": 131072,
         "max_output_tokens": 65536,
         "knowledge_cutoff": null,
         "release_date": null,
@@ -16094,7 +16143,8 @@
       "prices": {
         "input": 1.5,
         "output": 9,
-        "reasoning": 9
+        "reasoning": 9,
+        "input_image": 1.5
       },
       "modes": {},
       "region_uplift": {},
@@ -16112,6 +16162,7 @@
           "video"
         ],
         "output_modalities": [
+          "audio",
           "text",
           "video"
         ],
@@ -16120,7 +16171,7 @@
         "computer_use": false,
         "context_window": null,
         "max_input_tokens": 131072,
-        "max_output_tokens": 260640,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": null,
         "release_date": null,
         "endpoints": [
@@ -21446,6 +21497,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-05T18:25:35.652Z",
-  "version": "2026-11-05T18:25:35.652Z-cfa60919987e"
+  "generated_at": "2026-11-06T00:40:44.482Z",
+  "version": "2026-11-06T00:40:44.482Z-1448980dcbeb"
 }
