@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-08T06:28:42.705Z","ref":"W/\"5e81a1adc67381b183241caded9f6e9deef337c394fa5560ec0057c5b1105f1e\"","latest_new_model_at":"2026-11-06T00:40:43.925Z"},
-    "models_dev": {"fetched_at":"2026-11-08T06:28:43.062Z","etag":"W/\"ddf3427a1a8839c1703bae823008690f\"","latest_new_model_at":"2026-10-26T18:45:01.819Z"},
+    "litellm": {"fetched_at":"2026-11-10T00:39:32.894Z","ref":"W/\"760550e0ef50690d2ee0e147b4d43686bb444329960f97ffc3c9d19d7ef8c133\"","latest_new_model_at":"2026-11-10T00:39:32.894Z"},
+    "models_dev": {"fetched_at":"2026-11-10T00:39:33.089Z","etag":"W/\"e653b6c20a0f8047256a2bde92db9482\"","latest_new_model_at":"2026-11-10T00:39:33.089Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-09T02:49:13.433Z","verified_at":"2026-11-09T02:49:13.418Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-09T02:49:13.418Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.7878787878787878},"verified_at":"2026-11-09T02:49:13.418Z"}]}
   },
   "models": [
@@ -6654,7 +6654,17 @@
         "input": 20,
         "output": 100,
         "cache_read": 2,
-        "cache_write": 25
+        "cache_write": 25,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 40,
+              "output": 150,
+              "cache_read": 4
+            }
+          }
+        ]
       },
       "modes": {},
       "region_uplift": {},
@@ -10433,6 +10443,84 @@
     },
     {
       "provider": "anthropic",
+      "id": "claude-fable-5-2",
+      "mode": "chat",
+      "name": "Claude Fable 5.2",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "claude-fable-5-2"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 8,
+        "output": 40,
+        "cache_read": 0.2,
+        "cache_write": 10,
+        "cache_write_1h": 16,
+        "per_web_search": 0.01
+      },
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.1,
+            "cache_write": 5
+          }
+        },
+        "fast": {
+          "prices": {
+            "input": 16,
+            "output": 80,
+            "cache_read": 0.4,
+            "cache_write": 20,
+            "cache_write_1h": 32
+          },
+          "request": {
+            "body": {
+              "speed": "fast"
+            }
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": null,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "pdf",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": false,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": 1000000,
+        "max_input_tokens": 1000000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": "2026-06",
+        "release_date": "2026-11-09",
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "anthropic",
       "id": "claude-haiku-4-5",
       "mode": "chat",
       "name": "Claude Haiku 4.5 (latest)",
@@ -11774,7 +11862,7 @@
         "temperature": true,
         "prompt_caching": false,
         "computer_use": null,
-        "context_window": 131072,
+        "context_window": 1048576,
         "max_input_tokens": 1048576,
         "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
@@ -11846,7 +11934,7 @@
         "temperature": true,
         "prompt_caching": false,
         "computer_use": null,
-        "context_window": 131072,
+        "context_window": 1048576,
         "max_input_tokens": 1048576,
         "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
@@ -21500,6 +21588,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-08T06:28:43.165Z",
-  "version": "2026-11-08T06:28:43.165Z-9b08ec90bfc4"
+  "generated_at": "2026-11-10T00:39:33.185Z",
+  "version": "2026-11-10T00:39:33.185Z-a1f13e0b9664"
 }
