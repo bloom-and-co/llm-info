@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-11T00:40:29.008Z","ref":"W/\"bd86760d6c1f3229ce4ffe6676cb64aa150cf60b2062cab5f751c3a8e240f8be\"","latest_new_model_at":"2026-11-10T18:23:13.879Z"},
-    "models_dev": {"fetched_at":"2026-11-11T00:40:29.195Z","etag":"W/\"8e22ffdf885cf64d56225acdae6029a6\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
+    "litellm": {"fetched_at":"2026-11-11T12:27:37.908Z","ref":"W/\"57907e9634d54171e94256b13d3af699918cd7310cf8d1d0f45556353f4299fb\"","latest_new_model_at":"2026-11-10T18:23:13.879Z"},
+    "models_dev": {"fetched_at":"2026-11-11T12:27:38.165Z","etag":"W/\"1ef5d9546bd3b32bd4123d226f4a422d\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-11T02:49:15.141Z","verified_at":"2026-11-10T02:49:06.433Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-11T02:49:15.118Z"}]}
   },
   "models": [
@@ -12338,7 +12338,7 @@
         "computer_use": null,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
-        "max_output_tokens": 65535,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
         "release_date": "2025-06-17",
         "endpoints": [
@@ -12532,7 +12532,7 @@
         "computer_use": null,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
-        "max_output_tokens": 65535,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
         "release_date": "2025-06-17",
         "endpoints": [
@@ -13045,7 +13045,7 @@
         "computer_use": null,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
-        "max_output_tokens": 65535,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
         "release_date": "2025-06-17",
         "endpoints": [
@@ -13267,7 +13267,7 @@
         "computer_use": true,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
-        "max_output_tokens": 65535,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
         "release_date": "2025-12-17",
         "endpoints": [
@@ -13632,7 +13632,7 @@
         "prompt_caching": true,
         "computer_use": null,
         "context_window": 131072,
-        "max_input_tokens": 65536,
+        "max_input_tokens": 131072,
         "max_output_tokens": 32768,
         "knowledge_cutoff": "2025-01",
         "release_date": "2026-05-28",
@@ -14426,7 +14426,7 @@
         "computer_use": true,
         "context_window": 1048576,
         "max_input_tokens": 1048576,
-        "max_output_tokens": 65535,
+        "max_output_tokens": 65536,
         "knowledge_cutoff": "2025-01",
         "release_date": "2026-05-19",
         "endpoints": [
@@ -15961,7 +15961,8 @@
         "batch": {
           "prices": {
             "input": 0.375,
-            "output": 1.875
+            "output": 1.875,
+            "cache_read": 0.0375
           }
         }
       },
@@ -16040,7 +16041,8 @@
         "batch": {
           "prices": {
             "input": 0.15,
-            "output": 1.25
+            "output": 1.25,
+            "cache_read": 0.015
           }
         }
       },
@@ -16596,13 +16598,34 @@
           "prices": {
             "input": 1,
             "output": 6,
-            "cache_read": 0.2
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 2,
+                  "output": 9,
+                  "cache_read": 0.4
+                }
+              }
+            ]
           }
         },
         "batch": {
           "prices": {
             "input": 1,
-            "output": 6
+            "output": 6,
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 2,
+                  "output": 9,
+                  "cache_read": 0.4
+                }
+              }
+            ]
           }
         }
       },
@@ -21813,6 +21836,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-11T00:40:29.314Z",
-  "version": "2026-11-11T00:40:29.314Z-ac9aedfd7a05"
+  "generated_at": "2026-11-11T12:27:38.264Z",
+  "version": "2026-11-11T12:27:38.264Z-2bd73edc2c97"
 }
