@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-12T12:28:49.128Z","ref":"W/\"bb0a9493f5d6f0d271be46f8405ac3b0dc7949b5435d5837ff4aed2c70108571\"","latest_new_model_at":"2026-11-12T02:48:43.821Z"},
-    "models_dev": {"fetched_at":"2026-11-12T12:28:49.346Z","etag":"W/\"bf1b7897e56fb84df8c0ca5e44a2cf31\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
+    "litellm": {"fetched_at":"2026-11-12T18:24:21.980Z","ref":"W/\"e925426eac7cbfa5e2ccebbcf6cca9a511a6f6b06280262f06943f3ac44dafc0\"","latest_new_model_at":"2026-11-12T18:24:21.980Z"},
+    "models_dev": {"fetched_at":"2026-11-12T18:24:22.343Z","etag":"W/\"3995a52048f696d770e60370b2392c80\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-12T02:48:51.088Z","verified_at":"2026-11-10T02:49:06.433Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-12T02:48:51.071Z"}]}
   },
   "models": [
@@ -15624,6 +15624,80 @@
     },
     {
       "provider": "google",
+      "id": "gemini-4-hydrogen",
+      "mode": "chat",
+      "name": "gemini-4-hydrogen",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gemini-4-hydrogen"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 1.5,
+        "output": 7.5,
+        "reasoning": 7.5,
+        "cache_read": 0.075,
+        "per_web_search": 0.014
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 2.7,
+            "output": 13.5,
+            "cache_read": 0.135
+          }
+        },
+        "flex": {
+          "prices": {
+            "input": 0.75,
+            "output": 3.75,
+            "cache_read": 0.0375
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 0.75,
+            "output": 3.75,
+            "cache_read": 0.0375
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "audio",
+          "image",
+          "text",
+          "video"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 1048576,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/completions"
+        ]
+      }
+    },
+    {
+      "provider": "google",
       "id": "gemini-decision-1",
       "mode": "other",
       "name": "gemini-decision-1",
@@ -20773,7 +20847,7 @@
         "dated_suffix": true
       },
       "prices": {
-        "per_image": 0.05
+        "per_image": 0.04
       },
       "modes": {},
       "region_uplift": {},
@@ -20818,7 +20892,7 @@
         "dated_suffix": true
       },
       "prices": {
-        "per_image": 0.05
+        "per_image": 0.04
       },
       "modes": {},
       "region_uplift": {},
@@ -20863,7 +20937,7 @@
         "dated_suffix": true
       },
       "prices": {
-        "per_image": 0.05
+        "per_image": 0.04
       },
       "modes": {},
       "region_uplift": {},
@@ -20908,7 +20982,7 @@
         "dated_suffix": true
       },
       "prices": {
-        "per_image": 0.05
+        "per_image": 0.04
       },
       "modes": {},
       "region_uplift": {},
@@ -21883,6 +21957,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-12T12:28:49.425Z",
-  "version": "2026-11-12T12:28:49.425Z-00f543cf5eb9"
+  "generated_at": "2026-11-12T18:24:22.467Z",
+  "version": "2026-11-12T18:24:22.467Z-80cf53cc2d63"
 }
