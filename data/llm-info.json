@@ -1,9 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-11T12:27:37.908Z","ref":"W/\"57907e9634d54171e94256b13d3af699918cd7310cf8d1d0f45556353f4299fb\"","latest_new_model_at":"2026-11-10T18:23:13.879Z"},
-    "models_dev": {"fetched_at":"2026-11-11T12:27:38.165Z","etag":"W/\"1ef5d9546bd3b32bd4123d226f4a422d\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
-    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-11T02:49:15.141Z","verified_at":"2026-11-10T02:49:06.433Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-11T02:49:15.118Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-11T02:49:15.118Z"}]}
+    "litellm": {"fetched_at":"2026-11-12T02:48:43.821Z","ref":"W/\"855caadace5b76737cb3093fb83f62e3fcac6223c407cd6ed13d5fa1f66de4eb\"","latest_new_model_at":"2026-11-12T02:48:43.821Z"},
+    "models_dev": {"fetched_at":"2026-11-12T02:48:44.283Z","etag":"W/\"d1a3042e9988a914a3397b18a0402650\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-12T02:48:51.088Z","verified_at":"2026-11-10T02:49:06.433Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-12T02:48:51.071Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-12T02:48:51.071Z"}]}
   },
   "models": [
     {
@@ -15623,6 +15623,52 @@
     },
     {
       "provider": "google",
+      "id": "gemini-decision-1",
+      "mode": "other",
+      "name": "gemini-decision-1",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gemini-decision-1"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 0.1,
+        "output": 0
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": false,
+        "structured_output": false,
+        "web_search": false,
+        "input_modalities": [
+          "audio",
+          "image",
+          "text",
+          "video"
+        ],
+        "output_modalities": [],
+        "temperature": null,
+        "prompt_caching": false,
+        "computer_use": false,
+        "context_window": null,
+        "max_input_tokens": 262144,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/decisions"
+        ]
+      }
+    },
+    {
+      "provider": "google",
       "id": "gemini-embedding-001",
       "mode": "embedding",
       "name": "Gemini Embedding 001",
@@ -21836,6 +21882,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-11T12:27:38.264Z",
-  "version": "2026-11-11T12:27:38.264Z-2bd73edc2c97"
+  "generated_at": "2026-11-12T02:48:51.170Z",
+  "version": "2026-11-12T02:48:51.170Z-1c89a591599c"
 }
