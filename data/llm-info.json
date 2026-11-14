@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-13T12:27:29.374Z","ref":"W/\"9f4ebdbac231565d42e00beaf7210a29d4e9e15afe82d0ed119fb8501de5f854\"","latest_new_model_at":"2026-11-12T18:24:21.980Z"},
-    "models_dev": {"fetched_at":"2026-11-13T12:27:29.485Z","etag":"W/\"39fcecfbcb2d708ed0b519682b7a3c6f\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
+    "litellm": {"fetched_at":"2026-11-14T00:39:34.094Z","ref":"W/\"2b29c055cba1ef4ed71c317d286dc4f9c3bbd5fff6bd3d5400f1b57eb9ff3cca\"","latest_new_model_at":"2026-11-12T18:24:21.980Z"},
+    "models_dev": {"fetched_at":"2026-11-14T00:39:34.206Z","etag":"W/\"93ab34e493c95707ff418dcf771f1eb8\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-13T02:48:26.255Z","verified_at":"2026-11-10T02:49:06.433Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-13T02:48:26.238Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-13T02:48:26.238Z"}]}
   },
   "models": [
@@ -5669,16 +5669,7 @@
         "batch": {
           "prices": {
             "input": 15,
-            "output": 90,
-            "tiers": [
-              {
-                "above_input_tokens": 272000,
-                "prices": {
-                  "input": 30,
-                  "output": 135
-                }
-              }
-            ]
+            "output": 90
           }
         }
       },
@@ -8356,7 +8347,17 @@
         "output_image": 30,
         "cache_image_read": 2
       },
-      "modes": {},
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 2.5,
+            "cache_read": 0.625,
+            "input_image": 4,
+            "output_image": 15,
+            "cache_image_read": 1
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": false,
@@ -8403,7 +8404,17 @@
         "output_image": 30,
         "cache_image_read": 2
       },
-      "modes": {},
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 2.5,
+            "cache_read": 0.625,
+            "input_image": 4,
+            "output_image": 15,
+            "cache_image_read": 1
+          }
+        }
+      },
       "region_uplift": {},
       "capabilities": {
         "reasoning": false,
@@ -15042,10 +15053,10 @@
         "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
-        "tool_call": false,
+        "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
-        "web_search": false,
+        "web_search": true,
         "input_modalities": [
           "audio",
           "image",
@@ -15084,29 +15095,25 @@
       "prices": {
         "input": 0.5,
         "output": 6,
-        "cache_read": 0.125,
         "output_audio": 6
       },
       "modes": {
         "priority": {
           "prices": {
             "input": 0.9,
-            "output": 10.8,
-            "cache_read": 0.225
+            "output": 10.8
           }
         },
         "flex": {
           "prices": {
             "input": 0.25,
-            "output": 3,
-            "cache_read": 0.025
+            "output": 3
           }
         },
         "batch": {
           "prices": {
             "input": 0.25,
-            "output": 3,
-            "cache_read": 0.0625
+            "output": 3
           }
         }
       },
@@ -15124,7 +15131,7 @@
           "audio"
         ],
         "temperature": null,
-        "prompt_caching": true,
+        "prompt_caching": false,
         "computer_use": null,
         "context_window": null,
         "max_input_tokens": 8192,
@@ -15151,29 +15158,25 @@
       "prices": {
         "input": 0.5,
         "output": 9,
-        "cache_read": 0.125,
         "output_audio": 9
       },
       "modes": {
         "priority": {
           "prices": {
             "input": 0.9,
-            "output": 16.2,
-            "cache_read": 0.225
+            "output": 16.2
           }
         },
         "flex": {
           "prices": {
             "input": 0.25,
-            "output": 4.5,
-            "cache_read": 0.025
+            "output": 4.5
           }
         },
         "batch": {
           "prices": {
             "input": 0.25,
-            "output": 4.5,
-            "cache_read": 0.0625
+            "output": 4.5
           }
         }
       },
@@ -15191,7 +15194,7 @@
           "audio"
         ],
         "temperature": null,
-        "prompt_caching": true,
+        "prompt_caching": false,
         "computer_use": null,
         "context_window": null,
         "max_input_tokens": 8192,
@@ -15418,13 +15421,6 @@
             "output": 36,
             "cache_read": 0.36,
             "input_audio": 7.2
-          }
-        },
-        "flex": {
-          "prices": {
-            "input": 2,
-            "output": 10,
-            "cache_read": 0.1
           }
         },
         "batch": {
@@ -21966,6 +21962,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-13T12:27:29.577Z",
-  "version": "2026-11-13T12:27:29.577Z-c454b480e9d1"
+  "generated_at": "2026-11-14T00:39:34.287Z",
+  "version": "2026-11-14T00:39:34.287Z-d0dc5753ce3d"
 }
