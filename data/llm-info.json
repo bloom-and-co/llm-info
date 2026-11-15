@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-14T18:22:45.537Z","ref":"W/\"82b0b5c78f9bcd4cbbf162fdd5ab0c3dbda1820568a25d706df9707e4f68770d\"","latest_new_model_at":"2026-11-12T18:24:21.980Z"},
-    "models_dev": {"fetched_at":"2026-11-14T18:22:45.874Z","etag":"W/\"b9ce5d42aa474bebeebdfbabdc97a30e\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
+    "litellm": {"fetched_at":"2026-11-15T00:43:50.632Z","ref":"W/\"68bc7b721c53085e4e5d0c1cc874824411d8ede3556a998e83d34afbe454a79b\"","latest_new_model_at":"2026-11-12T18:24:21.980Z"},
+    "models_dev": {"fetched_at":"2026-11-15T00:43:50.811Z","etag":"W/\"1697a94dd2e937a7a8ef8b209cde5733\"","latest_new_model_at":"2026-11-10T18:23:14.191Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-14T02:49:06.470Z","verified_at":"2026-11-10T02:49:06.433Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-10T02:49:06.433Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-14T02:49:06.458Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-14T02:49:06.458Z"}]}
   },
   "models": [
@@ -4623,6 +4623,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -5368,6 +5373,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -6066,6 +6076,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -6210,6 +6225,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -6354,6 +6374,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -6498,6 +6523,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -6756,6 +6786,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -6961,6 +6996,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -7105,6 +7145,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -7248,6 +7293,11 @@
                 }
               }
             ]
+          },
+          "request": {
+            "body": {
+              "service_tier": "flex"
+            }
           }
         },
         "batch": {
@@ -16627,7 +16677,7 @@
       "provider": "google",
       "id": "gemini-omni-flash-preview",
       "mode": "chat",
-      "name": "gemini-omni-flash-preview",
+      "name": "Gemini Omni Flash Preview",
       "aliases": [],
       "match": {
         "exact": [
@@ -16637,7 +16687,7 @@
       },
       "prices": {
         "input": 1.5,
-        "output": 9,
+        "output": 17.5,
         "reasoning": 9,
         "input_audio": 1.5
       },
@@ -16661,14 +16711,14 @@
           "text",
           "video"
         ],
-        "temperature": null,
+        "temperature": true,
         "prompt_caching": null,
         "computer_use": null,
-        "context_window": null,
+        "context_window": 131072,
         "max_input_tokens": 131072,
         "max_output_tokens": 57920,
         "knowledge_cutoff": null,
-        "release_date": null,
+        "release_date": "2026-06-30",
         "endpoints": [
           "/v1/chat/completions"
         ]
@@ -21962,6 +22012,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-14T18:22:45.974Z",
-  "version": "2026-11-14T18:22:45.974Z-6a62154cc740"
+  "generated_at": "2026-11-15T00:43:50.889Z",
+  "version": "2026-11-15T00:43:50.889Z-92b82764b4ad"
 }
