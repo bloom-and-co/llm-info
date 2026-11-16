@@ -1,5 +1,6 @@
 import copy
 import json
+import subprocess
 import sys
 from decimal import Decimal
 from pathlib import Path
@@ -13,6 +14,49 @@ from llm_info._engine import calculate
 ROOT = Path(__file__).resolve().parents[2]
 DATA = json.loads((ROOT / "tests/fixtures/llm-info-snapshot.json").read_text())
 CASES = json.loads((ROOT / "tests/fixtures/elevenlabs-calc.json").read_text())
+
+
+def test_scribe_v3_from_reviewed_builder_output():
+    # Exercise the actual rule without editing the frozen snapshot or fetching feeds.
+    generated = json.loads(
+        subprocess.check_output(
+            [
+                "node",
+                "--input-type=module",
+                "-e",
+                "import { mergeSources } from './builder/core.mjs'; "
+                "console.log(JSON.stringify(mergeSources({}, {}).models));",
+            ],
+            cwd=ROOT,
+            text=True,
+        )
+    )
+    data = {**DATA, "models": generated}
+    info = LlmInfo(store=MemoryStore(), fetch=lambda u, e: (200, None, data))
+    info.load()
+    model = next(m for m in info.models("elevenlabs") if m["id"] == "scribe_v3")
+    assert model["mode"] == "audio_transcription"
+    assert model["price_unit"] == "credit"
+    capabilities = info.capabilities("elevenlabs", "scribe_v3")
+    assert capabilities["mode"] == "audio_transcription"
+    assert capabilities["price_unit"] == "credit"
+    assert capabilities["input_modalities"] == ["audio"]
+    assert capabilities["output_modalities"] == ["text"]
+    assert capabilities["endpoints"] == ["/v1/speech-to-text"]
+    for seconds, expected in [(0, 0), (8, Decimal(32) / 9), (63, 28), (3600, 1600)]:
+        usage = {"input_audio_seconds": seconds, "output_audio_seconds": 120}
+        result = info.calc("elevenlabs", "scribe_v3", usage)
+        v2 = info.calc("elevenlabs", "scribe_v2", usage)
+        assert result["model"] == "scribe_v3"
+        assert result["price_unit"] == "credit"
+        assert abs(result["total_credits"] - expected) < Decimal("1e-10")
+        assert result["extra_credits"] == result["total_credits"]
+        assert result["total_credits"] == v2["total_credits"]
+        for key in ("total_usd", "input_usd", "output_usd", "extra_usd"):
+            assert result[key] is None
+        assert result["warnings"] == []
+    for model_id in ["scribe_v3-latest", "scribe_v3-20261116", "scribe_v3_live"]:
+        assert info.calc("elevenlabs", model_id, {"input_audio_seconds": 63}) is None
 
 
 @pytest.mark.parametrize("case", CASES, ids=lambda c: c["name"])

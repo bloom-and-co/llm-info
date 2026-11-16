@@ -94,7 +94,7 @@ it('stores verified prices in git, reuses them between verify runs and keeps the
       body: { ok: true, feed: feed('2026-10-16T00:00:00.000Z'), events: [] },
     });
     expect(first.stdout).toContain('previous={"previous":[]}');
-    expect(first.out.models).toHaveLength(18);
+    expect(first.out.models).toHaveLength(19);
     expect(first.out.models.find((row: any) => row.id === 'eleven_v3').prices.per_character).toBe(
       1.5,
     );

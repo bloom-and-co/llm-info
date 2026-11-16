@@ -92,19 +92,21 @@ if (cost?.priceUnit === 'credit') {
 
 Credit results include `priceUnit: "credit"`, `totalCredits`, `inputCredits`, `outputCredits`, and `extraCredits`. **All four USD fields are `null`**, so they never contain credit amounts. TypeScript's `Cost` is a union: check `priceUnit` before using the corresponding amount. Python returns `price_unit: "credit"`, Decimal `total_credits`, `input_credits`, `output_credits`, `extra_credits`, and `None` for every `*_usd` field. Callers must branch on the unit before aggregation or conversion. The credit unit is specific to ElevenLabs and must not be combined with another provider's credits. USD/credit depends on the account's contract and belongs in Hangar's configuration, outside this public dataset. Legacy ElevenLabs cache rows without `price_unit: "credit"` return `null`/`None` from `calc()` until the data is refreshed.
 
-The builder ignores **all ElevenLabs LiteLLM USD rows**, including higher prices and unreviewed IDs. Reviewed rules supply the following exact IDs, checked **2026-10-15**, using the [official pricing page's TTS credit descriptions](https://elevenlabs.io/pricing) and user-supplied production reconciliation of the ElevenLabs usage screen filtered to Hangar's API key:
+The builder ignores **all ElevenLabs LiteLLM USD rows**, including higher prices and unreviewed IDs. Reviewed rules supply the following exact IDs, initially checked **2026-10-15** with later checks noted below, using the [official pricing page's TTS credit descriptions](https://elevenlabs.io/pricing) and user-supplied production reconciliation of the ElevenLabs usage screen filtered to Hangar's API key:
 
 | IDs | API mode | Price (ElevenLabs credits) |
 | --- | --- | --- |
 | `eleven_v3`, `eleven_multilingual_v2` | `audio_speech` | `per_character: 1` |
 | `eleven_flash_v2`, `eleven_flash_v2_5`, `eleven_turbo_v2`, `eleven_turbo_v2_5` | `audio_speech` | `per_character: 0.5` |
-| `scribe_v1`, `scribe_v1_experimental`, `scribe_v2`, `scribe_v2_medical` | `audio_transcription` | `per_input_audio_second: 4/9` (1,600/hour); output seconds cost zero |
+| `scribe_v1`, `scribe_v1_experimental`, `scribe_v2`, `scribe_v2_medical`, `scribe_v3` | `audio_transcription` | `per_input_audio_second: 4/9` (1,600/hour); output seconds cost zero; v3 is estimated, not measured |
 | `scribe_v2_realtime` | `realtime` | `per_input_audio_second: (4/9) × (0.39/0.22)` (estimate; not measured) |
 | `forced-alignment` | `audio_alignment` | `per_input_audio_second: 4/9` (1,600/hour) |
 | `audio-isolation` | `audio_isolation` | `per_input_audio_second: 1000/60` (1,000/minute) |
 | `eleven_text_to_sound_v2` | `audio_generation` | `per_output_audio_second: 10` |
 
 The `scribe_v2_medical` model ID was checked against the [official model list](https://elevenlabs.io/docs/overview/models) on **2026-10-16**. It uses the same 4/9 credit/input-second reviewed rule as Scribe v2; its API price card is also $0.22/hour.
+
+The `scribe_v3` model ID was checked on **2026-11-16** against the [official model list](https://elevenlabs.io/docs/overview/models): it is Scribe v2's successor for batch speech-to-text and uses `POST /v1/speech-to-text`. Its credit consumption is **not measured**. The reviewed rule reuses Scribe v2's measured 4/9 credit/input-second rate (with zero output-second cost) because the [API pricing page](https://elevenlabs.io/pricing/api) lists both Scribe v3 and Scribe v2 at **$0.20/hour** on that date. The published dataset will include this ID after the next `update-prices` run.
 
 The `scribe_v2_realtime` rate is **not measured**: it estimates credits from Scribe v2's measured 4/9 credit/input-second rate multiplied by the [API pricing page](https://elevenlabs.io/pricing/api)'s USD ratio, $0.39/hour for Realtime divided by $0.22/hour for v2, checked **2026-10-16**. Its primary API kind is `realtime`, consistent with the other providers' realtime models. Its [WebSocket endpoint](https://elevenlabs.io/docs/api-reference/speech-to-text/v-1-speech-to-text-realtime) is `/v1/speech-to-text/realtime`; it is not a synchronous transcription model.
 
