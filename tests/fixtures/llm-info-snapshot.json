@@ -19813,6 +19813,52 @@
           "/v1/speech-to-text/realtime"
         ]
       }
+    },
+    {
+      "provider": "elevenlabs",
+      "id": "scribe_v3",
+      "mode": "audio_transcription",
+      "price_unit": "credit",
+      "name": "scribe_v3",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "scribe_v3"
+        ],
+        "dated_suffix": false
+      },
+      "prices": {
+        "per_input_audio_second": 0.4444444444444444,
+        "per_output_audio_second": 0
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": null,
+        "input_modalities": [
+          "audio"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": null,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": null,
+        "max_output_tokens": null,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/speech-to-text"
+        ]
+      }
     }
   ],
   "skipped": [
