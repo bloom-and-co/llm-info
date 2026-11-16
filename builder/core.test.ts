@@ -822,11 +822,11 @@ it.each([null, -1, '0.002'])(
     ).toEqual(mergeSources({}, {}));
   },
 );
-it('freezes fourteen ElevenLabs models and validates the published audio API kinds', async () => {
+it('freezes fifteen ElevenLabs models and validates the published audio API kinds', async () => {
   const d = JSON.parse(await readFile('data/llm-info.json', 'utf8'));
   const snapshot = JSON.parse(await readFile('tests/fixtures/llm-info-snapshot.json', 'utf8'));
   const rows = d.models.filter((m: any) => m.provider === 'elevenlabs');
-  expect(snapshot.models.filter((m: any) => m.provider === 'elevenlabs')).toHaveLength(14);
+  expect(snapshot.models.filter((m: any) => m.provider === 'elevenlabs')).toHaveLength(15);
   expect(rows).toEqual(snapshot.models.filter((m: any) => m.provider === 'elevenlabs'));
   for (const model of rows) {
     expect(model.price_unit).toBe('credit');
