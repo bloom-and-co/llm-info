@@ -698,6 +698,12 @@ it('ignores ElevenLabs USD feeds entirely, including higher prices, modes and un
       input_cost_per_second: 9999,
       output_cost_per_second: 9999,
     },
+    scribe_v3: {
+      litellm_provider: 'elevenlabs',
+      mode: 'audio_transcription',
+      input_cost_per_second: 9999,
+      output_cost_per_second: 9999,
+    },
     'elevenlabs/unreviewed': {
       litellm_provider: 'elevenlabs',
       mode: 'audio_speech',
@@ -718,7 +724,7 @@ it('ignores ElevenLabs USD feeds entirely, including higher prices, modes and un
   expect(JSON.stringify(lite)).toBe(before);
   expect(mergeSources(Object.fromEntries(Object.entries(lite).reverse()), {})).toEqual(merged);
 });
-it('seeds exactly fourteen reviewed credit models and records provenance', async () => {
+it('seeds exactly fifteen reviewed credit models and records provenance', async () => {
   const { providerRules } = await import('./rules.mjs');
   const merged = mergeSources({}, {});
   const expected = [
@@ -732,11 +738,13 @@ it('seeds exactly fourteen reviewed credit models and records provenance', async
     ['eleven_v3', 'audio_speech', { per_character: 1 }],
     ['forced-alignment', 'audio_alignment', { per_input_audio_second: 4 / 9 }],
     ['scribe_v2_realtime', 'realtime', { per_input_audio_second: (4 / 9) * (0.39 / 0.22) }],
-    ...['scribe_v1', 'scribe_v1_experimental', 'scribe_v2', 'scribe_v2_medical'].map((id) => [
-      id,
-      'audio_transcription',
-      { per_input_audio_second: 4 / 9, per_output_audio_second: 0 },
-    ]),
+    ...['scribe_v1', 'scribe_v1_experimental', 'scribe_v2', 'scribe_v2_medical', 'scribe_v3'].map(
+      (id) => [
+        id,
+        'audio_transcription',
+        { per_input_audio_second: 4 / 9, per_output_audio_second: 0 },
+      ],
+    ),
   ];
   expect(merged.models).toHaveLength(expected.length);
   for (const [id, mode, prices] of expected) {
@@ -750,11 +758,17 @@ it('seeds exactly fourteen reviewed credit models and records provenance', async
   }
   for (const rule of providerRules.filter((r: any) => r.provider === 'elevenlabs')) {
     expect(rule.checked_at).toBe(
-      ['elevenlabs-scribe-medical', 'elevenlabs-scribe-realtime'].includes(rule.id)
-        ? '2026-10-16'
-        : '2026-10-15',
+      {
+        'elevenlabs-scribe-v3': '2026-11-16',
+        'elevenlabs-scribe-medical': '2026-10-16',
+        'elevenlabs-scribe-realtime': '2026-10-16',
+      }[rule.id] ?? '2026-10-15',
     );
-    expect(rule.source_url).toBe('https://elevenlabs.io/pricing');
+    expect(rule.source_url).toBe(
+      rule.id === 'elevenlabs-scribe-v3'
+        ? 'https://elevenlabs.io/pricing/api'
+        : 'https://elevenlabs.io/pricing',
+    );
     expect(rule.supporting_urls.length).toBeGreaterThan(0);
   }
   expect(merged.applied_rules).toContainEqual(
@@ -767,6 +781,27 @@ it('seeds exactly fourteen reviewed credit models and records provenance', async
       adopted: 1,
       source_url: 'https://elevenlabs.io/pricing',
       checked_at: '2026-10-15',
+    }),
+  );
+});
+it('records Scribe v3 batch capabilities and the separately reviewed pricing source', () => {
+  const merged = mergeSources({}, {});
+  expect(row(merged, 'elevenlabs', 'scribe_v3').capabilities).toMatchObject({
+    input_modalities: ['audio'],
+    output_modalities: ['text'],
+    endpoints: ['/v1/speech-to-text'],
+  });
+  expect(merged.applied_rules).toContainEqual(
+    expect.objectContaining({
+      rule: 'elevenlabs-scribe-v3',
+      provider: 'elevenlabs',
+      model: 'scribe_v3',
+      field: 'prices.per_input_audio_second',
+      price_unit: 'credit',
+      previous: null,
+      adopted: 4 / 9,
+      source_url: 'https://elevenlabs.io/pricing/api',
+      checked_at: '2026-11-16',
     }),
   );
 });

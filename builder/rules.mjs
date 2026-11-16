@@ -65,6 +65,30 @@ export const providerRules = [
     checked_at: '2026-10-15',
   },
   {
+    id: 'elevenlabs-scribe-v3',
+    provider: 'elevenlabs',
+    model_selector: {
+      description:
+        'Scribe v3 credits are not measured; reuse measured Scribe v2 4/9 credit/input-second rate because both API prices are $0.20/hour',
+      ids: ['scribe_v3'],
+    },
+    effect: {
+      supplement: {
+        mode: 'audio_transcription',
+        price_unit: 'credit',
+        prices: { per_input_audio_second: 4 / 9, per_output_audio_second: 0 },
+        capabilities: {
+          input_modalities: ['audio'],
+          output_modalities: ['text'],
+          endpoints: ['/v1/speech-to-text'],
+        },
+      },
+    },
+    source_url: 'https://elevenlabs.io/pricing/api',
+    supporting_urls: ['https://elevenlabs.io/docs/overview/models'],
+    checked_at: '2026-11-16',
+  },
+  {
     id: 'elevenlabs-scribe-medical',
     provider: 'elevenlabs',
     model_selector: {

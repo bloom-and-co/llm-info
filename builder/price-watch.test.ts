@@ -52,7 +52,7 @@ it('merges credit feed increases with reviewed rules and never lowers a reviewed
     input: 1,
     output: 2,
   });
-  expect(merged.models.filter((row) => row.provider === 'elevenlabs')).toHaveLength(14);
+  expect(merged.models.filter((row) => row.provider === 'elevenlabs')).toHaveLength(15);
   expect(merged.conflicts).toContainEqual(
     expect.objectContaining({
       source_a: 'reviewed_rule',
@@ -78,12 +78,33 @@ it('accepts all reviewed exact IDs and compatible credit keys, including partial
         ),
       ),
     );
-  expect(rows).toHaveLength(14);
+  expect(rows).toHaveLength(15);
   expect(validatePriceWatch(feed(rows))).toHaveProperty('models', rows);
   expect(validatePriceWatch(feed([])).verified_at).toBeNull();
   expect(
     validatePriceWatch(feed([model('scribe_v2', { per_input_audio_second: 330 / 60 })])).models,
   ).toHaveLength(1);
+});
+
+it.each([0.5, 2])('merges reviewed Scribe v3 feed credits at %s times the rule rate', (ratio) => {
+  const input = feed([model('scribe_v3', { per_input_audio_second: (4 / 9) * ratio })]);
+  expect(validatePriceWatch(input)).toEqual(input);
+  const merged = mergeSources({}, {}, input);
+  expect(merged.models.find((row) => row.id === 'scribe_v3')).toMatchObject({
+    mode: 'audio_transcription',
+    price_unit: 'credit',
+    prices: { per_input_audio_second: (4 / 9) * Math.max(1, ratio), per_output_audio_second: 0 },
+    capabilities: { endpoints: ['/v1/speech-to-text'] },
+  });
+});
+
+it.each([
+  ['scribe_v3-latest', { per_input_audio_second: 1 }],
+  ['scribe_v3-20261116', { per_input_audio_second: 1 }],
+  ['scribe_v3_live', { per_input_audio_second: 1 }],
+  ['scribe_v3', { per_character: 1 }],
+])('rejects unreviewed Scribe v3 IDs or dimensions: %s %j', (id, prices) => {
+  expect(() => validatePriceWatch(feed([model(id, prices)]))).toThrow('invalid price-watch model');
 });
 
 it.each([

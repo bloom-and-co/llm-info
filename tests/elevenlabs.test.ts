@@ -3,9 +3,56 @@ import { readFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { createLlmInfo, memoryStore } from '../src/index.ts';
 import { calculate } from '../src/engine.ts';
+import { mergeSources } from '../builder/core.mjs';
 
 const data = JSON.parse(await readFile('tests/fixtures/llm-info-snapshot.json', 'utf8'));
 const cases = JSON.parse(await readFile('tests/fixtures/elevenlabs-calc.json', 'utf8'));
+it('prices Scribe v3 from reviewed builder output without refreshing the frozen snapshot', async () => {
+  const doc = { ...data, models: mergeSources({}, {}).models };
+  const info = createLlmInfo({
+    store: memoryStore(),
+    fetch: async () => new Response(JSON.stringify(doc)),
+  });
+  await info.load();
+  expect(info.models({ provider: 'elevenlabs' }).find((m) => m.id === 'scribe_v3')).toMatchObject({
+    mode: 'audio_transcription',
+    price_unit: 'credit',
+  });
+  expect(info.capabilities({ provider: 'elevenlabs', model: 'scribe_v3' })).toMatchObject({
+    mode: 'audio_transcription',
+    price_unit: 'credit',
+    input_modalities: ['audio'],
+    output_modalities: ['text'],
+    endpoints: ['/v1/speech-to-text'],
+  });
+  for (const [seconds, expected] of [
+    [0, 0],
+    [8, 32 / 9],
+    [63, 28],
+    [3600, 1600],
+  ]) {
+    const usage = { input_audio_seconds: seconds, output_audio_seconds: 120 };
+    const result = info.calc({ provider: 'elevenlabs', model: 'scribe_v3', usage });
+    const v2 = info.calc({ provider: 'elevenlabs', model: 'scribe_v2', usage });
+    expect(result).toMatchObject({
+      model: 'scribe_v3',
+      priceUnit: 'credit',
+      totalUsd: null,
+      inputUsd: null,
+      outputUsd: null,
+      extraUsd: null,
+      warnings: [],
+    });
+    expect(result!.totalCredits).toBeCloseTo(expected, 10);
+    expect(result!.extraCredits).toBeCloseTo(expected, 10);
+    expect(result!.totalCredits).toBe(v2!.totalCredits);
+  }
+  for (const model of ['scribe_v3-latest', 'scribe_v3-20261116', 'scribe_v3_live']) {
+    expect(
+      info.calc({ provider: 'elevenlabs', model, usage: { input_audio_seconds: 63 } }),
+    ).toBeNull();
+  }
+});
 it('bills shared ElevenLabs cases through the public JS API and matches Python', async () => {
   const py = JSON.parse(
     execFileSync(
