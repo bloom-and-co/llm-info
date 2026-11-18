@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-17T18:25:06.868Z","ref":"W/\"2d4e81959fe0217eff72fc9e0bf1e3f155b490ad48adfddac96356206f157932\"","latest_new_model_at":"2026-11-16T18:25:28.250Z"},
-    "models_dev": {"fetched_at":"2026-11-17T18:25:07.484Z","etag":"W/\"d5d6ff2fff92fcfe45566f38f9c559c7\"","latest_new_model_at":"2026-11-17T18:25:07.484Z"},
+    "litellm": {"fetched_at":"2026-11-18T00:42:46.057Z","ref":"W/\"da7f335f66c29bea04f285d05acdbc0323072046c0055d0a723c6f367d8dadfe\"","latest_new_model_at":"2026-11-18T00:42:46.057Z"},
+    "models_dev": {"fetched_at":"2026-11-18T00:42:46.248Z","etag":"W/\"152e5625c5a807eb0a7f2517f277f6b7\"","latest_new_model_at":"2026-11-17T18:25:07.484Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-17T02:49:04.472Z","verified_at":"2026-11-17T02:49:04.449Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-17T02:49:04.449Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-17T02:49:04.449Z"}]}
   },
   "models": [
@@ -2758,7 +2758,7 @@
       "prices": {
         "input": 2.5,
         "output": 10,
-        "input_audio": 2.5
+        "input_audio": 6
       },
       "modes": {},
       "region_uplift": {},
@@ -6620,6 +6620,16 @@
         "input": 10,
         "output": 50,
         "cache_read": 1,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 20,
+              "output": 75,
+              "cache_read": 2
+            }
+          }
+        ],
         "per_web_search": 0.01
       },
       "modes": {},
@@ -7402,9 +7412,48 @@
               "cache_write": 20
             }
           }
-        ]
+        ],
+        "per_web_search": 0.01
       },
       "modes": {
+        "priority": {
+          "prices": {
+            "input": 16,
+            "output": 80,
+            "cache_read": 0.8,
+            "cache_write": 20,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 32,
+                  "output": 120,
+                  "cache_read": 1.6,
+                  "cache_write": 40
+                }
+              }
+            ]
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 8,
+                  "output": 30,
+                  "cache_read": 0.4,
+                  "cache_write": 10
+                }
+              }
+            ]
+          }
+        },
         "fast": {
           "prices": {
             "input": 16,
@@ -7419,7 +7468,10 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -7431,9 +7483,9 @@
         ],
         "default_reasoning_effort": null,
         "tool_call": true,
-        "parallel_tool_calls": null,
+        "parallel_tool_calls": true,
         "structured_output": true,
-        "web_search": null,
+        "web_search": true,
         "input_modalities": [
           "image",
           "pdf",
@@ -7443,14 +7495,86 @@
           "text"
         ],
         "temperature": false,
-        "prompt_caching": null,
-        "computer_use": null,
+        "prompt_caching": true,
+        "computer_use": true,
         "context_window": 1050000,
         "max_input_tokens": 922000,
         "max_output_tokens": 128000,
         "knowledge_cutoff": "2026-05-18",
         "release_date": "2026-11-17",
-        "endpoints": null
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/batch",
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-6.2-astra-law",
+      "mode": "chat",
+      "name": "gpt-6.2-astra-law",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6.2-astra-law"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 8,
+        "output": 40,
+        "cache_read": 0.4,
+        "cache_write": 10,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 16,
+              "output": 60,
+              "cache_read": 0.8,
+              "cache_write": 20
+            }
+          }
+        ],
+        "per_web_search": 0.01
+      },
+      "modes": {},
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/batch",
+          "/v1/responses"
+        ]
       }
     },
     {
@@ -7480,9 +7604,48 @@
               "cache_write": 5
             }
           }
-        ]
+        ],
+        "per_web_search": 0.01
       },
       "modes": {
+        "priority": {
+          "prices": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "cache_write": 5,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 8,
+                  "output": 30,
+                  "cache_read": 0.4,
+                  "cache_write": 10
+                }
+              }
+            ]
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 1,
+            "output": 5,
+            "cache_read": 0.05,
+            "cache_write": 1.25,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 2,
+                  "output": 7.5,
+                  "cache_read": 0.1,
+                  "cache_write": 2.5
+                }
+              }
+            ]
+          }
+        },
         "fast": {
           "prices": {
             "input": 4,
@@ -7497,7 +7660,10 @@
           }
         }
       },
-      "region_uplift": {},
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
       "capabilities": {
         "reasoning": true,
         "reasoning_efforts": [
@@ -7509,9 +7675,9 @@
         ],
         "default_reasoning_effort": null,
         "tool_call": true,
-        "parallel_tool_calls": null,
+        "parallel_tool_calls": true,
         "structured_output": true,
-        "web_search": null,
+        "web_search": true,
         "input_modalities": [
           "image",
           "pdf",
@@ -7521,14 +7687,18 @@
           "text"
         ],
         "temperature": false,
-        "prompt_caching": null,
-        "computer_use": null,
+        "prompt_caching": true,
+        "computer_use": true,
         "context_window": 1050000,
         "max_input_tokens": 922000,
         "max_output_tokens": 128000,
         "knowledge_cutoff": "2026-06-01",
         "release_date": "2026-11-17",
-        "endpoints": null
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/batch",
+          "/v1/responses"
+        ]
       }
     },
     {
@@ -22255,6 +22425,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-17T18:25:07.610Z",
-  "version": "2026-11-17T18:25:07.610Z-ae5009362064"
+  "generated_at": "2026-11-18T00:42:46.364Z",
+  "version": "2026-11-18T00:42:46.364Z-ca0257f86b86"
 }
