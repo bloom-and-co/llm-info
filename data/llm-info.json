@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-18T00:42:46.057Z","ref":"W/\"da7f335f66c29bea04f285d05acdbc0323072046c0055d0a723c6f367d8dadfe\"","latest_new_model_at":"2026-11-18T00:42:46.057Z"},
-    "models_dev": {"fetched_at":"2026-11-18T00:42:46.248Z","etag":"W/\"152e5625c5a807eb0a7f2517f277f6b7\"","latest_new_model_at":"2026-11-17T18:25:07.484Z"},
+    "litellm": {"fetched_at":"2026-11-18T18:23:44.922Z","ref":"W/\"9606e094737bdcbd9c3b13fd2dae2548ba3cb09b4f79eda70ef968f74491a023\"","latest_new_model_at":"2026-11-18T00:42:46.057Z"},
+    "models_dev": {"fetched_at":"2026-11-18T18:23:45.299Z","etag":"W/\"2426b7267084ca03f89ca8d4d381caa6\"","latest_new_model_at":"2026-11-17T18:25:07.484Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-18T02:48:58.889Z","verified_at":"2026-11-18T02:48:58.248Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-18T02:48:58.248Z"}]}
   },
   "models": [
@@ -2385,7 +2385,7 @@
       "prices": {
         "input": 1.25,
         "output": 5,
-        "input_audio": 1.25
+        "input_audio": 3
       },
       "modes": {},
       "region_uplift": {},
@@ -2429,7 +2429,7 @@
       "prices": {
         "input": 1.25,
         "output": 5,
-        "input_audio": 1.25
+        "input_audio": 3
       },
       "modes": {},
       "region_uplift": {},
@@ -2473,7 +2473,7 @@
       "prices": {
         "input": 1.25,
         "output": 5,
-        "input_audio": 1.25
+        "input_audio": 3
       },
       "modes": {},
       "region_uplift": {},
@@ -2802,7 +2802,7 @@
       "prices": {
         "input": 2.5,
         "output": 10,
-        "input_audio": 2.5
+        "input_audio": 6
       },
       "modes": {},
       "region_uplift": {},
@@ -6892,9 +6892,9 @@
         "dated_suffix": true
       },
       "prices": {
-        "input": 15,
-        "output": 75,
-        "cache_read": 1.5,
+        "input": 10,
+        "output": 50,
+        "cache_read": 1,
         "cache_write": 18.75,
         "tiers": [
           {
@@ -22425,6 +22425,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-18T00:42:46.364Z",
-  "version": "2026-11-18T00:42:46.364Z-ca0257f86b86"
+  "generated_at": "2026-11-18T18:23:45.433Z",
+  "version": "2026-11-18T18:23:45.433Z-6ea4c3cd401e"
 }
