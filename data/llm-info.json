@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-19T02:48:45.688Z","ref":"W/\"3709a422c5003159faf069fc1e0c5ea4fa95214b5fb7496f9d4a7ce8f86d1875\"","latest_new_model_at":"2026-11-19T00:42:29.427Z"},
-    "models_dev": {"fetched_at":"2026-11-19T02:48:45.917Z","etag":"W/\"591c701e365d7a47d9939cee0d1fe6ce\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
+    "litellm": {"fetched_at":"2026-11-19T18:26:08.573Z","ref":"W/\"4a14672329f8802f54b3313b6537f6146fd0cdf8c412795162d5c7c1d9c39211\"","latest_new_model_at":"2026-11-19T18:26:08.573Z"},
+    "models_dev": {"fetched_at":"2026-11-19T18:26:08.924Z","etag":"W/\"d383a8f5ede3c5dcb294c8fdc1cb8e45\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-19T02:48:53.005Z","verified_at":"2026-11-19T02:48:52.992Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-19T02:48:52.992Z"}]}
   },
   "models": [
@@ -17589,6 +17589,54 @@
     },
     {
       "provider": "google",
+      "id": "genie-4",
+      "mode": "chat",
+      "name": "genie-4",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "genie-4"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 1.5,
+        "output": 9,
+        "input_image": 1.5
+      },
+      "modes": {},
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": false,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": false,
+        "parallel_tool_calls": null,
+        "structured_output": false,
+        "web_search": false,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "audio",
+          "video"
+        ],
+        "temperature": null,
+        "prompt_caching": false,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 65536,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1beta/interactions"
+        ]
+      }
+    },
+    {
+      "provider": "google",
       "id": "imagen-3.0-fast-generate-001",
       "mode": "image_generation",
       "name": "imagen-3.0-fast-generate-001",
@@ -22510,6 +22558,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-19T02:48:53.109Z",
-  "version": "2026-11-19T02:48:53.109Z-7761344c1472"
+  "generated_at": "2026-11-19T18:26:09.014Z",
+  "version": "2026-11-19T18:26:09.014Z-fc7d088e753b"
 }
