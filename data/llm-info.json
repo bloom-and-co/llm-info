@@ -1,9 +1,9 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-19T00:42:29.427Z","ref":"W/\"e541c9a6c5ad82284191a388087833c09e47172a6f5c2422baaed475734626f3\"","latest_new_model_at":"2026-11-19T00:42:29.427Z"},
-    "models_dev": {"fetched_at":"2026-11-19T00:42:29.628Z","etag":"W/\"aead57d13621712b944862290be4b0f1\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
-    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-18T02:48:58.889Z","verified_at":"2026-11-18T02:48:58.248Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-18T02:48:58.248Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-18T02:48:58.248Z"}]}
+    "litellm": {"fetched_at":"2026-11-19T02:48:45.688Z","ref":"W/\"3709a422c5003159faf069fc1e0c5ea4fa95214b5fb7496f9d4a7ce8f86d1875\"","latest_new_model_at":"2026-11-19T00:42:29.427Z"},
+    "models_dev": {"fetched_at":"2026-11-19T02:48:45.917Z","etag":"W/\"591c701e365d7a47d9939cee0d1fe6ce\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
+    "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-19T02:48:53.005Z","verified_at":"2026-11-19T02:48:52.992Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-19T02:48:52.992Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-19T02:48:52.992Z"}]}
   },
   "models": [
     {
@@ -19628,7 +19628,7 @@
         "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
-        "tool_call": false,
+        "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
@@ -19724,7 +19724,7 @@
           "xhigh"
         ],
         "default_reasoning_effort": null,
-        "tool_call": false,
+        "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
@@ -19838,7 +19838,7 @@
         "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
-        "tool_call": false,
+        "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
@@ -19893,7 +19893,7 @@
         "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
-        "tool_call": false,
+        "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
@@ -19948,7 +19948,7 @@
         "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
-        "tool_call": false,
+        "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
@@ -20021,7 +20021,7 @@
         "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
-        "tool_call": false,
+        "tool_call": true,
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
@@ -22510,6 +22510,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-19T00:42:29.767Z",
-  "version": "2026-11-19T00:42:29.767Z-ce564a611acb"
+  "generated_at": "2026-11-19T02:48:53.109Z",
+  "version": "2026-11-19T02:48:53.109Z-7761344c1472"
 }
