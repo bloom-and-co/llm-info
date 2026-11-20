@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-20T12:28:21.160Z","ref":"W/\"8837e14eb43aaee6521aaea9399f530bf397a59a16634eae7a120f07588bce72\"","latest_new_model_at":"2026-11-19T18:26:08.573Z"},
-    "models_dev": {"fetched_at":"2026-11-20T12:28:21.373Z","etag":"W/\"93be3a1c7515ebd1704a87811cd47905\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
+    "litellm": {"fetched_at":"2026-11-20T18:25:37.338Z","ref":"W/\"f724cc0336388fd23f4a407a3e1b217f2f398cc078824356b22554fd0ce73a67\"","latest_new_model_at":"2026-11-19T18:26:08.573Z"},
+    "models_dev": {"fetched_at":"2026-11-20T18:25:37.396Z","etag":"W/\"70d9dc54f7a1e20117b030cbbcf41fe7\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-20T02:48:59.675Z","verified_at":"2026-11-20T02:48:59.642Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-20T02:48:59.642Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-20T02:48:59.642Z"}]}
   },
   "models": [
@@ -12473,7 +12473,7 @@
       },
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
@@ -13088,7 +13088,7 @@
       "modes": {},
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
@@ -13137,7 +13137,7 @@
       "modes": {},
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
@@ -13156,7 +13156,7 @@
         "prompt_caching": null,
         "computer_use": null,
         "context_window": null,
-        "max_input_tokens": 1048576,
+        "max_input_tokens": 131072,
         "max_output_tokens": 8192,
         "knowledge_cutoff": null,
         "release_date": null,
@@ -13873,7 +13873,7 @@
       },
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
@@ -14110,7 +14110,7 @@
       },
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
@@ -18067,7 +18067,7 @@
       },
       "region_uplift": {},
       "capabilities": {
-        "reasoning": false,
+        "reasoning": true,
         "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": false,
@@ -18557,7 +18557,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -18628,7 +18631,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -18867,7 +18873,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -18920,7 +18929,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -18973,7 +18985,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19026,7 +19041,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19079,7 +19097,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19132,7 +19153,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19185,7 +19209,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19238,7 +19265,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19291,7 +19321,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19344,7 +19377,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19397,7 +19433,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19450,7 +19489,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19503,7 +19545,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19556,7 +19601,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19609,7 +19657,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19680,7 +19731,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19835,7 +19889,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19890,7 +19947,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -19945,7 +20005,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20000,7 +20063,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20073,7 +20139,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20146,7 +20215,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20199,7 +20271,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20270,7 +20345,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20341,7 +20419,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20394,7 +20475,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20465,7 +20549,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20635,7 +20722,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -20769,7 +20859,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -21020,7 +21113,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": null,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -21073,7 +21169,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": true,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -21126,7 +21225,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": null,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -21179,7 +21281,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": null,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -21232,7 +21337,10 @@
         "parallel_tool_calls": null,
         "structured_output": true,
         "web_search": null,
-        "input_modalities": [],
+        "input_modalities": [
+          "image",
+          "text"
+        ],
         "output_modalities": [
           "text"
         ],
@@ -22559,6 +22667,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-20T12:28:21.502Z",
-  "version": "2026-11-20T12:28:21.502Z-acd51ccc16c7"
+  "generated_at": "2026-11-20T18:25:37.484Z",
+  "version": "2026-11-20T18:25:37.484Z-b636fcf85d70"
 }
