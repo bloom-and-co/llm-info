@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-20T18:25:37.338Z","ref":"W/\"f724cc0336388fd23f4a407a3e1b217f2f398cc078824356b22554fd0ce73a67\"","latest_new_model_at":"2026-11-19T18:26:08.573Z"},
-    "models_dev": {"fetched_at":"2026-11-20T18:25:37.396Z","etag":"W/\"70d9dc54f7a1e20117b030cbbcf41fe7\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
+    "litellm": {"fetched_at":"2026-11-21T06:29:57.898Z","ref":"W/\"87f599dec9c1489a1b133994a650decabd7ffd074dca3c3150d7868cc416b3c4\"","latest_new_model_at":"2026-11-19T18:26:08.573Z"},
+    "models_dev": {"fetched_at":"2026-11-21T06:29:57.989Z","etag":"W/\"36f38151e8fce738e5c6cd31970f8f5e\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-21T02:48:50.033Z","verified_at":"2026-11-21T02:48:50.015Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-21T02:48:50.015Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-21T02:48:50.015Z"}]}
   },
   "models": [
@@ -12792,9 +12792,9 @@
         "input": 0.3,
         "output": 2.5,
         "reasoning": 2.5,
-        "input_audio": 1,
         "output_image": 30,
         "cache_read": 0.075,
+        "input_audio": 1,
         "per_image": 0.039,
         "per_web_search": 0.035
       },
@@ -13723,16 +13723,6 @@
         "output": 12,
         "cache_read": 0.2,
         "output_image": 120,
-        "tiers": [
-          {
-            "above_input_tokens": 200000,
-            "prices": {
-              "input": 4,
-              "output": 18,
-              "cache_read": 0.4
-            }
-          }
-        ],
         "per_image": 0.134,
         "per_web_search": 0.014
       },
@@ -13742,17 +13732,7 @@
             "input": 3.6,
             "output": 21.6,
             "cache_read": 0.36,
-            "output_image": 216,
-            "tiers": [
-              {
-                "above_input_tokens": 200000,
-                "prices": {
-                  "input": 7.2,
-                  "output": 32.4,
-                  "cache_read": 0.72
-                }
-              }
-            ]
+            "output_image": 216
           }
         },
         "flex": {
@@ -13824,16 +13804,6 @@
         "output": 12,
         "cache_read": 0.2,
         "output_image": 120,
-        "tiers": [
-          {
-            "above_input_tokens": 200000,
-            "prices": {
-              "input": 4,
-              "output": 18,
-              "cache_read": 0.4
-            }
-          }
-        ],
         "per_image": 0.134,
         "per_web_search": 0.014
       },
@@ -13843,17 +13813,7 @@
             "input": 3.6,
             "output": 21.6,
             "cache_read": 0.36,
-            "output_image": 216,
-            "tiers": [
-              {
-                "above_input_tokens": 200000,
-                "prices": {
-                  "input": 7.2,
-                  "output": 32.4,
-                  "cache_read": 0.72
-                }
-              }
-            ]
+            "output_image": 216
           }
         },
         "batch": {
@@ -22667,6 +22627,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-20T18:25:37.484Z",
-  "version": "2026-11-20T18:25:37.484Z-b636fcf85d70"
+  "generated_at": "2026-11-21T06:29:58.077Z",
+  "version": "2026-11-21T06:29:58.077Z-9e9af47075b5"
 }
