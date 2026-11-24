@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-24T00:38:35.810Z","ref":"W/\"bb5bc99e317d77e3a92bda35543046f3ed3d3c1b8dad1018d244ef2d25a003c0\"","latest_new_model_at":"2026-11-24T00:38:35.810Z"},
-    "models_dev": {"fetched_at":"2026-11-24T00:38:36.016Z","etag":"W/\"5c3aaea964b2a0583c7e6bbed5fd0122\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
+    "litellm": {"fetched_at":"2026-11-24T18:24:23.184Z","ref":"W/\"9bf5156e27d6711c11ba40614dddaaf52af12aa86e7d26b2471ed2512e8b2722\"","latest_new_model_at":"2026-11-24T18:24:23.184Z"},
+    "models_dev": {"fetched_at":"2026-11-24T18:24:23.971Z","etag":"W/\"3796e25c20a615b90e869f6249997e40\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-24T02:48:56.194Z","verified_at":"2026-11-24T02:48:56.174Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-24T02:48:56.174Z"}]}
   },
   "models": [
@@ -6520,6 +6520,88 @@
     },
     {
       "provider": "openai",
+      "id": "gpt-6-astra-healthcare",
+      "mode": "chat",
+      "name": "gpt-6-astra-healthcare",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6-astra-healthcare"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 10,
+        "output": 50,
+        "cache_read": 1,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 20,
+              "output": 75,
+              "cache_read": 2
+            }
+          }
+        ],
+        "per_web_search": 0.01
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 20,
+            "output": 100,
+            "cache_read": 2,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 40,
+                  "output": 150,
+                  "cache_read": 4
+                }
+              }
+            ]
+          }
+        }
+      },
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
       "id": "gpt-6-astra-law",
       "mode": "chat",
       "name": "gpt-6-astra-law",
@@ -7152,6 +7234,88 @@
     },
     {
       "provider": "openai",
+      "id": "gpt-6.1-sol-healthcare",
+      "mode": "chat",
+      "name": "gpt-6.1-sol-healthcare",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6.1-sol-healthcare"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2,
+        "output": 10,
+        "cache_read": 0.1,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 4,
+              "output": 15,
+              "cache_read": 0.2
+            }
+          }
+        ],
+        "per_web_search": 0.01
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 8,
+                  "output": 30,
+                  "cache_read": 0.4
+                }
+              }
+            ]
+          }
+        }
+      },
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
       "id": "gpt-6.1-terra",
       "mode": "chat",
       "name": "GPT-6.1 Terra",
@@ -7425,6 +7589,90 @@
     },
     {
       "provider": "openai",
+      "id": "gpt-6.2-astra-healthcare",
+      "mode": "chat",
+      "name": "gpt-6.2-astra-healthcare",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6.2-astra-healthcare"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 8,
+        "output": 40,
+        "cache_read": 0.4,
+        "cache_write": 10,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 16,
+              "output": 60,
+              "cache_read": 0.8,
+              "cache_write": 20
+            }
+          }
+        ],
+        "per_web_search": 0.01
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 16,
+            "output": 80,
+            "cache_read": 0.8,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 32,
+                  "output": 120,
+                  "cache_read": 1.6
+                }
+              }
+            ]
+          }
+        }
+      },
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
       "id": "gpt-6.2-astra-law",
       "mode": "chat",
       "name": "gpt-6.2-astra-law",
@@ -7611,6 +7859,90 @@
         "endpoints": [
           "/v1/chat/completions",
           "/v1/batch",
+          "/v1/responses"
+        ]
+      }
+    },
+    {
+      "provider": "openai",
+      "id": "gpt-6.2-sol-healthcare",
+      "mode": "chat",
+      "name": "gpt-6.2-sol-healthcare",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gpt-6.2-sol-healthcare"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2,
+        "output": 10,
+        "cache_read": 0.1,
+        "cache_write": 2.5,
+        "tiers": [
+          {
+            "above_input_tokens": 272000,
+            "prices": {
+              "input": 4,
+              "output": 15,
+              "cache_read": 0.2,
+              "cache_write": 5
+            }
+          }
+        ],
+        "per_web_search": 0.01
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 4,
+            "output": 20,
+            "cache_read": 0.2,
+            "tiers": [
+              {
+                "above_input_tokens": 272000,
+                "prices": {
+                  "input": 8,
+                  "output": 30,
+                  "cache_read": 0.4
+                }
+              }
+            ]
+          }
+        }
+      },
+      "region_uplift": {
+        "us": 1.1,
+        "eu": 1.1
+      },
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "xhigh",
+          "max"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 922000,
+        "max_output_tokens": 128000,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
           "/v1/responses"
         ]
       }
@@ -10670,7 +11002,7 @@
         "context_window": 1000000,
         "max_input_tokens": 1000000,
         "max_output_tokens": 128000,
-        "knowledge_cutoff": null,
+        "knowledge_cutoff": "2026-01-31",
         "release_date": "2026-06-07",
         "endpoints": null
       }
@@ -12705,7 +13037,7 @@
         "temperature": true,
         "prompt_caching": true,
         "computer_use": null,
-        "context_window": 32768,
+        "context_window": 65536,
         "max_input_tokens": 32768,
         "max_output_tokens": 32768,
         "knowledge_cutoff": "2024-06",
@@ -14143,6 +14475,7 @@
         "web_search": false,
         "input_modalities": [
           "image",
+          "pdf",
           "text",
           "video"
         ],
@@ -14699,6 +15032,7 @@
         "output": 2.5,
         "reasoning": 2.5,
         "cache_read": 0.03,
+        "input_audio": 0.3,
         "per_web_search": 0.014
       },
       "modes": {
@@ -16538,6 +16872,7 @@
         "output": 2.5,
         "reasoning": 2.5,
         "cache_read": 0.03,
+        "input_audio": 0.3,
         "per_web_search": 0.014
       },
       "modes": {
@@ -17662,7 +17997,6 @@
       "prices": {
         "input": 0,
         "output": 0,
-        "output_image": 0,
         "per_image": 0.04
       },
       "modes": {},
@@ -17686,7 +18020,7 @@
         "temperature": true,
         "prompt_caching": false,
         "computer_use": null,
-        "context_window": 1048576,
+        "context_window": 131072,
         "max_input_tokens": 131072,
         "max_output_tokens": 8192,
         "knowledge_cutoff": null,
@@ -17709,7 +18043,6 @@
       "prices": {
         "input": 0,
         "output": 0,
-        "output_image": 0,
         "per_image": 0.08
       },
       "modes": {},
@@ -17733,7 +18066,7 @@
         "temperature": true,
         "prompt_caching": false,
         "computer_use": null,
-        "context_window": 1048576,
+        "context_window": 131072,
         "max_input_tokens": 131072,
         "max_output_tokens": 8192,
         "knowledge_cutoff": null,
@@ -22558,6 +22891,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-24T00:38:36.135Z",
-  "version": "2026-11-24T00:38:36.135Z-b79f434dfae4"
+  "generated_at": "2026-11-24T18:24:24.096Z",
+  "version": "2026-11-24T18:24:24.096Z-5eb57bf751cd"
 }
