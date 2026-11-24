@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-23T18:24:45.931Z","ref":"W/\"e480378e9564e6fef0acf70a2c89ac8d1ae80a7e02b51f613fb06d3c0d1a297c\"","latest_new_model_at":"2026-11-19T18:26:08.573Z"},
-    "models_dev": {"fetched_at":"2026-11-23T18:24:47.090Z","etag":"W/\"4b799eaae0039826572b745b255fda1c\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
+    "litellm": {"fetched_at":"2026-11-24T00:38:35.810Z","ref":"W/\"bb5bc99e317d77e3a92bda35543046f3ed3d3c1b8dad1018d244ef2d25a003c0\"","latest_new_model_at":"2026-11-24T00:38:35.810Z"},
+    "models_dev": {"fetched_at":"2026-11-24T00:38:36.016Z","etag":"W/\"5c3aaea964b2a0583c7e6bbed5fd0122\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-23T02:48:34.767Z","verified_at":"2026-11-23T02:48:34.755Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-23T02:48:34.755Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-23T02:48:34.755Z"}]}
   },
   "models": [
@@ -8901,7 +8901,7 @@
       "provider": "openai",
       "id": "gpt-realtime-2.1",
       "mode": "realtime",
-      "name": "GPT-Realtime-2.1",
+      "name": "gpt-realtime-2.1",
       "aliases": [],
       "match": {
         "exact": [
@@ -8927,13 +8927,7 @@
       },
       "capabilities": {
         "reasoning": true,
-        "reasoning_efforts": [
-          "minimal",
-          "low",
-          "medium",
-          "high",
-          "xhigh"
-        ],
+        "reasoning_efforts": null,
         "default_reasoning_effort": null,
         "tool_call": true,
         "parallel_tool_calls": true,
@@ -8948,14 +8942,14 @@
           "audio",
           "text"
         ],
-        "temperature": false,
+        "temperature": null,
         "prompt_caching": true,
         "computer_use": null,
-        "context_window": 128000,
-        "max_input_tokens": 96000,
+        "context_window": null,
+        "max_input_tokens": 128000,
         "max_output_tokens": 32000,
-        "knowledge_cutoff": "2024-09-30",
-        "release_date": "2026-07-06",
+        "knowledge_cutoff": null,
+        "release_date": null,
         "endpoints": [
           "/v1/realtime"
         ]
@@ -16027,6 +16021,79 @@
     },
     {
       "provider": "google",
+      "id": "gemini-4-neon-cyber-permissive",
+      "mode": "chat",
+      "name": "gemini-4-neon-cyber-permissive",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "gemini-4-neon-cyber-permissive"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 3,
+        "output": 15,
+        "reasoning": 15,
+        "cache_read": 0.15,
+        "input_audio": 3,
+        "per_web_search": 0.014
+      },
+      "modes": {
+        "priority": {
+          "prices": {
+            "input": 5.4,
+            "output": 27,
+            "cache_read": 0.27,
+            "input_audio": 5.4
+          }
+        },
+        "batch": {
+          "prices": {
+            "input": 1.5,
+            "output": 7.5,
+            "cache_read": 0.075,
+            "input_audio": 1.5
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": [
+          "xhigh"
+        ],
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": true,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "audio",
+          "image",
+          "text",
+          "video"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": true,
+        "context_window": null,
+        "max_input_tokens": 1048576,
+        "max_output_tokens": 1048576,
+        "knowledge_cutoff": null,
+        "release_date": null,
+        "endpoints": [
+          "/v1/chat/completions",
+          "/v1/completions",
+          "/v1/batch"
+        ]
+      }
+    },
+    {
+      "provider": "google",
       "id": "gemini-decision-1",
       "mode": "other",
       "name": "gemini-decision-1",
@@ -22491,6 +22558,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-23T18:24:47.218Z",
-  "version": "2026-11-23T18:24:47.218Z-2a8d3a78f1ac"
+  "generated_at": "2026-11-24T00:38:36.135Z",
+  "version": "2026-11-24T00:38:36.135Z-b79f434dfae4"
 }
