@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "sources": {
-    "litellm": {"fetched_at":"2026-11-25T02:48:32.752Z","ref":"W/\"bc29ac205ade3804551033e9f38d36f19e517917f719a080ae26952216e3a8a8\"","latest_new_model_at":"2026-11-24T18:24:23.184Z"},
-    "models_dev": {"fetched_at":"2026-11-25T02:48:32.945Z","etag":"W/\"8e3524b9e9621af2348a6f57964699cc\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
+    "litellm": {"fetched_at":"2026-11-25T12:29:45.754Z","ref":"W/\"95ce75302b331445fe3dac27e3e4a39dc131e8552f559ae79ed61532da4421fe\"","latest_new_model_at":"2026-11-25T12:29:45.754Z"},
+    "models_dev": {"fetched_at":"2026-11-25T12:29:46.123Z","etag":"W/\"3db62c4f2c5aaac69c1ab27e24e508f2\"","latest_new_model_at":"2026-11-19T00:42:29.628Z"},
     "price_watch": {"url":"https://llm-price-watch.hangar.fctry.jp/verify","source_url":"https://elevenlabs.io/pricing","fetched_at":"2026-11-25T02:48:38.886Z","verified_at":"2026-11-24T02:48:56.174Z","latest_new_model_at":"2026-10-16T11:04:42.525Z","models":[{"id":"audio-isolation","feature":"Voice Isolator","prices":{"per_input_audio_second":16.666666666666668},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"eleven_flash_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"eleven_flash_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"eleven_multilingual_v2","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"eleven_text_to_sound_v2","feature":"Sound Effects","prices":{"per_output_audio_second":10},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"eleven_turbo_v2","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"eleven_turbo_v2_5","feature":"Flash / Turbo","prices":{"per_character":0.5},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"eleven_v3","feature":"Text to Speech","prices":{"per_character":1},"verified_at":"2026-11-24T02:48:56.174Z"},{"id":"scribe_v1","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"scribe_v1_experimental","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"scribe_v2","feature":"Scribe v2","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"scribe_v2_medical","feature":"Scribe v2 Medical","prices":{"per_input_audio_second":0.40404040404040403},"verified_at":"2026-11-25T02:48:38.866Z"},{"id":"scribe_v2_realtime","feature":"Scribe v2 Realtime","prices":{"per_input_audio_second":0.4444444444444444},"verified_at":"2026-11-25T02:48:38.866Z"}]}
   },
   "models": [
@@ -21131,6 +21131,23 @@
         ]
       },
       "modes": {
+        "batch": {
+          "prices": {
+            "input": 1.6,
+            "output": 4.8,
+            "cache_read": 0.4,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 3.2,
+                  "output": 9.6,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
+        },
         "priority": {
           "prices": {
             "input": 4,
@@ -21180,6 +21197,80 @@
         "max_output_tokens": 500000,
         "knowledge_cutoff": "2026-02-01",
         "release_date": "2026-08-12",
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "x-ai",
+      "id": "grok-4.6-latest",
+      "mode": "chat",
+      "name": "grok-4.6-latest",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "grok-4.6-latest"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2,
+        "output": 6,
+        "cache_read": 0.5,
+        "input_image": 2,
+        "tiers": [
+          {
+            "above_input_tokens": 200000,
+            "prices": {
+              "input": 4,
+              "output": 12,
+              "cache_read": 1
+            }
+          }
+        ]
+      },
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 1.6,
+            "output": 4.8,
+            "cache_read": 0.4,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 3.2,
+                  "output": 9.6,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": null,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 500000,
+        "max_output_tokens": 500000,
+        "knowledge_cutoff": null,
+        "release_date": null,
         "endpoints": null
       }
     },
@@ -21278,6 +21369,80 @@
         "max_output_tokens": 500000,
         "knowledge_cutoff": "2026-05",
         "release_date": "2026-09-21",
+        "endpoints": null
+      }
+    },
+    {
+      "provider": "x-ai",
+      "id": "grok-4.7-latest",
+      "mode": "chat",
+      "name": "grok-4.7-latest",
+      "aliases": [],
+      "match": {
+        "exact": [
+          "grok-4.7-latest"
+        ],
+        "dated_suffix": true
+      },
+      "prices": {
+        "input": 2,
+        "output": 6,
+        "cache_read": 0.5,
+        "input_image": 2,
+        "tiers": [
+          {
+            "above_input_tokens": 200000,
+            "prices": {
+              "input": 4,
+              "output": 12,
+              "cache_read": 1
+            }
+          }
+        ]
+      },
+      "modes": {
+        "batch": {
+          "prices": {
+            "input": 1.6,
+            "output": 4.8,
+            "cache_read": 0.4,
+            "tiers": [
+              {
+                "above_input_tokens": 200000,
+                "prices": {
+                  "input": 3.2,
+                  "output": 9.6,
+                  "cache_read": 0.8
+                }
+              }
+            ]
+          }
+        }
+      },
+      "region_uplift": {},
+      "capabilities": {
+        "reasoning": true,
+        "reasoning_efforts": null,
+        "default_reasoning_effort": null,
+        "tool_call": true,
+        "parallel_tool_calls": null,
+        "structured_output": true,
+        "web_search": true,
+        "input_modalities": [
+          "image",
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "temperature": null,
+        "prompt_caching": true,
+        "computer_use": null,
+        "context_window": null,
+        "max_input_tokens": 500000,
+        "max_output_tokens": 500000,
+        "knowledge_cutoff": null,
+        "release_date": null,
         "endpoints": null
       }
     },
@@ -22892,6 +23057,6 @@
       "reason": "missing_required_price"
     }
   ],
-  "generated_at": "2026-11-25T02:48:38.986Z",
-  "version": "2026-11-25T02:48:38.986Z-757c3e64f969"
+  "generated_at": "2026-11-25T12:29:46.259Z",
+  "version": "2026-11-25T12:29:46.259Z-5128b6ad4c08"
 }
